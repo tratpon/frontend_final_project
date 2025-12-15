@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-const NavbarLoin = () => {
+
+const NavbarAdim = () => {
     const [openMenu, setOpenMenu] = useState(false);
 
     const menuRef = useRef();
@@ -17,21 +18,13 @@ const NavbarLoin = () => {
     }, []);
 
     return (
-        <header className=" flex w-full justify-between items-center py-4 px-10 bg-white shadow-md">
+        <header className="flex justify-between items-center py-4 px-10 bg-white shadow-md">
             {/* Logo */}
             <div className="flex flex-col leading-snug">
                 <span className="font-bold text-xl">WebbyFrames</span>
                 <span className="text-xs text-gray-500">for Figma</span>
             </div>
             <div className="flex space-x-6">
-                {/* Navigation */}
-                <nav className="flex items-center space-x-6 text-sm text-gray-700">
-                    <Link to="/" className="hover:text-blue-600">HOME</Link>
-                    <Link to="/service" className="hover:text-blue-600">SERVICE</Link>
-                    <Link to="/detail" className="hover:text-blue-600">DETAIL</Link>
-                    <Link to="/AdviserProfile" className="hover:text-blue-600">PEOFILE</Link>
-
-                </nav>
 
                 {/* Profile Icon + Dropdown */}
                 <div className="relative" ref={menuRef}>
@@ -61,15 +54,15 @@ const NavbarLoin = () => {
                                 Logout
                             </button>
 
-                            
+
                         </div>
                     )}
                 </div>
 
             </div>
-
+          
         </header>
+        
     );
-};
-
-export default NavbarLoin;
+}
+export default NavbarAdim;

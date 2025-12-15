@@ -8,6 +8,8 @@ import AdviserProfilePage from './pages/AdviserProfilePage.jsx';
 import Login from './pages/LoginPage.jsx';
 import Register from './pages/RegisterPage.jsx';
 import Community from './pages/CommunityPage.jsx';
+import Hisrory from './pages/HistoryPage.jsx';
+import Admin from './pages/AdminPage.jsx';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +25,12 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/history" element={<Hisrory />} />
+
+
+
+        <Route path="/admin" element={<Admin />} />
+        
       </Routes>
     </Router>
     </>
