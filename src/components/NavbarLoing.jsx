@@ -1,9 +1,16 @@
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../contexts/authContext";
 const NavbarLoin = () => {
     const [openMenu, setOpenMenu] = useState(false);
 
     const menuRef = useRef();
+    const navigate = useNavigate();
+    const {setUser} = useAuth();
+    const handleLogOut = () => {
+        setUser();
+        navigate("/");
+    }
 
     // ปิด dropdown เมื่อคลิกรอบนอก
     useEffect(() => {
@@ -17,19 +24,20 @@ const NavbarLoin = () => {
     }, []);
 
     return (
-        <header className=" flex w-full justify-between items-center py-4 px-10 bg-white shadow-md">
+        <header className="flex w-full justify-between items-center py-4 px-10 bg-white shadow-md">
             {/* Logo */}
             <div className="flex flex-col leading-snug">
                 <span className="font-bold text-xl">WebbyFrames</span>
                 <span className="text-xs text-gray-500">for Figma</span>
             </div>
+
             <div className="flex space-x-6">
                 {/* Navigation */}
                 <nav className="flex items-center space-x-6 text-sm text-gray-700">
                     <Link to="/" className="hover:text-blue-600">HOME</Link>
                     <Link to="/service" className="hover:text-blue-600">SERVICE</Link>
-                    <Link to="/detail" className="hover:text-blue-600">DETAIL</Link>
-                    <Link to="/AdviserProfile" className="hover:text-blue-600">PEOFILE</Link>
+                    <Link to="/community" className="hover:text-blue-600">COMMUNITY</Link>
+                    <Link to="/notfound" className="hover:text-blue-600">ABOU US</Link>
 
                 </nav>
 
@@ -45,23 +53,24 @@ const NavbarLoin = () => {
                     {/* Dropdown menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <a href="/community" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/community" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 community
-                            </a>
-                            <a href="/history" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
-                                Hisrory
-                            </a>
+                            </Link>
 
-                            <a href="/admin" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/history" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                                Hisrory
+                            </Link>
+
+                            <Link to="/admin" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 AdminPage
-                            </a>
+                            </Link>
 
                             <hr className="my-1" />
-                            <button className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
+                            <button onClick={handleLogOut} className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
                                 Logout
                             </button>
 
-                            
+
                         </div>
                     )}
                 </div>

@@ -1,10 +1,21 @@
-import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
+import { useAuth } from '../contexts/authContext.jsx';
+import { ROLES } from '../app/roles.js';
+import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = () =>{
+    setUser(ROLES.USER);
+    navigate("/");
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Navbar/>
+      <NavbarSwitcher/>
 
       {/* Page Content */}
       <div className="flex-1 flex items-center justify-center px-4">
@@ -47,7 +58,8 @@ export default function Login() {
           </div>
 
           {/* Login Button */}
-          <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+          
+          <button onClick={handleLogin} className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
             Log In
           </button>
 

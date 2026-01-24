@@ -1,13 +1,12 @@
 import Footer from "../components/Footer";
-import NavbarLoin from "../components/NavbarLoing";
-
+import NavbarSwitcher from "../app/NavbarSwitcht";
 
 export default function Hisrory() {
     const data = [1, 2, 3,6];
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
-            <NavbarLoin />
+            <NavbarSwitcher />
 
             {/* TITLE */}
             <h1 className="text-4xl font-bold text-center mt-12 mb-8">

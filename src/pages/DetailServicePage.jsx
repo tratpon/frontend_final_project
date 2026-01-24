@@ -1,10 +1,11 @@
-import Navbar from '../components/Navbar.jsx';
+import { Link, NavLink } from 'react-router-dom';
+import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import Footer from '../components/Footer.jsx';
 
 export default function DetailServicePage() {
     return (
         <div>
-            <Navbar />
+            <NavbarSwitcher />
             <div className="min-h-screen px-6 py-10 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
@@ -40,10 +41,10 @@ export default function DetailServicePage() {
                         <div className="flex mt-10 mb-10">
                             {/* Rating Summary */}
                             <div className="mt-6 items-center">
-                                <div className="w-20 h-20 flex flex-col justify-center items-center bg-gray-100 rounded-full">
+                                <Link to='/AdviserProfile' className="w-20 h-20 flex flex-col justify-center items-center bg-gray-100 rounded-full">
                                     <span className="text-xl font-bold">5.0</span>
                                     <span className="text-xs text-gray-500">จาก 5</span>
-                                </div>
+                                </Link>
 
                                 <div className="text-yellow-500 text-xl">
                                     {"★★★★★"}
@@ -131,7 +132,7 @@ export default function DetailServicePage() {
                             </div>
 
                             {/* Time Slots */}
-                            <div className="mt-6 grid grid-cols-2 gap-3">
+                            <NavLink to="/Booking" className="mt-6 grid grid-cols-2 gap-3">
                                 {["10:00 am", "10:30 am", "11:00 am", "12:00 pm", "12:30 pm"].map((t) => (
                                     <button
                                         key={t}
@@ -140,7 +141,7 @@ export default function DetailServicePage() {
                                         {t}
                                     </button>
                                 ))}
-                            </div>
+                            </NavLink>
                         </div>
                     </div>
 

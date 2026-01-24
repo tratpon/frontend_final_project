@@ -1,10 +1,12 @@
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/NavbarGuest.jsx';
 import Footer from '../components/Footer.jsx';
+import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
+
 
 export default function Mainpage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <NavbarSwitcher />
       <section className="h-screen bg-gray-200 py-20 flex flex-col items-center text-center justify-center">
 
 

@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import NavbarLoin from "../components/NavbarLoing";
+
 import Footer from "../components/Footer";
+import NavbarSwitcher from "../app/NavbarSwitcht";
 
 
 export default function Community() {
     return (
         <div className="min-h-screen bg-white ">
-            <NavbarLoin />
+            <NavbarSwitcher />
             <div className="min-h-screen">
                 {/* Search + Category */}
                 <div className="w-full px-10 mt-10 flex flex-col items-center">

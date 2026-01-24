@@ -1,10 +1,10 @@
-import Navbar from '../components/Navbar.jsx';
+import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import Footer from '../components/Footer.jsx';
 
 export default function Register() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
-            <Navbar />
+            <NavbarSwitcher />
 
             {/* Page Content */}
             <div className="flex-1 flex items-center justify-center px-4 m-5">

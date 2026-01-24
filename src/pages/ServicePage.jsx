@@ -1,11 +1,11 @@
-import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import Card from "../components/Card";
+import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 
 export default function ServicePage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarSwitcher />
 
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex gap-4 mb-10">

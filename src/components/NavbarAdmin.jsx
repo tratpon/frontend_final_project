@@ -18,7 +18,7 @@ const NavbarAdim = () => {
     }, []);
 
     return (
-        <header className="flex justify-between items-center py-4 px-10 bg-white shadow-md">
+        <header className="fixed flex w-full justify-between items-center py-4 px-10 bg-white shadow-md">
             {/* Logo */}
             <div className="flex flex-col leading-snug">
                 <span className="font-bold text-xl">WebbyFrames</span>

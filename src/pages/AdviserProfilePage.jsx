@@ -1,12 +1,11 @@
 import Card from "../components/Card";
-import Navbar from "../components/Navbar";
-import NavbarLoin from "../components/NavbarLoing";
+import NavbarSwitcher from "../app/NavbarSwitcht";
 
 
 export default function AdviserProfilePage() {
     return (
         <div className="min-h-screen bg-gray-50">
-            <NavbarLoin/>
+            <NavbarSwitcher/>
             <div className="w-full h-64 bg-gray-200 flex justify-center items-center">
                 <div className="w-60 h-48 bg-gray-300"></div>
             </div>

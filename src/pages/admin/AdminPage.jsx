@@ -1,18 +1,14 @@
-import NavbarAdim from "../components/NavbarAdmin";
-import Sidebar from "../components/Sidebar"
+import NavbarAdim from "../../components/NavbarAdmin";
+import Sidebar from "../../components/Sidebar"
 
 export default function Admin() {
     const users = Array.from({ length: 20 });
 
     return (
         <div className=" min-h-screen bg-gray-200">
-            
             <NavbarAdim />
-            <div>
-                <Sidebar />
-            
-            {/* MAIN */}
-            <main className="flex-1 p-10">
+            <Sidebar />
+            <main className="flex-1 pl-70 pt-30">
                 {/* SEARCH */}
                 <div className="flex items-center gap-2 mb-6">
                     🔍
@@ -77,7 +73,6 @@ export default function Admin() {
                     ))}
                 </div>
             </main>
-            </div>
         </div>
     );
 }
