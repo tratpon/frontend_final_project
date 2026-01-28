@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-gray-700 text-gray-300 py-6 px-10">
@@ -8,7 +10,7 @@ const Footer = () => {
         </span>
 
         <div className="flex space-x-8 text-sm">
-          <span>Eleven</span>
+          <NavLink to = "/enrollment">work wiht us</NavLink>
           <span>Twelve</span>
           <span>Thirteen</span>
           <span>Fourteen</span>  

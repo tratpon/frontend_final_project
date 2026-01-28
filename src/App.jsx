@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/authContext';
 
 export default function App() {
   return (
+    
     <BrowserRouter>
       <AuthProvider>
         <AppRouter />

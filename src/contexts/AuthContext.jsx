@@ -4,7 +4,7 @@ import { ROLES } from "../app/roles";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(ROLES.USER);
+    const [user, setUser] = useState(ROLES.ADVISOR);
     
     useEffect(()=>{
         console.log(user)

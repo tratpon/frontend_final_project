@@ -3,7 +3,7 @@ import Sidebar from "../../components/Sidebar"
 
 export default function AdminApproveForm() {
     return (
-        <div className="min-h-full ">
+        <div className="min-h-full">
             <NavbarAdim />
             {/* className="flex-1 pl-70 pt-30 pr-10" */}
             <main>
@@ -55,5 +55,4 @@ export default function AdminApproveForm() {
             </div>
         );
     }
-
 }

@@ -1,5 +1,5 @@
-import Footer from "../components/Footer";
-import NavbarSwitcher from "../app/NavbarSwitcht";
+import Footer from "../../components/Footer";
+import NavbarSwitcher from "../../app/NavbarSwitcht";
 
 export default function Hisrory() {
     const data = [1, 2, 3,6];

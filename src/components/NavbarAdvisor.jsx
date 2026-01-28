@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
-const NavbarLoin = () => {
+const NavbarAdvisor = () => {
     const [openMenu, setOpenMenu] = useState(false);
 
     const menuRef = useRef();
@@ -61,6 +61,10 @@ const NavbarLoin = () => {
                                 Chat
                             </Link>
 
+                            <Link to="/advisor/ServiceList" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                                Service
+                            </Link>
+
                             <Link to="/history" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 Hisrory
                             </Link>
@@ -81,4 +85,4 @@ const NavbarLoin = () => {
     );
 };
 
-export default NavbarLoin;
+export default NavbarAdvisor;

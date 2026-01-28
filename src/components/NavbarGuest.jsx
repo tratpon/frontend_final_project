@@ -14,7 +14,7 @@ const NavbarGuest = () => {
         <Link to="/service" className="hover:text-blue-600">SERVICE</Link>
         <Link to="/community" className="hover:text-blue-600">COMMUNITY</Link>
         <Link to="/notfound" className="hover:text-blue-600">ABOUT US</Link>
-
+        
       </nav>
 
       {/* Actions */}

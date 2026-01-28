@@ -1,5 +1,5 @@
-import NavbarSwitcher from "../app/NavbarSwitcht";
-import Footer from "../components/Footer";
+import NavbarSwitcher from "../../app/NavbarSwitcht";
+import Footer from "../../components/Footer";
 
 export default function Booking() {
     return (
