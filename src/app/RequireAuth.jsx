@@ -7,7 +7,7 @@ export default function RequireAuth() {
     if (!user) return <Navigate to="/login" replace />;
     switch (user) {
         case ROLES.USER:
-            return <Navigate to="/mains" replace />;
+            return <Navigate to="/main" replace />;
         case ROLES.ADMIN:
             return <Navigate to="/admin" replace />;
         case ROLES.ADVISOR:

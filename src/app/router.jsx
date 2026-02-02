@@ -12,6 +12,7 @@ import Community from '../pages/CommunityPage.jsx';
 import Hisrory from '../pages/user/HistoryPage.jsx';
 import Booking from "../pages/user/Booking.jsx";
 import UserProfile from "../pages/user/UserProfile.jsx";
+import ChatPage from "../pages/ChatPage.jsx";
 
 import Admin from '../pages/admin/AdminPage.jsx';
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
@@ -25,7 +26,7 @@ import Enrollment from "../pages/admin/Enrollment.jsx";
 import AdvisorServiceList from "../pages/advisor/AdvisorServiceList.jsx";
 import ManegeSevice from "../pages/advisor/ManegeService.jsx";
 import AdvisorTimeManegemet from "../pages/advisor/AdvisortimeManegement.jsx";
-
+import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
 
 import RequireAuth from "./RequireAuth.jsx";
 
@@ -57,11 +58,13 @@ export default function AppRouter() {
                 <Route path="/Booking" element={<Booking />} />
                 <Route path="/enrollment" element={<Enrollment />} />
                 <Route path="/UserProfile" element={<UserProfile />} />
+                <Route path="/chat" element={<ChatPage />} />
             </Route>
             
             {/* ADVISOR */}
             <Route element={<RequireRole allow={[ROLES.ADVISOR]} />}>
                 <Route path="/Advisor" element={<Advisor />} />
+                <Route path="/Advisor/AdvisorProfile" element={<AdvisorProfile />} />
                 <Route path="/Advisor/ServiceList" element={<AdvisorServiceList />} />
                 <Route path="/Advisor/ManegeService" element={<ManegeSevice />} />
                 <Route path="/Advisor/TimeManegemet" element={<AdvisorTimeManegemet />} />

@@ -53,7 +53,7 @@ const NavbarAdvisor = () => {
                     {/* Dropdown menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <Link to="/UserProfile" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/advisor/AdvisorProfile" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 Profile
                             </Link>
 

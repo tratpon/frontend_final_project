@@ -57,7 +57,7 @@ const NavbarLoin = () => {
                                 Profile
                             </Link>
 
-                            <Link to="/notfound" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/chat" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 Chat
                             </Link>
 
