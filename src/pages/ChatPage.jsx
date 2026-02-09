@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Video, Send, Search, X } from "lucide-react";
 import NavbarSwitcher from "../app/NavbarSwitcht";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchRooms, createRoom, joinRoom } from "../app/RoomApi";
+import { fetchRooms, createRoom, joinRoom } from "../app/Api";
 
 export default function ChatPage() {
   const queryClient = useQueryClient();

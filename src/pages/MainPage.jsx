@@ -2,8 +2,16 @@ import Navbar from '../components/NavbarGuest.jsx';
 import Footer from '../components/Footer.jsx';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 
+import { useQuery } from '@tanstack/react-query';
 
 export default function Mainpage() {
+  const { data: types = [] , isLoading, error } = useQuery({
+    queryKey: ['types'],
+    queryFn: async () => {
+      const res = await fetch('http://localhost:3001/api/types');
+      return res.json();
+    }
+  });
   return (
     <div className="min-h-screen flex flex-col">
       <NavbarSwitcher />
@@ -22,6 +30,13 @@ export default function Mainpage() {
             className="flex-1 py-3 px-2 outline-none"
             placeholder="Search for..."
           />
+          {types.map((types)=>(
+            <div>
+              {types.TypesName}
+            </div>
+          ))
+
+          }
           <select className="border-l px-3 text-sm text-gray-600">
             <option>All Categories</option>
           </select>
