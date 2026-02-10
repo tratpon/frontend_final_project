@@ -1,17 +1,29 @@
-import Navbar from '../components/NavbarGuest.jsx';
 import Footer from '../components/Footer.jsx';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
-
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { fetchTypes } from '../app/Api.js';
+import { useState , useEffect} from 'react';
+
+
 
 export default function Mainpage() {
-  const { data: types = [] , isLoading, error } = useQuery({
+  const [search, setSearch] = useState("");
+  const [selectType, setSelectType] = useState("");
+  const navigate = useNavigate();
+  const { data: types = [] } = useQuery({
     queryKey: ['types'],
-    queryFn: async () => {
-      const res = await fetch('http://localhost:3001/api/types');
-      return res.json();
-    }
+    queryFn: fetchTypes,
+    refetchInterval: 5000,
   });
+
+  useEffect(() => {
+    if (types.length > 0) {
+      setSelectType(types[0].TypesName);
+    }
+  }, [types]);;
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavbarSwitcher />
@@ -29,18 +41,20 @@ export default function Mainpage() {
           <input
             className="flex-1 py-3 px-2 outline-none"
             placeholder="Search for..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value) }}
           />
-          {types.map((types)=>(
-            <div>
-              {types.TypesName}
-            </div>
-          ))
 
-          }
-          <select className="border-l px-3 text-sm text-gray-600">
-            <option>All Categories</option>
+          <select value={selectType} onChange={(e) => { setSelectType(e.target.value) }} className="border-l px-3 text-sm text-gray-600">
+
+            {types.map((type) => (
+              <option key={type.TypesID}>{type.TypesName}</option>
+            ))
+            }
           </select>
-          <button className="px-6 bg-blue-600 text-white hover:bg-blue-700">
+          <button onClick={() =>
+            navigate(`/service?search=${search}&type=${selectType}`)
+          } className="px-6 bg-blue-600 text-white hover:bg-blue-700">
             Search
           </button>
         </div>

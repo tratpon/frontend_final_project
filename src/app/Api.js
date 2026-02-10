@@ -10,7 +10,7 @@ export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { pa
 
 
 
-
+export const fetchTypes= () => api.get('/service').then(res => res.data.types);
 
 
 
