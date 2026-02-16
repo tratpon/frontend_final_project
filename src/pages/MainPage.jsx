@@ -8,8 +8,8 @@ import { useState , useEffect} from 'react';
 
 
 export default function Mainpage() {
-  const [search, setSearch] = useState("");
-  const [selectType, setSelectType] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [type, setType] = useState("");
   const navigate = useNavigate();
   const { data: types = [] } = useQuery({
     queryKey: ['types'],
@@ -19,7 +19,7 @@ export default function Mainpage() {
 
   useEffect(() => {
     if (types.length > 0) {
-      setSelectType(types[0].TypesName);
+      setType(types[0].TypesName);
     }
   }, [types]);;
 
@@ -41,19 +41,19 @@ export default function Mainpage() {
           <input
             className="flex-1 py-3 px-2 outline-none"
             placeholder="Search for..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value) }}
+            value={keyword}
+            onChange={(e) => { setKeyword(e.target.value) }}
           />
 
-          <select value={selectType} onChange={(e) => { setSelectType(e.target.value) }} className="border-l px-3 text-sm text-gray-600">
-
+          <select value={type} onChange={(e) => { setType(e.target.value) }} className="border-l px-3 text-sm text-gray-600">
             {types.map((type) => (
               <option key={type.TypesID}>{type.TypesName}</option>
             ))
             }
           </select>
+
           <button onClick={() =>
-            navigate(`/service?search=${search}&type=${selectType}`)
+            navigate(`/service?keyword=${keyword}&type=${type}`)
           } className="px-6 bg-blue-600 text-white hover:bg-blue-700">
             Search
           </button>

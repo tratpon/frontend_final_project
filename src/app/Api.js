@@ -8,9 +8,10 @@ export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { pa
 
 
 
-
-
-export const fetchTypes= () => api.get('/service').then(res => res.data.types);
+export const fetchTypes = () => api.get('/service').then(res => res.data.types);
+export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
+export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
+export const fetchfilterService = (TypesName, keyword) => api.get(`/service/getFillter?TypesName=${encodeURIComponent(TypesName)}&keyword=${keyword}`).then(res => res.data);
 
 
 

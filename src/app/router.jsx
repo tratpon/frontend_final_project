@@ -38,7 +38,7 @@ export default function AppRouter() {
 
             <Route path="/main" element={<Mainpage />} />
             <Route path="/service" element={<ServicePage />} />
-            <Route path="/detail" element={<DetailServicePage />} />
+            <Route path="/detail/:id" element={<DetailServicePage />} />
             <Route path="/AdviserProfile" element={<AdviserProfilePage />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />

@@ -1,8 +1,21 @@
 import { Link, NavLink } from 'react-router-dom';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import Footer from '../components/Footer.jsx';
+import { useParams } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
+import { fetchDetailService } from '../app/Api.js';
 
 export default function DetailServicePage() {
+
+    const { id } = useParams();
+    const { data: { services = [] } = {} } = useQuery({
+        queryKey: ['service', id],
+        queryFn: () => fetchDetailService(id),
+        refetchInterval: 5000,
+    });
+    if (services.length > 0) {
+        console.log(services[0]);
+    }
     return (
         <div>
             <NavbarSwitcher />
@@ -25,17 +38,11 @@ export default function DetailServicePage() {
                             </div>
                         </div>
                         <div className="mt-8 leading-relaxed text-gray-800 text-sm">
+
                             <p>
-                                สวัสดีค่ะ ขอบคุณที่เข้ามาใช้บริการเพื่อการดูแลและฟื้นฟูสุขภาพใจของคุณมากๆนะคะ...
+                                {services?.[0]?.Full_Description}
                             </p>
 
-                            <p className="mt-4">
-                                ดิฉัน/ผมมุ่งมั่นที่จะทำงานร่วมกับคุณอย่างเต็มที่...
-                            </p>
-
-                            <p className="mt-4">
-                                หากมีคำถามหรือข้อสงสัยเพิ่มเติม สามารถสอบถามได้ตลอดค่ะ...
-                            </p>
                         </div>
 
                         <div className="flex mt-10 mb-10">
@@ -63,43 +70,43 @@ export default function DetailServicePage() {
                                         <p className="text-xl text-gray-700">xxxxxxxxxxx</p>
                                     </div>
                                 ))}
-                            </div> 
+                            </div>
                         </div>
                         {/* Reviewer info */}
-                            <div className="mt-6 text-sm text-gray-600">
-                                <div className="text-yellow-500 text-lg mb-2">
-                                            {"★★★★★"}
-                                        </div>
-                                <p>
-                                    Towering performance by Matt Damon as a troubled working class…
-                                </p>
-
-                                <div className="flex items-center gap-3 mt-4">
-                                    <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                                    <span>Nguyen Shane</span>
-                                </div>
-
-                                <div className="text-xs text-gray-400 mt-2">
-                                    Oct 13, 2017
-                                </div>
+                        <div className="mt-6 text-sm text-gray-600">
+                            <div className="text-yellow-500 text-lg mb-2">
+                                {"★★★★★"}
                             </div>
-                            <div className="mt-6 text-sm text-gray-600">
-                                <div className="text-yellow-500 text-lg mb-2">
-                                            {"★★★★★"}
-                                        </div>
-                                <p>
-                                    Towering performance by Matt Damon as a troubled working class…
-                                </p>
+                            <p>
+                                Towering performance by Matt Damon as a troubled working class…
+                            </p>
 
-                                <div className="flex items-center gap-3 mt-4">
-                                    <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                                    <span>Nguyen Shane</span>
-                                </div>
-
-                                <div className="text-xs text-gray-400 mt-2">
-                                    Oct 13, 2017
-                                </div>
+                            <div className="flex items-center gap-3 mt-4">
+                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                <span>Nguyen Shane</span>
                             </div>
+
+                            <div className="text-xs text-gray-400 mt-2">
+                                Oct 13, 2017
+                            </div>
+                        </div>
+                        <div className="mt-6 text-sm text-gray-600">
+                            <div className="text-yellow-500 text-lg mb-2">
+                                {"★★★★★"}
+                            </div>
+                            <p>
+                                Towering performance by Matt Damon as a troubled working class…
+                            </p>
+
+                            <div className="flex items-center gap-3 mt-4">
+                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                <span>Nguyen Shane</span>
+                            </div>
+
+                            <div className="text-xs text-gray-400 mt-2">
+                                Oct 13, 2017
+                            </div>
+                        </div>
                     </div>
 
                     {/* RIGHT SIDEBAR */}
