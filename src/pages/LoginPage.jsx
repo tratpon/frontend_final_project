@@ -3,19 +3,46 @@ import { useAuth } from '../contexts/authContext.jsx';
 import { ROLES } from '../app/roles.js';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useNavigate } from "react-router-dom";
+import { useMutation } from '@tanstack/react-query';
+import { useState } from "react";
+import { loginUser } from '../app/Api.js';
 
 export default function Login() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = () =>{
-    setUser(ROLES.USER);
-    navigate("/");
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const handleLogin = () =>{
+  //   setUser(ROLES.USER);
+  //   navigate("/");
+  // }
 
+  const loginMutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      console.log(data)
+    },
+
+    onError: (err) => {
+      alert(err.response?.data?.message || err.message);
+    }
+
+  });
+  const handleLogin = () => {
+
+    if (!email || !password) {
+      return alert("Please enter email and password");
+    }
+
+    loginMutation.mutate({
+      email,
+      password
+    });
+  };
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <NavbarSwitcher/>
+      <NavbarSwitcher />
 
       {/* Page Content */}
       <div className="flex-1 flex items-center justify-center px-4">
@@ -27,7 +54,9 @@ export default function Login() {
             <label className="block text-sm font-medium mb-1">Email Address</label>
             <input
               type="email"
-              placeholder="Placeholder"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -37,7 +66,9 @@ export default function Login() {
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
-              placeholder="Placeholder"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -58,9 +89,13 @@ export default function Login() {
           </div>
 
           {/* Login Button */}
-          
-          <button onClick={handleLogin} className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-            Log In
+
+          <button
+            onClick={handleLogin}
+            disabled={loginMutation.isPending}
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          >
+            {loginMutation.isPending ? "Logging in..." : "Log In"}
           </button>
 
           {/* Google Login */}
@@ -83,7 +118,7 @@ export default function Login() {
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 }

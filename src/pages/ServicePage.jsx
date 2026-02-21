@@ -2,7 +2,7 @@ import Footer from '../components/Footer.jsx';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
-import { fetchTypes, fetchAllService, fetchfilterService } from '../app/Api.js';
+import { fetchTypes, fetchfilterService } from '../app/Api.js';
 import { Option } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -10,8 +10,6 @@ export default function ServicePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const keyword = searchParams.get("keyword") || "";
   const type = searchParams.get("type") || "";
-
-
 
   const { data: types = [] } = useQuery({
     queryKey: ['types'],
@@ -26,7 +24,7 @@ export default function ServicePage() {
   // });
 
 
-  const { data: { services = [] } = {} } = useQuery({
+  const { data: services = []  } = useQuery({
     queryKey: ['services', type, keyword],
     queryFn: () => fetchfilterService(type, keyword),
   });

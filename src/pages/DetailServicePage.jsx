@@ -8,7 +8,7 @@ import { fetchDetailService } from '../app/Api.js';
 export default function DetailServicePage() {
 
     const { id } = useParams();
-    const { data: { services = [] } = {} } = useQuery({
+    const { data: services = [] } = useQuery({
         queryKey: ['service', id],
         queryFn: () => fetchDetailService(id),
         refetchInterval: 5000,
@@ -38,13 +38,10 @@ export default function DetailServicePage() {
                             </div>
                         </div>
                         <div className="mt-8 leading-relaxed text-gray-800 text-sm">
-
                             <p>
                                 {services?.[0]?.Full_Description}
                             </p>
-
                         </div>
-
                         <div className="flex mt-10 mb-10">
                             {/* Rating Summary */}
                             <div className="mt-6 items-center">
@@ -57,9 +54,7 @@ export default function DetailServicePage() {
                                     {"★★★★★"}
                                 </div>
                             </div>
-
                             <div class="border-l mx-20 border-gray-300"></div>
-
                             {/* Individual reviews */}
                             <div className="mt-6 grid grid-cols-2 gap-x-50 gap-y-5">
                                 {[1, 2, 3, 4].map((i) => (

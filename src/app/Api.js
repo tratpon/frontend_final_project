@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { privateApi ,publicApi } from './ApiTypes';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const api = axios.create({ baseURL: 'http://localhost:3001/api' });
 
@@ -9,20 +12,24 @@ export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { pa
 
 
 export const fetchTypes = () => api.get('/service').then(res => res.data.types);
+export const fetchfilterPost = (type) => api.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
+export const fetchComment = (postId) => api.get(`/community/getComment/${postId}`).then(res => res.data.comments);
+
+
+
 export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
-export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
-export const fetchfilterService = (TypesName, keyword) => api.get(`/service/getFillter?TypesName=${encodeURIComponent(TypesName)}&keyword=${keyword}`).then(res => res.data);
+export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data.services);
+export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
 
 
+export const registerUser = async (data) => await  privateApi.post('/auth/register', data).then(res => res.data);
 
 
-
-
-
-
-
-
-
+export const loginUser = async (data) => {
+  await signInWithEmailAndPassword(auth, data.email, data.password);
+  return await privateApi.post('/auth/login')
+    .then(res => res.data);
+};
 
 
 
