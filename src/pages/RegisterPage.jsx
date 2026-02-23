@@ -20,6 +20,7 @@ export default function Register() {
     const registerMutation = useMutation({
         mutationFn: registerUser,
         onSuccess: () => {
+            
             navigate("/main");
         },
         onError: (err) => {

@@ -8,20 +8,20 @@ import { useState } from "react";
 import { loginUser } from '../app/Api.js';
 
 export default function Login() {
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const handleLogin = () =>{
-  //   setUser(ROLES.USER);
-  //   navigate("/");
-  // }
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      console.log(data)
+      if(data.role==ROLES.USER){
+        setUser(ROLES.USER);
+        navigate("/");
+      }
+      console.log(data.role)
     },
 
     onError: (err) => {

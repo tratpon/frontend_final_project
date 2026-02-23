@@ -14,8 +14,8 @@ export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { pa
 export const fetchTypes = () => api.get('/service').then(res => res.data.types);
 export const fetchfilterPost = (type) => api.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
 export const fetchComment = (postId) => api.get(`/community/getComment/${postId}`).then(res => res.data.comments);
-
-
+export const addComment = async (data) => await privateApi.post('/community/addComment', data).then(res => res.data);
+export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
 export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
 export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data.services);
@@ -31,5 +31,11 @@ export const loginUser = async (data) => {
     .then(res => res.data);
 };
 
+
+export const fetchMyProfile = async () =>
+  await privateApi.get("/userprofile/getMyProfile").then(res => res.data);
+
+export const updateMyProfile = async (data) =>
+  await privateApi.put("/userprofile/updateMyProfile", data).then(res => res.data);
 
 

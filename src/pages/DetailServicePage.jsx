@@ -8,6 +8,7 @@ import { fetchDetailService } from '../app/Api.js';
 export default function DetailServicePage() {
 
     const { id } = useParams();
+    
     const { data: services = [] } = useQuery({
         queryKey: ['service', id],
         queryFn: () => fetchDetailService(id),
