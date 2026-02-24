@@ -33,15 +33,25 @@ export const fetchComment = (postId) => api.get(`/community/getComment/${postId}
 export const addComment = async (data) => await privateApi.post('/community/addComment', data).then(res => res.data);
 export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
+export const createBill = (data) =>
+  privateApi.post('/service/createbill', data).then(res => res.data);
+
+export const updateBillStatus = (billId) =>
+  privateApi.push(`/service/${billId}`).then(res => res.data);
+
 export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
 export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
+
+export const fetchBookingDetail = (availabilityId) => privateApi.get(`/booking/detail/${availabilityId}`).then(res => res.data);
+
+
+export const createBooking = async (data) => await privateApi.post('/booking/createbooking', data).then(res => res.data);
+
+
 export const fetchSlots = (id, selectedDate) =>
-  api.get(`/service/getSlotByDate`, {
-    params: {
-      advisorId: id,
-      date: selectedDate
-    }
-  }).then(res => res.data);
+  api.get(`/service/getSlotByDate/${id}/${selectedDate}`)
+     .then(res => res.data);
+
 export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
 
 

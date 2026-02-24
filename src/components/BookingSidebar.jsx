@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSlots } from "../app/Api";
+import { useNavigate } from "react-router-dom";
+export default function BookingSidebar({ serviceID }) {
+const navigate = useNavigate();
+  const today = new Date();
 
-export default function BookingSidebar({ advisorId }) {
+  const formatDate = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
+  // 📌 default today selected
+  const [currentDate, setCurrentDate] = useState(today);
+  const [selectedDate, setSelectedDate] = useState(formatDate(today));
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -18,10 +24,11 @@ export default function BookingSidebar({ advisorId }) {
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  const { data: slots = [], refetch } = useQuery({
-    queryKey: ["slots", advisorId, selectedDate],
-    queryFn: () => fetchSlots(advisorId, selectedDate),
-    enabled: !!selectedDate,
+  // 📌 fetch slots when date + service ready
+  const { data: slots = [] } = useQuery({
+    queryKey: ["slots", serviceID, selectedDate],
+    queryFn: () => fetchSlots(serviceID, selectedDate),
+    enabled: !!serviceID && !!selectedDate,
   });
 
   const handlePrevMonth = () => {
@@ -34,14 +41,11 @@ export default function BookingSidebar({ advisorId }) {
 
   const handleSelectDate = (day) => {
     if (!day) return;
-    const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    setSelectedDate(formattedDate);
+    const newDate = new Date(year, month, day);
+    setSelectedDate(formatDate(newDate));
   };
 
-  const handleBooking = (availabilityId) => {
-    console.log("Booking AvailabilityID:", availabilityId);
-    // ยิง booking API ตรงนี้
-  };
+ 
 
   const monthName = currentDate.toLocaleString("default", { month: "long" });
 
@@ -67,18 +71,22 @@ export default function BookingSidebar({ advisorId }) {
       {/* Calendar Days */}
       <div className="grid grid-cols-7 text-center text-sm gap-1">
         {daysArray.map((day, index) => {
-          const formattedDate = day
-            ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-            : null;
+          if (!day) return <div key={index}></div>;
+
+          const dateObj = new Date(year, month, day);
+          const formattedDate = formatDate(dateObj);
+          const isPast = dateObj < new Date(today.setHours(0,0,0,0));
+          const isToday = formattedDate === formatDate(new Date());
+          const isSelected = selectedDate === formattedDate;
 
           return (
             <div
               key={index}
-              onClick={() => handleSelectDate(day)}
-              className={`py-2 rounded cursor-pointer
-              ${selectedDate === formattedDate
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-gray-100 text-gray-700"}
+              onClick={() => !isPast && handleSelectDate(day)}
+              className={`py-2 rounded
+                ${isPast ? "text-gray-300 cursor-not-allowed" : "cursor-pointer hover:bg-gray-100"}
+                ${isToday ? "border border-blue-400" : ""}
+                ${isSelected ? "bg-blue-600 text-white" : "text-gray-700"}
               `}
             >
               {day}
@@ -97,13 +105,17 @@ export default function BookingSidebar({ advisorId }) {
           <div className="mt-3 grid grid-cols-2 gap-3">
             {slots.length > 0 ? (
               slots.map((slot) => (
+                
                 <button
                   key={slot.AvailabilityID}
-                  onClick={() => handleBooking(slot.AvailabilityID)}
-                  className="border rounded-lg py-2 text-sm hover:bg-gray-100"
+                  onClick={() =>
+    navigate(`/Booking?availabilityId=${slot.AvailabilityID}`)
+  }
+                  className="border rounded-lg p-3 text-sm hover:bg-gray-100"
                 >
                   {slot.StartTime.slice(0, 5)} - {slot.EndTime.slice(0, 5)}
                 </button>
+              
               ))
             ) : (
               <div className="col-span-2 text-gray-400 text-center">

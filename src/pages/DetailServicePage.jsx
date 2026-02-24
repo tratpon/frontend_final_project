@@ -7,25 +7,16 @@ import { fetchDetailService } from '../app/Api.js';
 import BookingSidebar from '../components/BookingSidebar.jsx';
 
 export default function DetailServicePage() {
-    const [selectedDate,setSelectedDate] = useState(null);
     const { id } = useParams();
-    
-    const { data, isLoading } = useQuery({
-    queryKey: ['service', id],
-    queryFn: () => fetchDetailService(id),
-    refetchInterval: 5000,
-});
 
-const service = data?.service?.[0];
-const slots = data?.slots || [];
+    const { data } = useQuery({
+        queryKey: ['service', id],
+        queryFn: () => fetchDetailService(id),
+        refetchInterval: 5000,
+    });
 
-const availableDateSet = new Set(
-  availableDates.map(d =>
-    new Date(d.AvailableDate).toISOString().split('T')[0]
-  )
-);
+    const service = data?.services?.[0];
 
-    
     return (
         <div>
             <NavbarSwitcher />
@@ -49,6 +40,7 @@ const availableDateSet = new Set(
                         </div>
                         <div className="mt-8 leading-relaxed text-gray-800 text-sm">
                             <p>
+                                {service?.Full_Description}
                                 {service?.Full_Description}
                             </p>
                         </div>
@@ -113,10 +105,9 @@ const availableDateSet = new Set(
                             </div>
                         </div>
                     </div>
-
-                    <BookingSidebar/>
+                    <div><BookingSidebar serviceID = {service?.ServiceID} /></div>
+                    
                 </div>
-
             </div>
             <Footer />
         </div>
