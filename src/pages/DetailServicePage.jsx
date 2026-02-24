@@ -4,19 +4,28 @@ import Footer from '../components/Footer.jsx';
 import { useParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { fetchDetailService } from '../app/Api.js';
+import BookingSidebar from '../components/BookingSidebar.jsx';
 
 export default function DetailServicePage() {
-
+    const [selectedDate,setSelectedDate] = useState(null);
     const { id } = useParams();
     
-    const { data: services = [] } = useQuery({
-        queryKey: ['service', id],
-        queryFn: () => fetchDetailService(id),
-        refetchInterval: 5000,
-    });
-    if (services.length > 0) {
-        console.log(services[0]);
-    }
+    const { data, isLoading } = useQuery({
+    queryKey: ['service', id],
+    queryFn: () => fetchDetailService(id),
+    refetchInterval: 5000,
+});
+
+const service = data?.service?.[0];
+const slots = data?.slots || [];
+
+const availableDateSet = new Set(
+  availableDates.map(d =>
+    new Date(d.AvailableDate).toISOString().split('T')[0]
+  )
+);
+
+    
     return (
         <div>
             <NavbarSwitcher />
@@ -40,7 +49,7 @@ export default function DetailServicePage() {
                         </div>
                         <div className="mt-8 leading-relaxed text-gray-800 text-sm">
                             <p>
-                                {services?.[0]?.Full_Description}
+                                {service?.Full_Description}
                             </p>
                         </div>
                         <div className="flex mt-10 mb-10">
@@ -105,49 +114,7 @@ export default function DetailServicePage() {
                         </div>
                     </div>
 
-                    {/* RIGHT SIDEBAR */}
-                    <div>
-                        <div className="border rounded-xl p-6 shadow-sm">
-
-                            {/* Calendar header */}
-                            <div className="flex justify-between items-center mb-4">
-                                <button>{"<"}</button>
-                                <div className="font-medium">December 2021</div>
-                                <button>{">"}</button>
-                            </div>
-
-                            {/* Calendar Grid */}
-                            <div className="grid grid-cols-7 text-center text-sm">
-                                {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
-                                    <div key={d} className="text-gray-500 py-1">{d}</div>
-                                ))}
-
-                                {/* Days (mock layout) */}
-                                {Array(35).fill(0).map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={`py-2 rounded cursor-pointer ${i === 10 ? "bg-blue-600 text-white" : "text-gray-700"
-                                            }`}
-                                    >
-                                        {i > 2 ? i - 2 : ""}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Time Slots */}
-                            <NavLink to="/Booking" className="mt-6 grid grid-cols-2 gap-3">
-                                {["10:00 am", "10:30 am", "11:00 am", "12:00 pm", "12:30 pm"].map((t) => (
-                                    <button
-                                        key={t}
-                                        className="border rounded-lg py-2 text-sm hover:bg-gray-100"
-                                    >
-                                        {t}
-                                    </button>
-                                ))}
-                            </NavLink>
-                        </div>
-                    </div>
-
+                    <BookingSidebar/>
                 </div>
 
             </div>

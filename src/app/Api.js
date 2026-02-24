@@ -5,11 +5,27 @@ import { auth } from "../firebase";
 
 const api = axios.create({ baseURL: 'http://localhost:3001/api' });
 
-export const fetchRooms = () => api.get('/rooms').then(res => res.data.rooms);
-export const createRoom = (data) => api.post('/rooms', data).then(res => res.data);
-export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { participantName: name }).then(res => res.data);
+// export const fetchRooms = () => api.get('/rooms').then(res => res.data.rooms);
+// export const createRoom = (data) => api.post('/rooms', data).then(res => res.data);
+// export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { participantName: name }).then(res => res.data);
 
 
+
+export const joinRoom = async (data) => {
+  const res = await axios.post("/chatroom/join", data);
+  return res.data;
+};
+export const fetchMySessions = async ()=>{
+  const res = await privateApi.get("/chatroom/sessions");
+  return res.data;
+};
+export const fetchRooms = () => api.get('/chatroom').then(res => res.data.rooms);
+
+export const joinFromBooking =
+async(bookID)=>
+await privateApi
+.get(`enter/${bookID}`)
+.then(res=>res.data);
 
 export const fetchTypes = () => api.get('/service').then(res => res.data.types);
 export const fetchfilterPost = (type) => api.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
@@ -18,7 +34,14 @@ export const addComment = async (data) => await privateApi.post('/community/addC
 export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
 export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
-export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data.services);
+export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
+export const fetchSlots = (id, selectedDate) =>
+  api.get(`/service/getSlotByDate`, {
+    params: {
+      advisorId: id,
+      date: selectedDate
+    }
+  }).then(res => res.data);
 export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
 
 
