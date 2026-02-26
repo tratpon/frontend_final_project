@@ -11,14 +11,14 @@ const api = axios.create({ baseURL: 'http://localhost:3001/api' });
 
 
 
-export const joinRoom = async (data) => {
-  const res = await axios.post("/chatroom/join", data);
-  return res.data;
-};
-export const fetchMySessions = async ()=>{
-  const res = await privateApi.get("/chatroom/sessions");
-  return res.data;
-};
+// export const joinRoom = async (data) => {
+//   const res = await axios.post("/chatroom/join", data);
+//   return res.data;
+// };
+// export const fetchMySessions = async ()=>{
+//   const res = await privateApi.get("/chatroom/sessions");
+//   return res.data;
+// };
 export const fetchRooms = () => api.get('/chatroom').then(res => res.data.rooms);
 
 export const joinFromBooking =
@@ -27,14 +27,37 @@ await privateApi
 .get(`enter/${bookID}`)
 .then(res=>res.data);
 
+
+export const fetchMySessions = () =>
+  privateApi.get("session/mysessions")
+            .then(res => res.data);
+
+export const getRoomByBooking = (bookingId) =>
+  privateApi.get(`/session/join/${bookingId}`)
+            .then(res => res.data);
+
+export const joinRoom = (roomId) =>
+  privateApi.post(`/session/joinroom`, { roomId })
+            .then(res => res.data);
+
+export const leaveRoom = (roomId) =>
+  privateApi.post(`/session/leaveRoom`, { roomId })
+            .then(res => res.data);
+
+export const fetchMessages = (roomId) =>
+  privateApi.get(`/session/getmessage/${roomId}`)
+            .then(res => res.data);
+            
+
+
+
 export const fetchTypes = () => api.get('/service').then(res => res.data.types);
 export const fetchfilterPost = (type) => api.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
 export const fetchComment = (postId) => api.get(`/community/getComment/${postId}`).then(res => res.data.comments);
 export const addComment = async (data) => await privateApi.post('/community/addComment', data).then(res => res.data);
 export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
-export const createBill = (data) =>
-  privateApi.post('/service/createbill', data).then(res => res.data);
+export const createBill = (data) => privateApi.post('/booking/createbill', data).then(res => res.data);
 
 export const updateBillStatus = (billId) =>
   privateApi.push(`/service/${billId}`).then(res => res.data);
@@ -47,6 +70,7 @@ export const fetchBookingDetail = (availabilityId) => privateApi.get(`/booking/d
 
 export const createBooking = async (data) => await privateApi.post('/booking/createbooking', data).then(res => res.data);
 
+export const fetchBookingsByUser = () => privateApi.get('/booking/fetchBookingsByUser').then(res => res.data);
 
 export const fetchSlots = (id, selectedDate) =>
   api.get(`/service/getSlotByDate/${id}/${selectedDate}`)

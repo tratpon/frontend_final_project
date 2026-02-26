@@ -1,14 +1,17 @@
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import Footer from "../../components/Footer";
-import { fetchMyProfile, createBooking, fetchBookingDetail,createBill } from "../../app/Api";
+import { fetchMyProfile, createBooking, fetchBookingDetail, createBill } from "../../app/Api";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Booking() {
     const [searchParams] = useSearchParams();
     const availabilityId = searchParams.get("availabilityId");
     const [bill, setBill] = useState(null);
+    console.log(bill)
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         Fname: "",
         Lname: "",
@@ -51,33 +54,32 @@ export default function Booking() {
     };
 
     const handleSubmit = async () => {
-    try {
+        try {
 
-        // 1️⃣ สร้าง Booking ก่อน
-        const booking = await createBooking({
-            availabilityId: availabilityId
-        });
+            // 1️⃣ สร้าง Booking ก่อน
+            const booking = await createBooking({
+                availabilityId: availabilityId
+            });
 
-        const bookId = booking.BookID;
+            const bookId = booking.BookID;
+
+            const newBill = await createBill({
+                bookId: bookId,
+                amount: detail.price
+            });
+            // 2️⃣ เอาราคา service มาสร้าง bill
 
 
-        // 2️⃣ เอาราคา service มาสร้าง bill
-        const newBill = await createBill({
-            bookId: bookId,
-            amount: detail.price
-        });
+            // 3️⃣ เก็บ QR ลง state
+            setBill(newBill);
 
-        // 3️⃣ เก็บ QR ลง state
-        setBill(newBill);
+            alert("Booking Success");
+        } catch (err) {
 
-        alert("Booking Success");
+            alert("Booking Failed");
 
-    } catch (err) {
-
-        alert("Booking Failed");
-
-    }
-};
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -162,7 +164,7 @@ export default function Booking() {
                                 <p>
                                     {detail?.AvailableDate}{" "}
                                     {detail?.StartTime?.slice(0, 5)}
-                                     - 
+                                    -
                                     {detail?.EndTime?.slice(0, 5)}
                                 </p>
                             </div>
@@ -176,8 +178,8 @@ export default function Booking() {
                             </div>
                         </div>
                         {bill && (
-    <img src={bill.QRCode} alt="PromptPay QR" />
-)}
+                            <img src={bill.QRCode} alt="PromptPay QR" />
+                        )}
                     </div>
 
                 </div>

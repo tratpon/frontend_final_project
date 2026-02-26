@@ -30,6 +30,8 @@ import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
 
 import RequireAuth from "./RequireAuth.jsx";
 
+
+import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
     return (
         <Routes>
@@ -43,7 +45,7 @@ export default function AppRouter() {
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            
+            <Route path="/session" element={<SessionRoom />} />
 
 
             <Route path="/notfound" element={<NotFound />} />

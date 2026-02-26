@@ -66,7 +66,7 @@ const NavbarLoin = () => {
                                 Profile
                             </Link>
 
-                            <Link to="/chat" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/session" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 Chat
                             </Link>
 
@@ -78,8 +78,6 @@ const NavbarLoin = () => {
                             <button onClick={handleLogOut} className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
                                 Logout
                             </button>
-
-
                         </div>
                     )}
                 </div>
