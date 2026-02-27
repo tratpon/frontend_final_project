@@ -4,7 +4,7 @@ import { ROLES } from "../app/roles";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(ROLES.USER);
+    const [user, setUser] = useState(ROLES.ADVISOR);
     
     useEffect(()=>{
         console.log(user)
@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
         <AuthContext.Provider value={{user, setUser}}>
             {children}
         </AuthContext.Provider>
-    )
+    )   
 }
 
 export const useAuth = () => useContext(AuthContext);
