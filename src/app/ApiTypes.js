@@ -13,7 +13,7 @@ export const privateApi = axios.create({
 privateApi.interceptors.request.use(
   async (config) => {
     const user = auth.currentUser;
-
+    console.log("from api token user",user)
     if (!user) {
       return Promise.reject("No user login");
     }

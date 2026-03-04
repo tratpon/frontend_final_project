@@ -4,7 +4,8 @@ import { ROLES } from "./roles";
 
 export default function RequireAuth() {
     const { user} = useAuth();
-    if (!user) return <Navigate to="/login" replace />;
+     
+    if ( !user ) return <Navigate to="/login" replace />;
     switch (user) {
         case ROLES.USER:
             return <Navigate to="/main" replace />;
@@ -16,3 +17,4 @@ export default function RequireAuth() {
             return <Navigate to="/notfound" replace />;
     }
 }
+

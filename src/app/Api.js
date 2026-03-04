@@ -5,20 +5,7 @@ import { auth } from "../firebase";
 
 const api = axios.create({ baseURL: 'http://localhost:3001/api' });
 
-// export const fetchRooms = () => api.get('/rooms').then(res => res.data.rooms);
-// export const createRoom = (data) => api.post('/rooms', data).then(res => res.data);
-// export const joinRoom = (roomId, name) => api.post(`/rooms/${roomId}/join`, { participantName: name }).then(res => res.data);
 
-
-
-// export const joinRoom = async (data) => {
-//   const res = await axios.post("/chatroom/join", data);
-//   return res.data;
-// };
-// export const fetchMySessions = async ()=>{
-//   const res = await privateApi.get("/chatroom/sessions");
-//   return res.data;
-// };
 export const fetchRooms = () => api.get('/chatroom').then(res => res.data.rooms);
 
 export const joinFromBooking =
@@ -27,27 +14,20 @@ await privateApi
 .get(`enter/${bookID}`)
 .then(res=>res.data);
 
-
-export const fetchMySessions = () =>
-  privateApi.get("session/mysessions")
-            .then(res => res.data);
-
-export const getRoomByBooking = (bookingId) =>
-  privateApi.get(`/session/join/${bookingId}`)
-            .then(res => res.data);
-
-export const joinRoom = (roomId) =>
-  privateApi.post(`/session/joinroom`, { roomId })
-            .then(res => res.data);
-
-export const leaveRoom = (roomId) =>
-  privateApi.post(`/session/leaveRoom`, { roomId })
-            .then(res => res.data);
-
-export const fetchMessages = (roomId) =>
-  privateApi.get(`/session/getmessage/${roomId}`)
-            .then(res => res.data);
+// SessionRoom //
+export const fetchMySessions = () => privateApi.get("session/mysessions").then(res => res.data);
+export const fetchMySessionsAdvisor= () => privateApi.get("session/mysessionsadvisor").then(res => res.data);
+export const getRoomByBookingAdvisor = (bookingId) => privateApi.get(`/session/joinforadvisor/${bookingId}`).then(res => res.data);
+export const getRoomByBooking = (bookingId) => privateApi.get(`/session/join/${bookingId}`).then(res => res.data);
+export const joinRoom = (roomId) => privateApi.post(`/session/joinroom`, { roomId }).then(res => res.data);
+export const leaveRoom = (roomId) => privateApi.post(`/session/leaveRoom`, { roomId }).then(res => res.data);
+export const fetchMessages = (roomId) =>privateApi.get(`/session/getmessage/${roomId}`).then(res => res.data);
             
+
+export const fetchServiceByAdvisor= () => privateApi.get('/mangeservice/getAllServiceAdvisor').then(res => res.data);
+export const fetchAvailability = () =>privateApi.get('/mangeservice/getAvailability').then(res => res.data);
+export const createAvailability = (data) =>privateApi.post('/mangeservice/createAvailability', data).then(res => res.data);
+export const deleteAvailability = (id) => privateApi.post(`/mangeservice/deleteAvailability/${id}`).then(res => res.data);
 
 
 
@@ -72,6 +52,14 @@ export const createBooking = async (data) => await privateApi.post('/booking/cre
 
 export const fetchBookingsByUser = () => privateApi.get('/booking/fetchBookingsByUser').then(res => res.data);
 
+export const fetchBookingsByAdvisor = () => privateApi.get('/booking/fetchBookingsByAdvisor').then(res => res.data);
+
+export const mangeBooking = (data) =>
+  privateApi.post('/booking/mangeBooking', data )
+    .then(res => res.data);
+    
+export const updateBookingStatus = (data) => privateApi.put("/booking/updateStatus", data).then((res) => res.data);
+
 export const fetchSlots = (id, selectedDate) =>
   api.get(`/service/getSlotByDate/${id}/${selectedDate}`)
      .then(res => res.data);
@@ -82,7 +70,7 @@ export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillte
 export const registerUser = async (data) => await  privateApi.post('/auth/register', data).then(res => res.data);
 
 
-export const loginUser = async (data) => {
+export const loginRole= async (data) => {
   await signInWithEmailAndPassword(auth, data.email, data.password);
   return await privateApi.post('/auth/login')
     .then(res => res.data);
@@ -92,7 +80,13 @@ export const loginUser = async (data) => {
 export const fetchMyProfile = async () =>
   await privateApi.get("/userprofile/getMyProfile").then(res => res.data);
 
+export const fetchMyAdvisorProfile = async () =>
+  await privateApi.get("/userprofile/getMyAdvisorProfile").then(res => res.data);
+
 export const updateMyProfile = async (data) =>
   await privateApi.put("/userprofile/updateMyProfile", data).then(res => res.data);
 
+
+export const fetchDetailAdvisor = async () =>
+  await privateApi.get("/userprofile/getdetailadvisor").then(res => res.data);
 

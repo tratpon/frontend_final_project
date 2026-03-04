@@ -29,6 +29,7 @@ import AdvisorTimeManegemet from "../pages/advisor/AdvisortimeManegement.jsx";
 import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
 
 import RequireAuth from "./RequireAuth.jsx";
+import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
 
 
 import SessionRoom from "../pages/SessionRoomPage.jsx";
@@ -47,15 +48,13 @@ export default function AppRouter() {
             
             <Route path="/session" element={<SessionRoom />} />
 
-
             <Route path="/notfound" element={<NotFound />} />
 
-
+            <Route path="/community" element={<Community />} />
 
             {/* USER */}
             
             <Route element={<RequireRole allow={[ROLES.USER]} />}>
-                <Route path="/community" element={<Community />} />
                 <Route path="/history" element={<Hisrory />} />
                 <Route path="/Booking" element={<Booking />} />
                 <Route path="/enrollment" element={<Enrollment />} />
@@ -70,7 +69,8 @@ export default function AppRouter() {
                 <Route path="/Advisor/ServiceList" element={<AdvisorServiceList />} />
                 <Route path="/Advisor/ManegeService" element={<ManegeSevice />} />
                 <Route path="/Advisor/TimeManegemet" element={<AdvisorTimeManegemet />} />
-                
+                <Route path="/Advisor/ManageBooking" element={<AdvisorManageBooking/>}/>
+               
             </Route>
            
 

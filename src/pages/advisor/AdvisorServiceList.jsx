@@ -1,15 +1,36 @@
-import EditCard from "../../components/advisor/EditCard";
 import NavbarAdvisor from "../../components/NavbarAdvisor";
-import { Navigate, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchServiceByAdvisor } from "../../app/Api";
+import { Link } from "react-router-dom";
+import DetailAdvisor from "../../components/advisor/DetailAdvisor";
 
 export default function AdvisorServiceList() {
-     const Navigate = useNavigate()
+    const Navigate = useNavigate()
     function test() {
-        
         Navigate("/")
     }
-    
+
+    const { data } = useQuery({
+        queryKey: ["services"],
+        queryFn: fetchServiceByAdvisor,
+    })
+
+    const services = data?.services ?? [];
+    console.log(services)
+
+
+    const handleEdit = () => {
+        Navigate("/Advisor/ManegeService")
+    }
+
+    const handleDelete = (id) => {
+        const confirmDelete = window.confirm("คุณต้องการลบหรือไม่?");
+        if (!confirmDelete) return;
+
+    };
+
+
     return (
         <div className="min-h-screen bg-gray-50">
             <NavbarAdvisor />
@@ -20,76 +41,47 @@ export default function AdvisorServiceList() {
             <div className="max-w-8xl mx-auto px-6 -mt-32">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 ">
 
-                    {/* LEFT COLUMN: Profile */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            {/* Profile Image */}
-                            <div className="w-full h-48 bg-gray-200 rounded-md flex justify-center items-center mb-5">
-                                <div className="w-24 h-24 bg-gray-300 rounded-md"></div>
-                            </div>
+                    <DetailAdvisor/>
 
-                            {/* Profile Info */}
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                                <div>
-                                    <h3 className="font-semibold text-lg">Jane Doe</h3>
-                                    <p className="text-sm text-gray-600">Senior Designer</p>
+                    <div className="lg:col-span-3 mt-40">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {services?.map((service) => (
+                                <div key={service.id} className="flex flex-col border p-4 rounded bg-gray-50 h-full">
+                                    <Link to={`/detail/${service.ServiceID}`} className="flex flex-col grow">
+                                        <div className="w-full h-40 bg-gray-200 rounded mb-4"></div>
+                                        <div className="flex grow items-center gap-3 mb-3">
+                                            <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+                                            <div>
+                                                <h3 className="font-medium">{service.ServiceName}</h3>
+                                                <p className="text-sm text-gray-500">{service.ServiceName}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-gray-600">{service.Front_Description}</p>
+                                        <p className="text-xs text-gray-400 text-right mt-4">⏱ {service.Duration}</p>
+                                        <p className="text-xs text-gray-400 text-right mt-4">💰 {service.price} บาท</p>
+                                    </Link>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-3 mt-5">
+                                        <button onClick={() => handleEdit(service.id)} className="flex-1  bg-gray-100 py-2 rounded-lg hover:bg-gray-200 transition">
+                                            Edit
+                                        </button>
+                                        <button onClick={() => handleDelete(service.id)} className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                            <Link to="/Advisor/ManegeService" className="bg-white border rounded-lg p-4">
+                                <div className="flex items-center justify-center w-full h-full bg-gray-200 rounded mb-4">
+                                    <span className="text-3xl text-gray-400 group-hover:text-blue-500 font-light">+</span>
                                 </div>
 
-                            </div>
-                            <button type="button" className="bg-red-600 rounded-2xl px-2" onClick={test}> EDIT </button>
-
-                            {/* Stars */}
-                            <div className="text-yellow-500 mb-5">
-                                {"★★★★★"}
-                            </div>
-
-                            {/* Sections */}
-                            <div className="text-sm text-gray-700 leading-relaxed">
-
-                                <p className="font-semibold mt-2">ประวัติส่วนตัว</p>
-                                <ul className="list-disc ml-5 mt-1">
-                                    <li>ชื่อ-นามสกุล : นพ./พญ._________</li>
-                                    <li>ชื่อเล่น : _________</li>
-                                    <li>เบอร์โทรศัพท์ : _________</li>
-                                </ul>
-
-                                <p className="font-semibold mt-4">ประวัติการศึกษา</p>
-                                <ul className="list-disc ml-5 mt-1">
-                                    <li>คณะแพทยศาสตร์ มหาวิทยาลัย_____</li>
-                                    <li>วุฒิบัตรผู้เชี่ยวชาญสาขา________</li>
-                                    <li>โรงพยาบาล ________</li>
-                                </ul>
-
-                                <p className="font-semibold mt-4">ประสบการณ์การทำงาน</p>
-                                <ul className="list-disc ml-5 mt-1">
-                                    <li>โรงพยาบาล ________</li>
-                                    <li>ดูแลผู้ป่วยด้านสุขภาพจิต</li>
-                                    <li>คลินิกสุขภาพจิต</li>
-                                </ul>
-
-                                <p className="font-semibold mt-4">ทักษะด้านการบำบัด</p>
-                                <ul className="list-disc ml-5 mt-1">
-                                    <li>การให้คำปรึกษาทางจิตใจ</li>
-                                    <li>การทำจิตบำบัด (Psychotherapy)</li>
-                                </ul>
-
-                                <p className="font-semibold mt-4">ภาษา</p>
-                                <ul className="list-disc ml-5 mt-1">
-                                    <li>ไทย – ระดับดีมาก</li>
-                                    <li>อังกฤษ – ระดับดี</li>
-                                </ul>
-                            </div>
+                            </Link>
                         </div>
-                    </div>
 
-                    {/* RIGHT COLUMN: Services */}
-                    <div className="lg:col-span-3 mt-40">
-                        <EditCard />
-                        
-                    </div>
 
-                   
+                    </div>
 
                 </div>
             </div>

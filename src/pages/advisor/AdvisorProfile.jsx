@@ -1,6 +1,9 @@
+import { useState, useEffect } from "react";
 import NavbarAdvisor from "../../components/NavbarAdvisor";
 import Footer from "../../components/Footer";
-import React from "react";
+import { fetchMyAdvisorProfile, updateMyProfile } from "../../app/Api";
+import { useQuery, useMutation } from "@tanstack/react-query";
+
 
 const StatCard = ({ icon, label, value }) => (
     <div className="flex items-center gap-4 border rounded-2xl p-6 w-full bg-white">
@@ -28,35 +31,116 @@ const ServiceCard = () => (
     </div>
 );
 
+
 export default function AdvisorProfile() {
+
+    const [form, setForm] = useState({
+        Username: "",
+        Fadvisor: "",
+        Ladvisor: "",
+        Gender: "",
+        Age: "",
+        Email: "",
+        Phone: ""
+    });
+
+    const [editMode, setEditMode] = useState(false);
+
+    // 🔵 FETCH
+    const { data } = useQuery({
+        queryKey: ["myProfile"],
+        queryFn: fetchMyAdvisorProfile
+    });
+
+    useEffect(() => {
+        if (data) {
+            setForm(data.data || data); // รองรับกรณี backend ส่ง {role, data}
+        }
+    }, [data]);
+
+    // 🟡 MUTATION
+    const updateMutation = useMutation({
+        mutationFn: updateMyProfile,
+        onSuccess: () => {
+            alert("Updated!");
+            setEditMode(false);
+        },
+        onError: (err) => {
+            alert(err.response?.data?.message || err.message);
+        }
+    });
+
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = () => {
+
+        if (!editMode) {
+            setEditMode(true);
+            return;
+        }
+
+        updateMutation.mutate(form);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <NavbarAdvisor />
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 pt-5">
 
-                {/* Profile Form */}
-                <div className="lg:col-span-2 bg-white border rounded-2xl p-8">
+            <div className="flex grap max-w-4xl mx-auto pt-10">
+
+                <div className="bg-white border rounded-2xl p-8">
+
                     <div className="flex justify-center mb-6">
                         <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-3xl">
                             👤
                         </div>
                     </div>
 
-                    <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Input label="user name" />
-                        <div className="md:col-span-2" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        <Input label="first name" />
-                        <Input label="last name" />
+                        <Field label="Username" name="Username" value={form.Username} disabled />
+                        <div></div>
 
-                        <Input label="gender" />
-                        <Input label="age" />
+                        <Field label="First Name" name="Fname" value={form.Fadvisor} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="Last Name" name="Lname" value={form.Ladvisor} onChange={handleChange} disabled={!editMode}/>
 
-                        <Input label="phone" />
-                        <Input label="e-mail" />
-                    </form>
+                        <Field label="Gender" name="Gender" value={form.Gender} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode}/>
+
+                        <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="Email" name="Email" value={form.Email} disabled />
+
+                    </div>
+
+                    <div className="flex justify-end mt-6 gap-4">
+                        {editMode && (
+                            <button
+                                onClick={() => {
+                                    setForm(data.data || data);
+                                    setEditMode(false);
+                                }}
+                                className="bg-gray-400 text-white px-6 py-2 rounded-full"
+                            >
+                                Cancel
+                            </button>
+                        )}
+
+                        <button
+                            onClick={handleSubmit}
+                            className={`px-8 py-2 rounded-full text-white
+                                ${editMode ? "bg-blue-600" : "bg-green-600"}`}
+                        >
+                            {editMode ? "Submit" : "Edit"}
+                        </button>
+                    </div>
+                    
+
                 </div>
-
                 {/* Stats + Top Service */}
                 <div className="space-y-6">
                     <StatCard
@@ -78,21 +162,26 @@ export default function AdvisorProfile() {
                         </div>
                     </div>
                 </div>
+                
             </div>
-        
+            
+
+            <Footer />
         </div>
     );
 }
 
-const Input = ({ label }) => (
-    <div>
-        <label className="block text-sm text-gray-600 mb-1">
-            {label}
-        </label>
-        <input
-            type="text"
-            placeholder="Placeholder"
-            className="w-full rounded-lg bg-gray-100 px-4 py-2 outline-none focus:ring-2 focus:ring-black"
-        />
-    </div>
-);
+function Field({ label, name, value, onChange, disabled }) {
+    return (
+        <div>
+            <label className="block text-sm mb-1">{label}</label>
+            <input
+                name={name}
+                value={value || ""}
+                onChange={onChange}
+                disabled={disabled}
+                className="w-full bg-gray-100 px-4 py-2 rounded border"
+            />
+        </div>
+    );
+}

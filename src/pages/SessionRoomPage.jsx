@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, Video } from "lucide-react";
 import NavbarSwitcher from "../app/NavbarSwitcht";
 import { useQuery } from "@tanstack/react-query";
-import { getRoomByBooking, fetchMessages } from "../app/Api";
+import { getRoomByBooking, fetchMessages, getRoomByBookingAdvisor } from "../app/Api";
 import SessionList from "../components/SessionList";
 import { useSearchParams } from "react-router-dom";
 import { createSocket } from "../app/socket";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 import { useVideo } from "../contexts/VideoContext";
 
 export default function SessionRoom() {
@@ -24,11 +24,16 @@ export default function SessionRoom() {
 
     // ---------------- GET ROOM ----------------
     const { data: roomInfo } = useQuery({
-        queryKey: ["roomByBooking", BookingID],
-        queryFn: () => getRoomByBooking(BookingID),
-        enabled: !!BookingID,
+        queryKey: ["roomByBooking", BookingID, user],
+        queryFn: () =>
+            user === "user"
+                ? getRoomByBooking(BookingID)
+                : getRoomByBookingAdvisor(BookingID),
+        enabled: !!BookingID && !!user,
         refetchOnWindowFocus: false
     });
+
+    console.log("from froned sessionroom", roomInfo?.[0])
 
     const myRole = user;
 
@@ -51,9 +56,10 @@ export default function SessionRoom() {
     });
 
     useEffect(() => {
-        setMessages(oldMessages);
+        if (oldMessages.length > 0) {
+            setMessages(oldMessages);
+        }
     }, [oldMessages]);
-
     // ---------------- SOCKET ----------------
     useEffect(() => {
         if (!roomInfo?.RoomID || !myId) return;
@@ -132,19 +138,22 @@ export default function SessionRoom() {
                     {/* HEADER */}
                     <div className="flex items-center justify-between bg-gray-300 px-6 py-4">
                         <div>
-                            <p className="font-semibold">{roomInfo?.AdvisorName}</p>
+                            {user === "user" 
+                                ? <p className="font-semibold">{roomInfo?.AdvisorName}</p> 
+                                : <p className="font-semibold">{roomInfo?.UserName}</p>
+                            }
+
                             <p className="text-sm text-gray-500">{roomInfo?.ServiceName}</p>
                         </div>
 
                         <Video
-                            className={`${
-                                roomInfo?.RoomStatus === "active"
-                                    ? "cursor-pointer hover:text-blue-600"
-                                    : "text-gray-400 cursor-not-allowed"
-                            }`}
+                            className={`${roomInfo?.RoomStatus === "active"
+                                ? "cursor-pointer hover:text-blue-600"
+                                : "text-gray-400 cursor-not-allowed"
+                                }`}
                             onClick={() => {
                                 if (roomInfo?.RoomStatus !== "active") return;
-                                startCall("ewewewewewee", myUserName);
+                                startCall(roomInfo.RoomURL, myUserName);
                             }}
                         />
                     </div>
@@ -159,16 +168,14 @@ export default function SessionRoom() {
                             return (
                                 <div
                                     key={i}
-                                    className={`flex ${
-                                        isMine ? "justify-end" : "justify-start"
-                                    }`}
+                                    className={`flex ${isMine ? "justify-end" : "justify-start"
+                                        }`}
                                 >
                                     <div
-                                        className={`p-3 rounded-xl border max-w-xs text-sm ${
-                                            isMine
-                                                ? "bg-blue-500 text-white border-blue-500"
-                                                : "bg-white text-gray-800"
-                                        }`}
+                                        className={`p-3 rounded-xl border max-w-xs text-sm ${isMine
+                                            ? "bg-blue-500 text-white border-blue-500"
+                                            : "bg-white text-gray-800"
+                                            }`}
                                     >
                                         {msg.MessageText}
                                     </div>

@@ -6,7 +6,7 @@ const NavbarAdvisor = () => {
 
     const menuRef = useRef();
     const navigate = useNavigate();
-    const {setUser} = useAuth();
+    const { setUser } = useAuth();
     const handleLogOut = () => {
         setUser();
         navigate("/");
@@ -57,15 +57,20 @@ const NavbarAdvisor = () => {
                                 Profile
                             </Link>
 
-                            <Link to="/notfound" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/session" className="w-full block px-4 py-2  hover:bg-gray-100">
                                 Chat
                             </Link>
-
-                            <Link to="/advisor/ServiceList" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/advisor/TimeManegemet" className="w-full block px-4 py-2 hover:bg-gray-100">
+                                ManegeTime
+                            </Link>
+                            <Link to="/advisor/ServiceList" className="w-full block px-4 py-2 hover:bg-gray-100">
                                 Service
                             </Link>
+                            <Link to="/advisor/ManageBooking" className="w-full block px-4 py-2 hover:bg-gray-100">
+                                ManageBooking
+                            </Link>
 
-                            <Link to="/history" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
+                            <Link to="/history" className="w-full block px-4 py-2 hover:bg-gray-100">
                                 Hisrory
                             </Link>
 

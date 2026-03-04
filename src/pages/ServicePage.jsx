@@ -30,6 +30,8 @@ export default function ServicePage() {
   });
 
   console.log(services, type, keyword)
+
+  
  
 
   return (

@@ -1,8 +1,8 @@
-import { useQuery, useMutation ,useQueryClient  } from "@tanstack/react-query";
-import { fetchMySessions, joinRoom, leaveRoom } from "../app/Api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchMySessions, joinRoom, leaveRoom ,fetchMySessionsAdvisor} from "../app/Api";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 
 
 
@@ -13,24 +13,52 @@ export default function SessionList() {
     const { user } = useAuth();
 
     const { data: sessions = [] } = useQuery({
-        queryKey: ["mySessions"],
-        queryFn: fetchMySessions,
-    });
-    console.log(sessions, selectedRoom)
+    queryKey: ["mySessions", user],
+    queryFn: user === "user" 
+        ? fetchMySessions 
+        : fetchMySessionsAdvisor,
+    staleTime: 1000 * 60 * 7,
+    refetchOnWindowFocus: false,
+});
 
     const joinMutation = useMutation({
         mutationFn: joinRoom,
         onSuccess: () => {
-        queryClient.invalidateQueries(["mySessions"]);
-    }
+            queryClient.invalidateQueries(["mySessions"]);
+        }
     });
 
     const leaveMutation = useMutation({
         mutationFn: leaveRoom,
         onSuccess: () => {
-        queryClient.invalidateQueries(["mySessions"]);
-    }
+            queryClient.invalidateQueries(["mySessions"]);
+        }
     });
+    //     const joinMutation = useMutation({
+    //   mutationFn: joinRoom,
+    //   onSuccess: (data, roomId) => {
+    //     queryClient.setQueryData(["mySessions"], (old = []) =>
+    //       old.map(session =>
+    //         session.RoomID === roomId
+    //           ? { ...session, RoomStatus: "active" }
+    //           : session
+    //       )
+    //     );
+    //   }
+    // });
+    // const leaveMutation = useMutation({
+    //   mutationFn: leaveRoom,
+    //   onSuccess: (data, roomId) => {
+    //     queryClient.setQueryData(["mySessions"], (old = []) =>
+    //       old.map(session =>
+    //         session.RoomID === roomId
+    //           ? { ...session, RoomStatus: "completed" }
+    //           : session
+    //       )
+    //     );
+    //   }
+    // });
+
 
     const handleStartRoom = (roomId) => {
         if (!confirm("Do you want to start this room?")) return;
@@ -41,13 +69,14 @@ export default function SessionList() {
         if (!confirm("Do you want to end this room?")) return;
         leaveMutation.mutate(roomId);
     };
-    console.log(sessions)
+    console.log("from list sessions", sessions?.[0]);
     return (
         <>
             {sessions.map(session => {
                 const now = new Date();
                 const start = new Date(session.StartTime);
                 const end = new Date(session.EndTime);
+              
 
                 let status = "completed";
                 if (now < start) status = "waiting";
@@ -64,11 +93,14 @@ export default function SessionList() {
                         <div className="flex py-2">
                             <div>
                                 <p className="font-semibold">{session.ServiceName}</p>
-                                <p className="text-sm text-gray-500">
-                                    Advisor: {session.AdvisorName}
-                                </p>
+                                { user === "user"
+                                    ?<p className="text-sm text-gray-500"> Advisor: {session.AdvisorName}</p>
+                                    :<p className="text-sm text-gray-500"> Username: {session.UserName}</p>
+
+                                }
+                                
                                 <p className="text-xs text-gray-400">
-                                    {new Date(session.StartTime).toLocaleString()}
+                                    {new Date(session.StartTime).toLocaleString("th-TH")}
                                 </p>
                             </div>
 
@@ -79,14 +111,14 @@ export default function SessionList() {
                                 {session.RoomStatus === "completed" && "🔒 หมดเวลา"}
                             </p>
                         </div>
-                        
-                        {user === "advisor" && session.RoomStatus === "completed" && (
+
+                        {user === "advisor" && session.RoomStatus === "completed" &&  (
                             <p className=" gap-4 bg-gray-400 rounded-full px-6 py-3 text-white text-center font-semibold w-full">
                                 completed
                             </p>
                         )}
 
-                        {user === "advisor" && session.RoomStatus === "waiting" && (
+                        {user === "advisor" && session.RoomStatus === "waiting" && (now + 15 * 60 * 1000) < start && (
                             <div className="flex items-center gap-4 bg-green-500 rounded-full px-6 py-3">
                                 <button
                                     onClick={(e) => {

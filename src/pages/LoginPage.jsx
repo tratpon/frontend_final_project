@@ -1,11 +1,11 @@
 import Footer from '../components/Footer.jsx';
-import { useAuth } from '../contexts/authContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import { ROLES } from '../app/roles.js';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useNavigate } from "react-router-dom";
 import { useMutation } from '@tanstack/react-query';
 import { useState } from "react";
-import { loginUser } from '../app/Api.js';
+import { loginRole } from '../app/Api.js';
 
 export default function Login() {
   const { setUser } = useAuth();
@@ -15,10 +15,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const loginMutation = useMutation({
-    mutationFn: loginUser,
+    mutationFn: loginRole,
     onSuccess: (data) => {
       if(data.role==ROLES.USER){
         setUser(ROLES.USER);
+        navigate("/");
+      }else{
+        setUser(ROLES.ADVISOR);
         navigate("/");
       }
       console.log(data.role)
