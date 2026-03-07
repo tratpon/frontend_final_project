@@ -90,3 +90,38 @@ export const updateMyProfile = async (data) =>
 export const fetchDetailAdvisor = async () =>
   await privateApi.get("/userprofile/getdetailadvisor").then(res => res.data);
 
+
+
+
+
+
+
+export const addSkill = (data) =>
+  privateApi.post("/userprofile/addskilladvisor", data).then(res => res.data);
+
+export const updateSkill = ({id, description}) =>
+  privateApi.put(`/userprofile/updateskilladvisor/${id}`, {description}).then(res => res.data);
+
+export const deleteSkill = (id) =>
+  privateApi.delete(`/userprofile/deletskilladvisor/${id}`).then(res => res.data);
+
+// Education
+export const addEducation = (data) =>
+  privateApi.post("/userprofile/addEducationAdvisor", data).then(res => res.data);
+
+export const updateEducation = (data) =>
+  privateApi.put(`/userprofile/updateEducationAdvisor/${data.id}`, data).then(res => res.data);
+
+export const deleteEducation = (id) =>
+  privateApi.delete(`/userprofile/deleteEducationAdvisor/${id}`).then(res => res.data);
+
+// Experience
+export const addExperience = (data) =>
+  privateApi.post("/userprofile/addExperienceAdvisor", data).then(res => res.data);
+
+export const updateExperience = (data) =>
+  privateApi.put(`/userprofile/updateExperienceAdvisor/${data.id}`, data).then(res => res.data);
+
+export const deleteExperience = (id) =>
+  privateApi.delete(`/userprofile/deleteExperienceAdvisor/${id}`).then(res => res.data);
+
