@@ -105,6 +105,8 @@ export const updateSkill = ({id, description}) =>
 export const deleteSkill = (id) =>
   privateApi.delete(`/userprofile/deletskilladvisor/${id}`).then(res => res.data);
 
+export const updatebio = ({bio}) =>
+  privateApi.put("/userprofile/updatebio", {bio}).then(res => res.data);
 // Education
 export const addEducation = (data) =>
   privateApi.post("/userprofile/addEducationAdvisor", data).then(res => res.data);
@@ -125,3 +127,44 @@ export const updateExperience = (data) =>
 export const deleteExperience = (id) =>
   privateApi.delete(`/userprofile/deleteExperienceAdvisor/${id}`).then(res => res.data);
 
+
+
+export const adminlogin= async (data) => {
+  await signInWithEmailAndPassword(auth, data.email, data.password);
+  return await privateApi.post('/admin/adminlogin')
+    .then(res => res.data);
+};
+
+
+export const fetchPostAdmin = (type) =>
+  privateApi.get(`/admin/getpostadmin?Type=${type}`).then(res => res.data);
+
+
+export const updatepoststatus = (data) =>
+  privateApi.put(`/admin/updatepoststatus`,data).then(res => res.data);
+
+
+export const fetchtopics = () =>
+  privateApi.get(`/review/getTopics`).then(res => res.data);
+
+
+export const createreview = (data) =>
+  privateApi.post(`/review/createReview`,data).then(res => res.data);
+
+export const fetchservicerating = (id) =>
+  api.get(`/review/getServiceRating/${id}`).then(res => res.data);
+
+export const fetchadvisorrating = () =>
+  privateApi.get(`/review/getAdvisorRating`).then(res => res.data);
+
+
+export const fetchAllServiceAdvisorByID = (id) =>
+  api.get(`/service/getAllServiceAdvisorByID/${id}`).then(res => res.data);
+
+export const fetchDetailAdvisorByID = (id) =>
+  api.get(`/service/getDetailAdvisorByID/${id}`).then(res => res.data);
+
+
+
+export const uploadImageMyProfile = async ({imageUserUrl}) =>
+  await privateApi.put("/userprofile/uploadImageMyProfile",{imageUserUrl}).then(res => res.data);

@@ -2,8 +2,12 @@ import Footer from "../../components/Footer";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBookingsByUser } from "../../app/Api";
+import { useState } from "react";
+import ReviewModal from "./ReviewPage";
 
 export default function History() {
+
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const { data: bookings = [], isLoading, error } = useQuery({
     queryKey: ["myBookings"],
@@ -16,53 +20,32 @@ export default function History() {
 
       <NavbarSwitcher />
 
-      {/* TITLE */}
       <h1 className="text-4xl font-bold text-center mt-12 mb-8">
         History
       </h1>
 
-      {/* SEARCH */}
-      <div className="flex justify-center mb-5">
-        <div className="flex w-3/4 lg:w-5xl bg-white border rounded shadow-sm">
-          <div className="flex items-center px-3 text-gray-400">
-            🔍
-          </div>
-          <input
-            className="flex-1 py-3 px-2 outline-none"
-            placeholder="Search for..."
-          />
-          <button className="px-6 bg-blue-600 text-white hover:bg-blue-700">
-            Search
-          </button>
-        </div>
-      </div>
-
-      {/* LOADING */}
       {isLoading && (
         <div className="text-center mt-10">Loading...</div>
       )}
 
-      {/* ERROR */}
       {error && (
         <div className="text-center text-red-500 mt-10">
           Failed to load bookings
         </div>
       )}
 
-      {/* EMPTY STATE */}
       {!isLoading && bookings.length === 0 && (
         <div className="text-center mt-10 text-gray-500">
           No booking history found.
         </div>
       )}
 
-      {/* HISTORY LIST */}
       <div className="flex flex-col grow gap-3 max-w-5xl mx-auto w-full px-4 mb-10">
 
         {bookings.map((booking) => (
 
           <div
-            key={booking.BookingID}
+            key={booking.BookID}
             className="bg-gray-100 rounded-xl flex items-center p-6"
           >
 
@@ -90,7 +73,8 @@ export default function History() {
             </div>
 
             {/* STATUS */}
-            <div className="text-right min-w-[120px]">
+            <div className="text-right min-w-[150px]">
+
               <p className="font-semibold text-lg capitalize">
                 {booking.Status}
               </p>
@@ -98,12 +82,32 @@ export default function History() {
               <p className="font-bold mt-2">
                 {new Date(booking.CreatedAt).toLocaleDateString()}
               </p>
+
+              {/* REVIEW BUTTON */}
+              {booking.Status === "completed" && !booking.IsReviewed && (
+                <button
+                  onClick={() => setSelectedBooking(booking)}
+                  className="mt-3 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                  ⭐ Rate
+                </button>
+              )}
+
             </div>
 
           </div>
+
         ))}
 
       </div>
+
+      {/* REVIEW MODAL */}
+      {selectedBooking && (
+        <ReviewModal
+          booking={selectedBooking}
+          onClose={() => setSelectedBooking(null)}
+        />
+      )}
 
       <Footer />
 

@@ -3,9 +3,7 @@ import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { fetchTypes, fetchfilterService } from '../app/Api.js';
-import { Option } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
 export default function ServicePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const keyword = searchParams.get("keyword") || "";
@@ -17,22 +15,25 @@ export default function ServicePage() {
     refetchInterval: 5000,
   });
 
-  // const { data: { services = [] } = {} } = useQuery({
-  //   queryKey: ['services'],
-  //   queryFn: fetchAllService,
-  //   refetchInterval: 5000,
-  // });
-
-
-  const { data: services = []  } = useQuery({
+  const { data: services = [] } = useQuery({
     queryKey: ['services', type, keyword],
     queryFn: () => fetchfilterService(type, keyword),
   });
 
   console.log(services, type, keyword)
+  const renderStars = (rating = 0) => {
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5;
+    const empty = 5 - full - (half ? 1 : 0);
 
-  
- 
+    return (
+      <>
+        {"★".repeat(full)}
+        {half && "⭐"}
+        {"☆".repeat(empty)}
+      </>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -75,14 +76,21 @@ export default function ServicePage() {
                 <div className="w-10 h-10 rounded-full bg-gray-200"></div>
                 <div>
                   <h3 className="font-medium">{service.ServiceName}</h3>
-                  <p className="text-sm text-gray-500">{service.ServiceName}</p>
+                  <p className="text-sm text-gray-500">{service.Fadvisor} {service.Ladvisor}</p>
+                  <div className="flex gap-2 text-yellow-500 text-x">
+                    {renderStars(service.AvgRating)}
+                    <div className='text-sm text-gray-500'>{service.AvgRating}</div>
+                    <div className='text-sm text-gray-500'>({service.ReviewCount})</div>
+                  </div>
+
                 </div>
               </div>
 
               <p className="text-sm text-gray-600">{service.Front_Description}</p>
 
-              <div className="text-xs text-gray-400 text-right mt-4">
-                #### xxxx
+              <div className="flex-col text-xs text-gray-400 text-right mt-4">
+                <div>{service.price} บาท</div>
+                <div>{service.Duration} นาที</div>
               </div>
             </Link>
           ))}

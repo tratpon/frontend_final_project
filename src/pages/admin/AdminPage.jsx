@@ -5,10 +5,9 @@ export default function Admin() {
     const users = Array.from({ length: 20 });
 
     return (
-        <div className=" min-h-screen bg-gray-200">
-            <NavbarAdim />
+        <div className="min-h-screen bg-gray-200 ">
             <Sidebar />
-            <main className="flex-1 pl-70 pt-30">
+            <main className="flex-1 p-8 ml-64">
                 {/* SEARCH */}
                 <div className="flex items-center gap-2 mb-6">
                     🔍

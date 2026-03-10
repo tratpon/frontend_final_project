@@ -18,6 +18,7 @@ import Admin from '../pages/admin/AdminPage.jsx';
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
 import AdminApprove from "../pages/admin/AdminApprove.jsx";
 import AdminApproveForm from "../pages/admin/AdminApproveForm.jsx";
+import AdminApprovePost from "../pages/admin/AdminApprovePost.jsx";
 import NotFound from "../pages/NotFound.jsx";
 
 
@@ -32,17 +33,21 @@ import RequireAuth from "./RequireAuth.jsx";
 import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
 
 
+import AdminLogin from "../pages/admin/AdminLogin.jsx";
+
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
     return (
         <Routes>
             {/* PUBLIC */}
             <Route path="/" element={<RequireAuth />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
 
+            
             <Route path="/main" element={<Mainpage />} />
             <Route path="/service" element={<ServicePage />} />
             <Route path="/detail/:id" element={<DetailServicePage />} />
-            <Route path="/AdviserProfile" element={<AdviserProfilePage />} />
+            <Route path="/AdviserProfile/:id" element={<AdviserProfilePage />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
@@ -81,6 +86,7 @@ export default function AppRouter() {
                 <Route path="/admin/Dashboard" element={<AdminDashboard />} ></Route>
                 <Route path="/admin/Approve" element={<AdminApprove />} ></Route>
                 <Route path="/admin/Approve/Form" element={<AdminApproveForm />} ></Route>
+                <Route path="/admin/Approve/post" element={<AdminApprovePost />} ></Route>
             </Route>
         </Routes>
     );

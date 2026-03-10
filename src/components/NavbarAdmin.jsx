@@ -38,23 +38,13 @@ const NavbarAdim = () => {
                     {/* Dropdown menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <a href="/community" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
-                                community
-                            </a>
-                            <a href="/history" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
-                                Hisrory
-                            </a>
-
                             <a href="/admin" className="w-full block px-4 py-2 text-left hover:bg-gray-100">
                                 AdminPage
                             </a>
-
                             <hr className="my-1" />
                             <button className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
                                 Logout
                             </button>
-
-
                         </div>
                     )}
                 </div>

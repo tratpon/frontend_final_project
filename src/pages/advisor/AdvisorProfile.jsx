@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import NavbarAdvisor from "../../components/NavbarAdvisor";
 import Footer from "../../components/Footer";
-import { fetchMyAdvisorProfile, updateMyProfile } from "../../app/Api";
+import { fetchMyAdvisorProfile, updateMyProfile, fetchadvisorrating } from "../../app/Api";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 
@@ -51,7 +51,11 @@ export default function AdvisorProfile() {
         queryKey: ["myProfile"],
         queryFn: fetchMyAdvisorProfile
     });
-
+    
+    const { data: rating } = useQuery({
+        queryKey: ["advisorRating"],
+        queryFn: () => fetchadvisorrating()
+    });
     useEffect(() => {
         if (data) {
             setForm(data.data || data); // รองรับกรณี backend ส่ง {role, data}
@@ -106,13 +110,13 @@ export default function AdvisorProfile() {
                         <Field label="Username" name="Username" value={form.Username} disabled />
                         <div></div>
 
-                        <Field label="First Name" name="Fname" value={form.Fadvisor} onChange={handleChange} disabled={!editMode}/>
-                        <Field label="Last Name" name="Lname" value={form.Ladvisor} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="First Name" name="Fname" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
+                        <Field label="Last Name" name="Lname" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
 
-                        <Field label="Gender" name="Gender" value={form.Gender} onChange={handleChange} disabled={!editMode}/>
-                        <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="Gender" name="Gender" value={form.Gender} onChange={handleChange} disabled={!editMode} />
+                        <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
 
-                        <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode}/>
+                        <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
                         <Field label="Email" name="Email" value={form.Email} disabled />
 
                     </div>
@@ -138,7 +142,7 @@ export default function AdvisorProfile() {
                             {editMode ? "Submit" : "Edit"}
                         </button>
                     </div>
-                    
+
 
                 </div>
                 {/* Stats + Top Service */}
@@ -162,9 +166,9 @@ export default function AdvisorProfile() {
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            
+
 
             <Footer />
         </div>

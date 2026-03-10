@@ -10,6 +10,7 @@ import {
     addExperience,
     updateExperience,
     deleteExperience,
+    updatebio
 } from "../../app/Api";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
@@ -74,6 +75,8 @@ function Section({ title, children }) {
 export default function DetailAdvisor() {
     const queryClient = useQueryClient();
 
+    const [bio, setBio] = useState("");
+    const [editingBio, setEditingBio] = useState(false);
     /* ── skill state ─────────── */
     const [skill, setSkill] = useState("");
     const [editingSkillId, setEditingSkillId] = useState(null);
@@ -94,10 +97,13 @@ export default function DetailAdvisor() {
         queryKey: ["advisorProfile"],
         queryFn: fetchDetailAdvisor,
     });
-    console.log(data)
+
+    
 
     /* ── skill mutations ──────────── */
     const inv = () => queryClient.invalidateQueries({ queryKey: ["advisorProfile"] });
+
+    const addBioMutation = useMutation({ mutationFn: updatebio, onSuccess: inv });
 
     const addSkillMutation = useMutation({ mutationFn: addSkill, onSuccess: inv });
     const updateSkillMutation = useMutation({ mutationFn: updateSkill, onSuccess: inv });
@@ -121,7 +127,7 @@ export default function DetailAdvisor() {
             </div>
         );
 
-    const { advisor, skills, education, experience } = data;
+    const { advisor, skills, education, experience, rating } = data;
 
     /* ── handlers: skill ─────────── */
     const handleAddSkill = () => {
@@ -157,6 +163,11 @@ export default function DetailAdvisor() {
         setEditingExpId(null);
     };
 
+
+    const handleUpdateBio = () => {
+        addBioMutation.mutate({ bio });
+        setEditingBio(false);
+    };
     /* ════════════════════════════════════════════════════
        RENDER
     ═══════════════════════════════════════════════════════ */
@@ -180,8 +191,63 @@ export default function DetailAdvisor() {
                         </h2>
                         <p className="text-sm text-slate-500">{advisor.Age}</p>
                     </div>
-                    <div className="flex text-yellow-400 text-base mt-1">{"★★★★★"}</div>
+                    <div >
+                        <span className="text-yellow-500">
+                            {"★".repeat(Math.round(rating[0].AverageRating || 0))}
+                            
+                        </span>
+                         <span className="text-gray-500 text-sm mx-1">
+                            {rating[0].AverageRating || 0}   
+                        </span>
+
+                        <span className="text-gray-500 text-sm">
+                            ({rating[0].ReviewCount})
+                        </span>
+                    </div>
                 </div>
+
+                <Section title="เกี่ยวกับฉัน">
+                    {editingBio ? (
+                        <div className="flex flex-col gap-2">
+                            <textarea
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                rows={4}
+                                className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                            />
+
+                            <div className="flex gap-2 justify-end">
+                                <button
+                                    onClick={handleUpdateBio}
+                                    disabled={addBioMutation.isPending}
+                                    className="text-green-500"
+                                >
+                                    confirm
+                                </button>
+
+                                <button
+                                    onClick={() => setEditingBio(false)}
+                                    className="text-gray-400"
+                                >
+                                    cancel
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex justify-between items-start gap-2">
+                            <p className="text-sm text-slate-600 whitespace-pre-line">
+                                {advisor[0].Bio || "ยังไม่ได้เพิ่ม bio"}
+                            </p>
+
+                            <button
+                                onClick={() => setEditingBio(true)}
+                                className="text-blue-500 text-sm"
+                            >
+                                Edit
+                            </button>
+                        </div>
+                    )}
+                </Section>
 
                 {/* ══════════ SKILLS ══════════ */}
                 <Section title="ทักษะ">
@@ -282,7 +348,7 @@ export default function DetailAdvisor() {
                             <Field placeholder="วุฒิการศึกษา" value={edu.degree} onChange={(v) => setEdu({ ...edu, degree: v })} />
                             <Field placeholder="มหาวิทยาลัย" value={edu.university} onChange={(v) => setEdu({ ...edu, university: v })} />
                         </div>
-                        <YearSelect 
+                        <YearSelect
                             value={edu.year}
                             onChange={(v) => setEdu({ ...edu, year: v })}
                         />

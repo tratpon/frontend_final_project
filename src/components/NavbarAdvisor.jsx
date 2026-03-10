@@ -1,16 +1,26 @@
 import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+
 const NavbarAdvisor = () => {
     const [openMenu, setOpenMenu] = useState(false);
 
     const menuRef = useRef();
     const navigate = useNavigate();
     const { setUser } = useAuth();
-    const handleLogOut = () => {
-        setUser();
-        navigate("/");
-    }
+
+     const handleLogOut = async () => {
+        try {
+            console.log(auth.currentUser)
+            await signOut(auth);
+            setUser(null);
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     // ปิด dropdown เมื่อคลิกรอบนอก
     useEffect(() => {
