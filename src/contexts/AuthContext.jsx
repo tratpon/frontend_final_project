@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { auth } from "../firebase";
-import { ROLES } from "../app/roles";
+
+import { fetchImageMyProfile } from "../app/Api";
+import { useQuery } from "@tanstack/react-query";
 
 const AuthContext = createContext();
 
@@ -10,8 +12,15 @@ export function AuthProvider({ children }) {
         const storedUser = localStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
     });
+
     const restid = auth.currentUser;
-    
+
+    const { data: { imageUserUrl } = {} } = useQuery({
+        queryKey: ["imageProfile"],
+        queryFn: fetchImageMyProfile,
+        enabled: !!user
+
+    });
     useEffect(() => {            
         console.log(user,restid)
     },[user,restid])
@@ -25,7 +34,7 @@ export function AuthProvider({ children }) {
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser ,imageUserUrl}}>
             {children}
         </AuthContext.Provider>
     )   

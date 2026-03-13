@@ -5,7 +5,7 @@ import NavbarSwitcher from "../app/NavbarSwitcht";
 import { fetchfilterPost, fetchTypes, fetchComment, addComment, addPost } from '../app/Api.js';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MessageSquareText } from "lucide-react";
-
+import { useAuth } from "../contexts/authContext.jsx";
 
 
 export default function Community() {
@@ -15,6 +15,8 @@ export default function Community() {
     const type = searchParams.get("type") || "";
     const [openCommentId, setOpenCommentId] = useState(null);
     const [postId, setpostId] = useState("");
+
+    const { imageUserUrl } = useAuth();
 
     const { data: posts = [] } = useQuery({
         queryKey: ['posts', type],
@@ -33,7 +35,7 @@ export default function Community() {
         queryFn: () => fetchComment(postId),
         enabled: !!postId,
     });
-    
+
     const addCommentMutation = useMutation({
         mutationFn: addComment,
         onSuccess: () => {
@@ -92,8 +94,16 @@ export default function Community() {
                 <div className="w-full px-10 mt-10 flex flex-col items-center">
                     <div className="flex items-center gap-4 w-full max-w-3xl">
                         {/* Search Icon */}
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-                            👤
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                            {imageUserUrl ? (
+                                <img
+                                    src={imageUserUrl}
+                                    className="w-full h-full object-cover"
+                                    alt="profile"
+                                />
+                            ) : (
+                                "👤"
+                            )}
                         </div>
 
                         {/* Search Input */}
@@ -135,8 +145,16 @@ export default function Community() {
                             className="border rounded-xl p-6 shadow-sm hover:shadow-md transition"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-                                    👤
+                                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                    {post.imageUserUrl ? (
+                                        <img
+                                            src={post.imageUserUrl}
+                                            className="w-full h-full object-cover"
+                                            alt="profile"
+                                        />
+                                    ) : (
+                                        "👤"
+                                    )}
                                 </div>
                                 <div>
                                     <div className="font-semibold">{post.Username}</div>
@@ -169,7 +187,17 @@ export default function Community() {
 
                                     {/* Input Comment */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                            {imageUserUrl ? (
+                                                <img
+                                                    src={imageUserUrl}
+                                                    className="w-full h-full object-cover"
+                                                    alt="profile"
+                                                />
+                                            ) : (
+                                                "👤"
+                                            )}
+                                        </div>
 
                                         <input
                                             type="text"
@@ -190,11 +218,20 @@ export default function Community() {
                                         />
                                     </div>
 
-                                    {/* ตัวอย่าง comment */}
                                     {comments.map((comment) => (
                                         <div key={comment.CommentID} className="mt-4 space-y-3">
                                             <div className="flex gap-3">
-                                                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                                                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                                    {comment.imageUserUrl ? (
+                                                        <img
+                                                            src={comment.imageUserUrl}
+                                                            className="w-full h-full object-cover"
+                                                            alt="profile"
+                                                        />
+                                                    ) : (
+                                                        "👤"
+                                                    )}
+                                                </div>
                                                 <div
                                                     className={`rounded-2xl px-4 py-2 ${comment.CommenterType === 'advisor'
                                                         ? 'bg-blue-100'

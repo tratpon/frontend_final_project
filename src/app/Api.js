@@ -168,3 +168,47 @@ export const fetchDetailAdvisorByID = (id) =>
 
 export const uploadImageMyProfile = async ({imageUserUrl}) =>
   await privateApi.put("/userprofile/uploadImageMyProfile",{imageUserUrl}).then(res => res.data);
+
+
+
+export const fetchImageMyProfile= () =>
+  privateApi.get(`/userprofile/getImageMyProfile`).then(res => res.data);
+
+
+export const fetchServiceByID = (id) =>
+  privateApi.get(`/mangeservice/getServiceByID/${id}`).then(res => res.data);
+
+export const createService = (data) =>
+  privateApi.post("/mangeservice/createService", data).then(res => res.data);
+
+export const updateService = ({ id, data }) =>
+  privateApi.put(`/mangeservice/updateService/${id}`, data).then(res => res.data);
+
+export const deleteService = (id) =>
+  privateApi.put(`/mangeservice/deleteService/${id}`).then(res => res.data);
+
+
+
+
+export const addServiceImage = (data) =>
+  privateApi.post(`/mangeservice/addServiceImage`,data).then(res => res.data);
+
+
+export const uploadToCloudinary = async (file) => {
+  const formData = new FormData();
+
+  formData.append("file", file);
+  formData.append("upload_preset", "final_project");
+
+    const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dncviozee/image/upload",
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+
+  return await res.json();
+};
+

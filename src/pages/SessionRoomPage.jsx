@@ -137,12 +137,7 @@ export default function SessionRoom() {
                 <div className="flex-1 flex flex-col h-full">
                     {/* HEADER */}
                     <div className="flex items-center justify-between bg-gray-300 px-6 py-4">
-                        <div>
-                            {user === "user" 
-                                ? <p className="font-semibold">{roomInfo?.AdvisorName}</p> 
-                                : <p className="font-semibold">{roomInfo?.UserName}</p>
-                            }
-
+                        <div >
                             <p className="text-sm text-gray-500">{roomInfo?.ServiceName}</p>
                         </div>
 

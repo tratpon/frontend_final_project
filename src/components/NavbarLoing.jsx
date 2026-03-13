@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -9,7 +9,7 @@ const NavbarLoin = () => {
 
     const menuRef = useRef();
     const navigate = useNavigate();
-    const { setUser } = useAuth();
+    const { setUser,imageUserUrl } = useAuth();
 
     const handleLogOut = async () => {
         try {
@@ -21,6 +21,7 @@ const NavbarLoin = () => {
             console.log(error);
         }
     };
+    
 
     // ปิด dropdown เมื่อคลิกรอบนอก
     useEffect(() => {
@@ -55,9 +56,17 @@ const NavbarLoin = () => {
                 <div className="relative" ref={menuRef}>
                     <button
                         onClick={() => setOpenMenu(!openMenu)}
-                        className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300"
+                        className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center"
                     >
-                        <span className="text-gray-600 text-xl">👤</span>
+                        {imageUserUrl ? (
+                            <img
+                                src={imageUserUrl}
+                                className="w-full h-full object-cover"
+                                alt="profile"
+                            />
+                        ) : (
+                            "👤"
+                        )}
                     </button>
 
                     {/* Dropdown menu */}

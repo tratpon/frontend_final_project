@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import './App.css'
 import AppRouter from "./app/router";
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/authContext';
 import { VideoProvider } from "./contexts/VideoContext";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -10,13 +10,15 @@ export default function App() {
   return (
 
     <BrowserRouter>
-      <AuthProvider>
+      
         <VideoProvider>
           <QueryClientProvider client={queryClient}>
+            <AuthProvider>
             <AppRouter />
+            </AuthProvider>
           </QueryClientProvider>
         </VideoProvider>
-      </AuthProvider>
+      
     </BrowserRouter>
   );
 }

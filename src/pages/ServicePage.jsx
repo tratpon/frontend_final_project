@@ -73,7 +73,17 @@ export default function ServicePage() {
             <Link to={`/detail/${service.ServiceID}`} key={service.ServiceID} className="bg-white border rounded-lg p-4">
               <div className="w-full h-40 bg-gray-200 rounded mb-4"></div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                  {service.imageAdvisorUrl ? (
+                    <img
+                      src={service.imageAdvisorUrl}
+                      className="w-full h-full object-cover"
+                      alt="profile"
+                    />
+                  ) : (
+                    "👤"
+                  )}
+                </div>
                 <div>
                   <h3 className="font-medium">{service.ServiceName}</h3>
                   <p className="text-sm text-gray-500">{service.Fadvisor} {service.Ladvisor}</p>

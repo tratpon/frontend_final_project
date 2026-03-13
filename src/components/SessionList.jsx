@@ -90,7 +90,33 @@ export default function SessionList() {
                                     ${selectedRoom === session.RoomID ? "bg-gray-200 border-black" : "hover:bg-gray-100"}
                                 `}
                     >
+                        
                         <div className="flex py-2">
+                            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center mr-2">
+                                {user === "user" && (
+                                    session?.imageAdvisorUrl ? (
+                                        <img
+                                            src={session.imageAdvisorUrl}
+                                            className="w-full h-full object-cover"
+                                            alt="profile"
+                                        />
+                                    ) : (
+                                        "👤"
+                                    )
+                                )}
+                               {user === "advisor" && (
+                                    session?.imageUserUrl ? (
+                                        <img
+                                            src={session.imageUserUrl}
+                                            className="w-full h-full object-cover"
+                                            alt="profile"
+                                        />
+                                    ) : (
+                                        "👤"
+                                    )
+                                )}
+                            </div>
+
                             <div>
                                 <p className="font-semibold">{session.ServiceName}</p>
                                 { user === "user"
@@ -104,13 +130,14 @@ export default function SessionList() {
                                 </p>
                             </div>
 
-                            <p className="text-xs mt-1 mb-2">
+                            
+                        </div>
+                        <p className="text-xs mt-1 mb-2">
                                 {session.RoomStatus === "waiting" && "⏳ ยังไม่ถึงเวลา"}
                                 {session.RoomStatus === "active" && "🟢 เข้าได้"}
                                 {session.RoomStatus === "cancelled" && "🔒 ยกเลิก"}
                                 {session.RoomStatus === "completed" && "🔒 หมดเวลา"}
                             </p>
-                        </div>
 
                         {user === "advisor" && session.RoomStatus === "completed" &&  (
                             <p className=" gap-4 bg-gray-400 rounded-full px-6 py-3 text-white text-center font-semibold w-full">

@@ -72,7 +72,7 @@ export default function AppRouter() {
                 <Route path="/Advisor" element={<Advisor />} />
                 <Route path="/Advisor/AdvisorProfile" element={<AdvisorProfile />} />
                 <Route path="/Advisor/ServiceList" element={<AdvisorServiceList />} />
-                <Route path="/Advisor/ManegeService" element={<ManegeSevice />} />
+                <Route path="/Advisor/ManegeService/:id?" element={<ManegeSevice />} />
                 <Route path="/Advisor/TimeManegemet" element={<AdvisorTimeManegemet />} />
                 <Route path="/Advisor/ManageBooking" element={<AdvisorManageBooking/>}/>
                

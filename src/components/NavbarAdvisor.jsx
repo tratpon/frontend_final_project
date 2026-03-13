@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -9,7 +9,7 @@ const NavbarAdvisor = () => {
 
     const menuRef = useRef();
     const navigate = useNavigate();
-    const { setUser } = useAuth();
+    const { setUser, imageUserUrl } = useAuth();
 
      const handleLogOut = async () => {
         try {
@@ -55,9 +55,17 @@ const NavbarAdvisor = () => {
                 <div className="relative" ref={menuRef}>
                     <button
                         onClick={() => setOpenMenu(!openMenu)}
-                        className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300"
+                        className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center hover:bg-gray-300"
                     >
-                        <span className="text-gray-600 text-xl">👤</span>
+                        {imageUserUrl ? (
+                            <img
+                                src={imageUserUrl}
+                                className="w-full h-full object-cover"
+                                alt="profile"
+                            />
+                        ) : (
+                            "👤"
+                        )}
                     </button>
 
                     {/* Dropdown menu */}
@@ -71,13 +79,13 @@ const NavbarAdvisor = () => {
                                 Chat
                             </Link>
                             <Link to="/advisor/TimeManegemet" className="w-full block px-4 py-2 hover:bg-gray-100">
-                                ManegeTime
+                                Manage Time
                             </Link>
                             <Link to="/advisor/ServiceList" className="w-full block px-4 py-2 hover:bg-gray-100">
-                                Service
+                               Manage Service
                             </Link>
                             <Link to="/advisor/ManageBooking" className="w-full block px-4 py-2 hover:bg-gray-100">
-                                ManageBooking
+                                Manage Booking
                             </Link>
 
                             <Link to="/history" className="w-full block px-4 py-2 hover:bg-gray-100">

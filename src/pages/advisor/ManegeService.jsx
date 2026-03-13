@@ -1,79 +1,275 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { fetchServiceByID, createService, updateService ,addServiceImage,uploadToCloudinary} from "../../app/Api";
 
-export default function ManegeSevice() {
+export default function ManageService() {
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [uploading,setUploading] = useState(false);
+
+
+  const isEdit = !!id;
+
+  const [form, setForm] = useState({
+    ServiceName: "",
+    Front_Description: "",
+    Full_Description: "",
+    Duration: "",
+    price: ""
+  });
+
+  // 🔵 fetch service (edit mode)
+  const { data } = useQuery({
+    queryKey: ["service", id],
+    queryFn: () => fetchServiceByID(id),
+    enabled: isEdit
+  });
+
+
+  const images = data?.image || [];
+  
+  // fill form when edit
+  useEffect(() => {
+    if (data?.service) {
+      setForm({
+        ServiceName: data.service.ServiceName,
+        Front_Description: data.service.Front_Description,
+        Full_Description: data.service.Full_Description,
+        Duration: data.service.Duration,
+        price: data.service.price
+      });
+    }
+  }, [data]);
+
+  // 🟢 create
+  const createMutation = useMutation({
+    mutationFn: createService,
+    onSuccess: () => {
+      alert("Service created");
+      navigate("/advisor/ServiceList");
+    }
+  });
+
+  // 🟡 update
+  const updateMutation = useMutation({
+    mutationFn: updateService,
+    onSuccess: () => {
+      alert("Service updated");
+      navigate("/advisor/ServiceList");
+    }
+  });
+
+  const ImageMutation = useMutation({
+    mutationFn: addServiceImage,
+    onSuccess: () => {
+      alert("Service updated");
+      navigate("/advisor/ServiceList");
+    }
+  });
+
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isEdit) {
+      updateMutation.mutate({
+        id,
+        data: form
+      });
+    } else {
+      createMutation.mutate(form);
+    }
+  };
+   const handleUpload = async(file)=>{
+
+    if(images.length >= 4){
+      alert("Max 4 images");
+      return;
+    }
+
+    try{
+
+      setUploading(true);
+
+      const cloud = await uploadToCloudinary(file);
+
+      await ImageMutation.mutateAsync({
+        serviceID:id,
+        imageURL:cloud.secure_url,
+        publicID:cloud.public_id
+      });
+
+    }catch(err){
+      console.log(err);
+    }
+
+    setUploading(false);
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        {/* LEFT : Images */}
-        <div className="md:col-span-2 space-y-4">
-          {/* Main Image */}
-          <div className="relative bg-gray-200 h-80 rounded-lg flex items-center justify-center">
-            <div className="w-24 h-24 border-4 border-gray-300 flex items-center justify-center">
-              <span className="text-gray-400">IMG</span>
+      <h1 className="text-2xl font-bold mb-6">
+        {isEdit ? "Edit Service" : "Create Service"}
+      </h1>
+
+      <form onSubmit={handleSubmit}>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          {/* LEFT : Images */}
+          <div className="md:col-span-2 space-y-4">
+
+            {/* Main image */}
+            <div className="bg-gray-200 h-80 rounded flex items-center justify-center">
+
+              {images[0] ? (
+                <img
+                  src={images[0].ImageURL}
+                  className="h-full w-full object-cover rounded"
+                />
+              ) : (
+                <span className="text-gray-400">Service Image</span>
+              )}
+
             </div>
 
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full shadow px-3 py-2">
-              ❯
+            {/* gallery */}
+            <div className="grid grid-cols-4 gap-4">
+
+              {images.map((img) => (
+                <div key={img.ImageID} className="relative">
+
+                  <img
+                    src={img.ImageURL}
+                    className="h-24 w-full object-cover rounded"
+                  />
+
+                  <button
+                    type="button"
+                    // onClick={() => deleteImageMutation.mutate(img.ImageID)}
+                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 rounded"
+                  >
+                    ✕
+                  </button>
+
+                </div>
+              ))}
+
+              {/* upload */}
+              {images.length < 4 && (
+
+                <label className="h-24 border flex items-center justify-center cursor-pointer rounded bg-gray-100">
+
+                  {uploading ? "Uploading..." : "+ Upload"}
+
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={(e) => handleUpload(e.target.files[0])}
+                  />
+
+                </label>
+
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* RIGHT : FORM */}
+          <div className="space-y-4">
+
+            <div>
+              <label className="text-sm font-medium">
+                Service Name
+              </label>
+
+              <input
+                name="ServiceName"
+                value={form.ServiceName}
+                onChange={handleChange}
+                className="w-full mt-1 p-2 bg-gray-100 rounded"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">
+                Front_Description
+              </label>
+
+              <textarea
+                name="Front_Description"
+                value={form.Front_Description}
+                onChange={handleChange}
+                className="w-full mt-1 p-2 bg-gray-100 rounded h-24"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">
+                Duration (minutes)
+              </label>
+
+              <input
+                type="number"
+                name="Duration"
+                value={form.Duration}
+                onChange={handleChange}
+                className="w-full mt-1 p-2 bg-gray-100 rounded"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">
+                Price
+              </label>
+
+              <input
+                name="price"
+                value={form.price}
+                onChange={handleChange}
+                className="w-full mt-1 p-2 bg-gray-100 rounded"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              {isEdit ? "Update Service" : "Create Service"}
             </button>
-          </div>
 
-          {/* Thumbnails */}
-          <div className="flex gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="flex-1 bg-gray-200 h-24 rounded flex items-center justify-center"
-              >
-                <span className="text-gray-400">IMG</span>
-              </div>
-            ))}
           </div>
-          {/* Upload Button */}
-          <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm shadow">
-            ⬆ Images
-          </button>
-        </div>
+          <div className="w-3xl">
+            <label className="text-sm font-medium">
+              Full_Description
+            </label>
 
-        {/* RIGHT : Form */}
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Name service</label>
-            <input
-              type="text"
-              placeholder="Placeholder"
-              className="w-full mt-1 p-2 bg-gray-100 rounded"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Description</label>
             <textarea
-              placeholder="Placeholder"
+              name="Front_Description"
+              value={form.Full_Description}
+              onChange={handleChange}
               className="w-full mt-1 p-2 bg-gray-100 rounded h-24"
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">
-              ระยะเวลา (30 / 60 / 90 นาที)
-            </label>
-            <input
-              type="text"
-              placeholder="Placeholder"
-              className="w-full mt-1 p-2 bg-gray-100 rounded"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Prices</label>
-            <input
-              type="text"
-              placeholder="Placeholder"
-              className="w-full mt-1 p-2 bg-gray-100 rounded"
-            />
-          </div>
         </div>
-      </div>
+
+      </form>
+
     </div>
   );
 }

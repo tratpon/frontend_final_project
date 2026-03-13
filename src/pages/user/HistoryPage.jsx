@@ -57,7 +57,20 @@ export default function History() {
             {/* CONTENT */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                👤
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+
+                  {booking.imageAdvisorUrl ? (
+                    <img
+                      src={booking.imageAdvisorUrl}
+                      className="w-full h-full object-cover"
+                      alt="profile"
+                    />
+                  ) : (
+                    "👤"
+                  )}
+
+                </div>
+
                 <span className="font-semibold">
                   {booking.AdvisorName}
                 </span>
