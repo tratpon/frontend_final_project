@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import NavbarAdvisor from "../../components/NavbarAdvisor";
 import Footer from "../../components/Footer";
-import { fetchMyAdvisorProfile, updateMyProfile, fetchadvisorrating } from "../../app/Api";
+import { fetchMyAdvisorProfile, updateMyProfile, fetchAdvisorDashboard } from "../../app/Api";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 
@@ -41,7 +41,9 @@ export default function AdvisorProfile() {
         Gender: "",
         Age: "",
         Email: "",
-        Phone: ""
+        Phone: "",
+        imageAdvisorUrl: ""
+
     });
 
     const [editMode, setEditMode] = useState(false);
@@ -51,11 +53,15 @@ export default function AdvisorProfile() {
         queryKey: ["myProfile"],
         queryFn: fetchMyAdvisorProfile
     });
-    
-    const { data: rating } = useQuery({
-        queryKey: ["advisorRating"],
-        queryFn: () => fetchadvisorrating()
+
+    const { dataD } = useQuery({
+        queryKey: ["advisorDashboard"],
+        queryFn: fetchAdvisorDashboard
     });
+
+    const stats = dataD?.data?.stats;
+    const rating = dataD?.data?.rating;
+    const services = dataD?.data?.topService;
     useEffect(() => {
         if (data) {
             setForm(data.data || data); // รองรับกรณี backend ส่ง {role, data}
@@ -100,8 +106,16 @@ export default function AdvisorProfile() {
                 <div className="bg-white border rounded-2xl p-8">
 
                     <div className="flex justify-center mb-6">
-                        <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-3xl">
-                            👤
+                        <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                            {form.imageAdvisorUrl ? (
+                                <img
+                                    src={form.imageAdvisorUrl}
+                                    className="w-full h-full object-cover"
+                                    alt="profile"
+                                />
+                            ) : (
+                                "👤"
+                            )}
                         </div>
                     </div>
 
@@ -148,21 +162,40 @@ export default function AdvisorProfile() {
                 {/* Stats + Top Service */}
                 <div className="space-y-6">
                     <StatCard
-                        label="Total Invested Amount"
-                        value="$150,000"
-                        icon="💰"
+                        label="Rating"
+                        value={rating?.AvgRating || 0}
+                        icon="⭐"
                     />
                     <StatCard
-                        label="user Number"
-                        value="1,250"
+                        label="Total Revenue"
+                        value={`$${stats?.TotalRevenue || 0}`}
+                        icon="💰"
+                    />
+
+                    <StatCard
+                        label="Total Users"
+                        value={stats?.TotalUsers || 0}
                         icon="👥"
                     />
 
                     <div className="border rounded-2xl p-6 bg-white">
                         <h3 className="text-lg font-semibold mb-4">Top service</h3>
+
                         <div className="flex gap-4 overflow-x-auto">
-                            <ServiceCard />
-                            <ServiceCard />
+
+                            {services?.length ? (
+                                services.map((service) => (
+                                    <ServiceCard
+                                        key={service.ServiceID}
+                                        name={service.ServiceName}
+                                        users={service.TotalBooking}
+                                        revenue={service.Revenue}
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-gray-400">No service data</p>
+                            )}
+
                         </div>
                     </div>
                 </div>

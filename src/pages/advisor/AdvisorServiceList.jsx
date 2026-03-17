@@ -1,6 +1,6 @@
 import NavbarAdvisor from "../../components/NavbarAdvisor";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation,useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchServiceByAdvisor, deleteService } from "../../app/Api";
 import { Link } from "react-router-dom";
 import DetailAdvisor from "../../components/advisor/DetailAdvisor";
@@ -65,51 +65,69 @@ export default function AdvisorServiceList() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {services?.map((service) => (
                                 <div key={service.ServiceID} className="flex flex-col border p-4 rounded bg-gray-50 h-full">
-                                    <Link to={`/detail/${service.ServiceID}`} key={service.ServiceID} className="">
-                                        <div className="w-full h-40 bg-gray-200 rounded mb-4"></div>
+
+                                    <Link to={`/detail/${service.ServiceID}`} className="flex flex-col flex-1">
+
+                                        <div className="w-full h-40 bg-gray-200 rounded mb-4">
+                                            <img
+                                                src={service.ImageURL}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                                                 {service.imageAdvisorUrl ? (
                                                     <img
                                                         src={service.imageAdvisorUrl}
                                                         className="w-full h-full object-cover"
-                                                        alt="profile"
                                                     />
                                                 ) : (
                                                     "👤"
                                                 )}
                                             </div>
+
                                             <div>
                                                 <h3 className="font-medium">{service.ServiceName}</h3>
-                                                <p className="text-sm text-gray-500">{service.Fadvisor} {service.Ladvisor}</p>
-                                                <div className="flex gap-2 text-yellow-500 text-x">
-                                                    {renderStars(service.AvgRating)}
-                                                    <div className='text-sm text-gray-500'>{service.AvgRating}</div>
-                                                    <div className='text-sm text-gray-500'>({service.ReviewCount})</div>
-                                                </div>
+                                                <p className="text-sm text-gray-500">
+                                                    {service.Fadvisor} {service.Ladvisor}
+                                                </p>
 
+                                                <div className="flex gap-2 text-yellow-500 text-xs">
+                                                    {renderStars(service.AvgRating)}
+                                                    <span className="text-gray-500">{service.AvgRating}</span>
+                                                    <span className="text-gray-500">({service.ReviewCount})</span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <p className="text-sm text-gray-600 wrap-break-word">
+                                        <p className="text-sm text-gray-600 line-clamp-3 wrap-break-word">
                                             {service.Front_Description}
                                         </p>
 
-                                        <div className="flex-col text-xs text-gray-400 text-right mt-4">
+                                        <div className="mt-auto text-xs text-gray-400 text-right pt-4">
                                             <div>{service.price} บาท</div>
                                             <div>{service.Duration} นาที</div>
                                         </div>
+
                                     </Link>
 
-                                    {/* Action Buttons */}
                                     <div className="flex gap-3 mt-5">
-                                        <button onClick={() => handleEdit(service.ServiceID)} className="flex-1  bg-gray-100 py-2 rounded-lg hover:bg-gray-200 transition">
+                                        <button
+                                            onClick={() => handleEdit(service.ServiceID)}
+                                            className="flex-1 bg-gray-100 py-2 rounded-lg hover:bg-gray-200 transition"
+                                        >
                                             Edit
                                         </button>
-                                        <button onClick={() => handleDelete(service.ServiceID)} className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition">
+
+                                        <button
+                                            onClick={() => handleDelete(service.ServiceID)}
+                                            className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition"
+                                        >
                                             Delete
                                         </button>
                                     </div>
+
                                 </div>
                             ))}
                             <Link to="/Advisor/ManegeService" className="bg-white border rounded-lg p-4">

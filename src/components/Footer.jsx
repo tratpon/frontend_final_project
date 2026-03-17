@@ -10,7 +10,7 @@ const Footer = () => {
         </span>
 
         <div className="flex space-x-8 text-sm">
-          <NavLink to = "/enrollment">work wiht us</NavLink>
+          <NavLink to = "/AdvisorApply">work wiht us</NavLink>
           <span>Twelve</span>
           <span>Thirteen</span>
           <span>Fourteen</span>  

@@ -31,7 +31,7 @@ import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
 
 import RequireAuth from "./RequireAuth.jsx";
 import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
-
+import AdvisorApply from "../pages/applyAdvisorPage.jsx";
 
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
 
@@ -54,7 +54,7 @@ export default function AppRouter() {
             <Route path="/session" element={<SessionRoom />} />
 
             <Route path="/notfound" element={<NotFound />} />
-
+            <Route path="/AdvisorApply" element={<AdvisorApply />} />
             <Route path="/community" element={<Community />} />
 
             {/* USER */}
@@ -85,7 +85,7 @@ export default function AppRouter() {
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/Dashboard" element={<AdminDashboard />} ></Route>
                 <Route path="/admin/Approve" element={<AdminApprove />} ></Route>
-                <Route path="/admin/Approve/Form" element={<AdminApproveForm />} ></Route>
+                <Route path="/admin/Approve/Form/:id" element={<AdminApproveForm />} ></Route>
                 <Route path="/admin/Approve/post" element={<AdminApprovePost />} ></Route>
             </Route>
         </Routes>

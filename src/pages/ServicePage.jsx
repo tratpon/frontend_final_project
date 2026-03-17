@@ -69,40 +69,60 @@ export default function ServicePage() {
           </select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
-            <Link to={`/detail/${service.ServiceID}`} key={service.ServiceID} className="bg-white border rounded-lg p-4">
-              <div className="w-full h-40 bg-gray-200 rounded mb-4"></div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                  {service.imageAdvisorUrl ? (
-                    <img
-                      src={service.imageAdvisorUrl}
-                      className="w-full h-full object-cover"
-                      alt="profile"
-                    />
-                  ) : (
-                    "👤"
-                  )}
+          {services?.map((service) => (
+            <div
+              key={service.ServiceID}
+              className="border p-4 rounded bg-gray-50 h-full"
+            >
+              <Link
+                to={`/detail/${service.ServiceID}`}
+                className="flex flex-col h-full"
+              >
+                <div className="w-full h-40 bg-gray-200 rounded mb-4">
+                  <img
+                    src={service.ImageURL}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div>
-                  <h3 className="font-medium">{service.ServiceName}</h3>
-                  <p className="text-sm text-gray-500">{service.Fadvisor} {service.Ladvisor}</p>
-                  <div className="flex gap-2 text-yellow-500 text-x">
-                    {renderStars(service.AvgRating)}
-                    <div className='text-sm text-gray-500'>{service.AvgRating}</div>
-                    <div className='text-sm text-gray-500'>({service.ReviewCount})</div>
+
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                    {service.imageAdvisorUrl ? (
+                      <img
+                        src={service.imageAdvisorUrl}
+                        className="w-full h-full object-cover"
+                        alt="profile"
+                      />
+                    ) : (
+                      "👤"
+                    )}
                   </div>
 
+                  <div>
+                    <h3 className="font-medium">{service.ServiceName}</h3>
+                    <p className="text-sm text-gray-500">
+                      {service.Fadvisor} {service.Ladvisor}
+                    </p>
+
+                    <div className="flex gap-2 text-yellow-500 text-xs">
+                      {renderStars(service.AvgRating)}
+                      <div className="text-sm text-gray-500">{service.AvgRating}</div>
+                      <div className="text-sm text-gray-500">({service.ReviewCount})</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <p className="text-sm text-gray-600">{service.Front_Description}</p>
+                <p className="text-sm text-gray-600 line-clamp-3 wrap-break-word">
+                  {service.Front_Description}
+                </p>
 
-              <div className="flex-col text-xs text-gray-400 text-right mt-4">
-                <div>{service.price} บาท</div>
-                <div>{service.Duration} นาที</div>
-              </div>
-            </Link>
+                {/* price + duration อยู่ล่างสุด */}
+                <div className="mt-auto text-xs text-gray-400 text-right pt-4">
+                  <div>{service.price} บาท</div>
+                  <div>{service.Duration} นาที</div>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
 

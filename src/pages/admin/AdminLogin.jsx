@@ -16,6 +16,7 @@ export default function AdminLogin() {
   const loginMutation = useMutation({
     mutationFn: adminlogin,
     onSuccess: (data) => {
+      console.log(data);
         setUser(ROLES.ADMIN);
         navigate("/");
     },

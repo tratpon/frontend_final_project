@@ -44,6 +44,7 @@ export const updateBillStatus = (billId) =>
 
 export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
 export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
+export const fetchSlotDaysInMonth = (serviceID, year, month) => api.get(`/service/getSlotDaysInMonth/${serviceID}/${year}/${month}`).then(res => res.data);
 
 export const fetchBookingDetail = (availabilityId) => privateApi.get(`/booking/detail/${availabilityId}`).then(res => res.data);
 
@@ -70,9 +71,19 @@ export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillte
 export const registerUser = async (data) => await  privateApi.post('/auth/register', data).then(res => res.data);
 
 
-export const loginRole= async (data) => {
+export const loginRole = async (data) => {
   await signInWithEmailAndPassword(auth, data.email, data.password);
-  return await privateApi.post('/auth/login')
+  return await privateApi.get('/auth/login')
+    .then(res => res.data);
+};
+export const adminlogin= async (data) => {
+  await signInWithEmailAndPassword(auth, data.email, data.password);
+  return await privateApi.post('/admin/adminlogin')
+    .then(res => res.data);
+};
+export const loginAdmin = async (data) => {
+  await signInWithEmailAndPassword(auth, data.email, data.password);
+  return await privateApi.get('/auth/loginAdmin')
     .then(res => res.data);
 };
 
@@ -129,11 +140,7 @@ export const deleteExperience = (id) =>
 
 
 
-export const adminlogin= async (data) => {
-  await signInWithEmailAndPassword(auth, data.email, data.password);
-  return await privateApi.post('/admin/adminlogin')
-    .then(res => res.data);
-};
+
 
 
 export const fetchPostAdmin = (type) =>
@@ -193,6 +200,29 @@ export const deleteService = (id) =>
 export const addServiceImage = (data) =>
   privateApi.post(`/mangeservice/addServiceImage`,data).then(res => res.data);
 
+export const deleteServiceImage = (id) =>
+  privateApi.post(`/mangeservice/deleteServiceImage/${id}`).then(res => res.data);
+
+export const applyAdvisor = (data) =>
+  privateApi.post(`/admin/applyAdvisor`,data).then(res => res.data);
+
+export const fetchApplyAdvisor = () =>
+  privateApi.get(`/admin/getApplyAdvisor`).then(res => res.data.applyrows);
+
+export const fetchApplyAdvisorByID = (id) =>
+  privateApi.get(`/admin/getApplyAdvisorByID/${id}`).then(res => res.data.applyrows);
+
+export const updateApplyAdvisor = ({id,status}) => {
+  privateApi.put(`/admin/updateApplyAdvisor/${id}`,{status}).then(res => res.data);
+};
+
+export const fetchAdvisorDashboard = () =>
+  privateApi.get(`/dashboard/getAdvisorDashboard`).then(res => res.data);
+export const fetchAdminDashboard = () =>
+  privateApi.get(`/dashboard/getAdminDashboard`).then(res => res.data);
+
+export const fetchAllUserAndAdvisor = () =>
+  privateApi.get(`/dashboard/getAllUserAndAdvisor`).then(res => res.data);
 
 export const uploadToCloudinary = async (file) => {
   const formData = new FormData();

@@ -5,7 +5,7 @@ import NavbarSwitcher from "../app/NavbarSwitcht";
 import { fetchfilterPost, fetchTypes, fetchComment, addComment, addPost } from '../app/Api.js';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MessageSquareText } from "lucide-react";
-import { useAuth } from "../contexts/authContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 
 export default function Community() {

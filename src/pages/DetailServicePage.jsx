@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
 import NavbarSwitcher from "../app/NavbarSwitcht.jsx";
 import Footer from "../components/Footer.jsx";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +11,9 @@ import {
 import BookingSidebar from "../components/BookingSidebar.jsx";
 
 export default function DetailServicePage() {
+
   const { id } = useParams();
+  const [selectedImage, setSelectedImage] = useState(null);
 
   /* SERVICE INFO */
   const { data } = useQuery({
@@ -19,6 +22,7 @@ export default function DetailServicePage() {
   });
 
   const service = data?.services?.[0];
+  const images = data?.services || [];
 
   /* RATING DATA */
   const { data: ratingData } = useQuery({
@@ -26,7 +30,7 @@ export default function DetailServicePage() {
     queryFn: () => fetchservicerating(id),
   });
 
-  /* TOPICS (master list) */
+  /* TOPICS */
   const { data: topics } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchtopics,
@@ -36,7 +40,6 @@ export default function DetailServicePage() {
   const topicRatings = ratingData?.topics || [];
   const reviews = ratingData?.reviews || [];
 
-  /* ถ้าไม่มี rating ให้เอา topics มาแสดง 0 ดาว */
   const topicList =
     topicRatings.length > 0
       ? topicRatings
@@ -47,6 +50,7 @@ export default function DetailServicePage() {
 
   /* STAR RENDER */
   const renderStars = (rating = 0) => {
+
     const full = Math.floor(rating);
     const half = rating % 1 >= 0.5;
     const empty = 5 - full - (half ? 1 : 0);
@@ -62,11 +66,16 @@ export default function DetailServicePage() {
 
   if (!service) return <div className="p-10">Loading...</div>;
 
+  const mainImage =
+    selectedImage || images?.[0]?.ImageURL;
+
   return (
     <div>
+
       <NavbarSwitcher />
 
       <div className="min-h-screen px-6 py-10 max-w-7xl mx-auto">
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
           {/* LEFT CONTENT */}
@@ -74,15 +83,42 @@ export default function DetailServicePage() {
 
             {/* IMAGE */}
             <div>
-              <div className="w-full h-90 bg-gray-200 rounded-lg flex items-center justify-center">
-                <div className="w-40 h-40 bg-gray-300"></div>
+
+              {/* MAIN IMAGE */}
+              <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+
+                {mainImage ? (
+                  <img
+                    src={mainImage}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    No Image
+                  </div>
+                )}
+
               </div>
 
+              {/* GALLERY */}
               <div className="grid grid-cols-4 gap-4 mt-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-20 bg-gray-200 rounded"></div>
+
+                {images.map((img) => (
+
+                  <img
+                    key={img.ImageID}
+                    src={img.ImageURL}
+                    onClick={() => setSelectedImage(img.ImageURL)}
+                    className={`h-20 w-full object-cover rounded cursor-pointer
+                    ${mainImage === img.ImageURL
+                        ? "ring-2 ring-blue-500"
+                        : ""}`}
+                  />
+
                 ))}
+
               </div>
+
             </div>
 
             {/* DESCRIPTION */}
@@ -99,6 +135,7 @@ export default function DetailServicePage() {
                   to={`/AdviserProfile/${service.advisorID}`}
                   className="w-20 h-20 flex flex-col justify-center items-center bg-gray-100 rounded-full"
                 >
+
                   <span className="text-xl font-bold">
                     {rating?.AverageScore || "0.0"}
                   </span>
@@ -106,6 +143,7 @@ export default function DetailServicePage() {
                   <span className="text-xs text-gray-500">
                     จาก {rating?.ReviewCount || 0} รีวิว
                   </span>
+
                 </Link>
 
                 <div className="text-yellow-500 text-xl">
@@ -120,20 +158,25 @@ export default function DetailServicePage() {
               <div className="mt-6 grid grid-cols-2 gap-x-40 gap-y-5">
 
                 {topicList.map((topic) => (
+
                   <div key={topic.TopicName}>
+
                     <p className="text-lg text-gray-700">
                       {topic.TopicName}
                     </p>
 
                     <div className="flex gap-2 text-yellow-500 text-xl mb-2">
+
                       {renderStars(topic?.AvgScore || 0)}
 
                       <div className="text-black font-bold">
                         ({topic?.AvgScore || 0})
                       </div>
+
                     </div>
 
                   </div>
+
                 ))}
 
               </div>
@@ -152,11 +195,15 @@ export default function DetailServicePage() {
               ) : (
 
                 reviews.map((review, index) => (
+
                   <div key={index} className="text-sm text-gray-600">
 
                     <div className="flex items-center gap-3 mt-4">
+
                       <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+
                       <span>{review.Username}</span>
+
                     </div>
 
                     <div className="text-yellow-500 mt-2">
@@ -172,6 +219,7 @@ export default function DetailServicePage() {
                     </div>
 
                   </div>
+
                 ))
 
               )}
@@ -186,9 +234,11 @@ export default function DetailServicePage() {
           </div>
 
         </div>
+
       </div>
 
       <Footer />
+
     </div>
   );
 }

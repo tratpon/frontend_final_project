@@ -14,12 +14,11 @@ export function AuthProvider({ children }) {
     });
 
     const restid = auth.currentUser;
-
+   
     const { data: { imageUserUrl } = {} } = useQuery({
         queryKey: ["imageProfile"],
         queryFn: fetchImageMyProfile,
-        enabled: !!user
-
+        enabled: !!user && user != 'admin'
     });
     useEffect(() => {            
         console.log(user,restid)

@@ -1,16 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchServiceByID, createService, updateService ,addServiceImage,uploadToCloudinary} from "../../app/Api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  fetchServiceByID,
+  createService,
+  updateService,
+  addServiceImage,
+  uploadToCloudinary,
+  deleteServiceImage
+} from "../../app/Api";
 
 export default function ManageService() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const [uploading,setUploading] = useState(false);
-
+  const queryClient = useQueryClient();
 
   const isEdit = !!id;
+
+  const [uploading, setUploading] = useState(false);
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [form, setForm] = useState({
     ServiceName: "",
@@ -20,18 +30,18 @@ export default function ManageService() {
     price: ""
   });
 
-  // 🔵 fetch service (edit mode)
+  // 🔵 fetch service
   const { data } = useQuery({
     queryKey: ["service", id],
     queryFn: () => fetchServiceByID(id),
     enabled: isEdit
   });
 
-
   const images = data?.image || [];
-  
+
   // fill form when edit
   useEffect(() => {
+
     if (data?.service) {
       setForm({
         ServiceName: data.service.ServiceName,
@@ -41,6 +51,11 @@ export default function ManageService() {
         price: data.service.price
       });
     }
+
+    if (data?.image?.length > 0) {
+      setSelectedImage(data.image[0].ImageURL);
+    }
+
   }, [data]);
 
   // 🟢 create
@@ -61,14 +76,21 @@ export default function ManageService() {
     }
   });
 
-  const ImageMutation = useMutation({
+  // upload image
+  const imageMutation = useMutation({
     mutationFn: addServiceImage,
     onSuccess: () => {
-      alert("Service updated");
-      navigate("/advisor/ServiceList");
+      queryClient.invalidateQueries(["service", id]);
     }
   });
 
+  // delete image
+  const deleteImageMutation = useMutation({
+    mutationFn: deleteServiceImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["service", id]);
+    }
+  });
 
   const handleChange = (e) => {
     setForm({
@@ -89,26 +111,27 @@ export default function ManageService() {
       createMutation.mutate(form);
     }
   };
-   const handleUpload = async(file)=>{
 
-    if(images.length >= 4){
+  const handleUpload = async (file) => {
+
+    if (images.length >= 4) {
       alert("Max 4 images");
       return;
     }
 
-    try{
+    try {
 
       setUploading(true);
 
       const cloud = await uploadToCloudinary(file);
 
-      await ImageMutation.mutateAsync({
-        serviceID:id,
-        imageURL:cloud.secure_url,
-        publicID:cloud.public_id
+      await imageMutation.mutateAsync({
+        serviceID: id,
+        imageURL: cloud.secure_url,
+        publicID: cloud.public_id
       });
 
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
 
@@ -129,21 +152,23 @@ export default function ManageService() {
           {/* LEFT : Images */}
           <div className="md:col-span-2 space-y-4">
 
-            {/* Main image */}
+            {/* Main Image */}
             <div className="bg-gray-200 h-80 rounded flex items-center justify-center">
 
-              {images[0] ? (
+              {selectedImage ? (
                 <img
-                  src={images[0].ImageURL}
+                  src={selectedImage}
                   className="h-full w-full object-cover rounded"
                 />
               ) : (
-                <span className="text-gray-400">Service Image</span>
+                <span className="text-gray-400">
+                  Service Image
+                </span>
               )}
 
             </div>
 
-            {/* gallery */}
+            {/* Gallery */}
             <div className="grid grid-cols-4 gap-4">
 
               {images.map((img) => (
@@ -151,12 +176,16 @@ export default function ManageService() {
 
                   <img
                     src={img.ImageURL}
-                    className="h-24 w-full object-cover rounded"
+                    onClick={() => setSelectedImage(img.ImageURL)}
+                    className={`h-24 w-full object-cover rounded cursor-pointer
+                    ${selectedImage === img.ImageURL
+                        ? "ring-2 ring-blue-500"
+                        : ""}`}
                   />
 
                   <button
                     type="button"
-                    // onClick={() => deleteImageMutation.mutate(img.ImageID)}
+                    onClick={() => deleteImageMutation.mutate(img.ImageID)}
                     className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 rounded"
                   >
                     ✕
@@ -165,7 +194,7 @@ export default function ManageService() {
                 </div>
               ))}
 
-              {/* upload */}
+              {/* Upload */}
               {images.length < 4 && (
 
                 <label className="h-24 border flex items-center justify-center cursor-pointer rounded bg-gray-100">
@@ -187,7 +216,6 @@ export default function ManageService() {
 
           </div>
 
-
           {/* RIGHT : FORM */}
           <div className="space-y-4">
 
@@ -207,7 +235,7 @@ export default function ManageService() {
 
             <div>
               <label className="text-sm font-medium">
-                Front_Description
+                Front Description
               </label>
 
               <textarea
@@ -253,17 +281,21 @@ export default function ManageService() {
             </button>
 
           </div>
-          <div className="w-3xl">
+
+          {/* Full Description */}
+          <div className="md:col-span-3">
+
             <label className="text-sm font-medium">
-              Full_Description
+              Full Description
             </label>
 
             <textarea
-              name="Front_Description"
+              name="Full_Description"
               value={form.Full_Description}
               onChange={handleChange}
-              className="w-full mt-1 p-2 bg-gray-100 rounded h-24"
+              className="w-full mt-1 p-2 bg-gray-100 rounded h-32"
             />
+
           </div>
 
         </div>
