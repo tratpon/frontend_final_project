@@ -34,6 +34,7 @@ import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
 import AdvisorApply from "../pages/applyAdvisorPage.jsx";
 
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
+import AdvisorRegister from "../pages/AdvisorRegister.jsx";
 
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
@@ -43,7 +44,7 @@ export default function AppRouter() {
             <Route path="/" element={<RequireAuth />} />
             <Route path="/admin/login" element={<AdminLogin />} />
 
-            
+            <Route path="/advisor/register/:id" element={<AdvisorRegister />} />
             <Route path="/main" element={<Mainpage />} />
             <Route path="/service" element={<ServicePage />} />
             <Route path="/detail/:id" element={<DetailServicePage />} />

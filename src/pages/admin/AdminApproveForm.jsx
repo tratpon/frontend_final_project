@@ -46,8 +46,8 @@ export default function AdminApproveForm() {
 
             <div className="grid grid-cols-2 gap-x-20 gap-y-6">
 
-              <Field label="Username" value={app.username} />
-              <Field label="Field" value={app.field} />
+              <Field label="Email" value={app.email} />
+              <Field label="Field" value={app.TypesName} />
 
               <Field label="Experience (years)" value={app.experience_years} />
               <Field label="License Number" value={app.license_number} />

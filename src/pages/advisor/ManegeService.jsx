@@ -7,7 +7,7 @@ import {
   updateService,
   addServiceImage,
   uploadToCloudinary,
-  deleteServiceImage
+  deleteServiceImage,
 } from "../../app/Api";
 
 export default function ManageService() {

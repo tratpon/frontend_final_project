@@ -70,6 +70,7 @@ export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillte
 
 export const registerUser = async (data) => await  privateApi.post('/auth/register', data).then(res => res.data);
 
+export const registerAdvisor = async (data) => await  privateApi.post(`/auth/registerAdvisor`, data).then(res => res.data);
 
 export const loginRole = async (data) => {
   await signInWithEmailAndPassword(auth, data.email, data.password);
@@ -191,6 +192,7 @@ export const createService = (data) =>
 export const updateService = ({ id, data }) =>
   privateApi.put(`/mangeservice/updateService/${id}`, data).then(res => res.data);
 
+
 export const deleteService = (id) =>
   privateApi.put(`/mangeservice/deleteService/${id}`).then(res => res.data);
 
@@ -204,13 +206,13 @@ export const deleteServiceImage = (id) =>
   privateApi.post(`/mangeservice/deleteServiceImage/${id}`).then(res => res.data);
 
 export const applyAdvisor = (data) =>
-  privateApi.post(`/admin/applyAdvisor`,data).then(res => res.data);
+  api.post(`/admin/applyAdvisor`,data).then(res => res.data);
 
 export const fetchApplyAdvisor = () =>
   privateApi.get(`/admin/getApplyAdvisor`).then(res => res.data.applyrows);
 
 export const fetchApplyAdvisorByID = (id) =>
-  privateApi.get(`/admin/getApplyAdvisorByID/${id}`).then(res => res.data.applyrows);
+  api.get(`/admin/getApplyAdvisorByID/${id}`).then(res => res.data.applyrows);
 
 export const updateApplyAdvisor = ({id,status}) => {
   privateApi.put(`/admin/updateApplyAdvisor/${id}`,{status}).then(res => res.data);

@@ -100,10 +100,9 @@ export default function ServicePage() {
 
                   <div>
                     <h3 className="font-medium">{service.ServiceName}</h3>
-                    <p className="text-sm text-gray-500">
-                      {service.Fadvisor} {service.Ladvisor}
+                    <p className="flex text-sm text-gray-500">
+                      {service.Fadvisor} {service.Ladvisor}  ({service.TypesName})              
                     </p>
-
                     <div className="flex gap-2 text-yellow-500 text-xs">
                       {renderStars(service.AvgRating)}
                       <div className="text-sm text-gray-500">{service.AvgRating}</div>
@@ -114,6 +113,7 @@ export default function ServicePage() {
 
                 <p className="text-sm text-gray-600 line-clamp-3 wrap-break-word">
                   {service.Front_Description}
+                  
                 </p>
 
                 {/* price + duration อยู่ล่างสุด */}

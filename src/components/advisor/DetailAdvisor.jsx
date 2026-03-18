@@ -187,10 +187,11 @@ export default function DetailAdvisor() {
                 <div className="flex items-start justify-between mb-1">
                     <div>
                         <h2 className="text-xl font-bold text-slate-800">
-                            {advisor[0].Fadvisor} {advisor[0].Ladvisor}
+                            {advisor[0].Fadvisor} {advisor[0].Ladvisor}  ({advisor[0].Type}) 
                         </h2>
                         <p className="text-sm text-slate-500">{advisor.Age}</p>
                     </div>
+                    
                     <div >
                         <span className="text-yellow-500">
                             {"★".repeat(Math.round(rating[0].AverageRating || 0))}

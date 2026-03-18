@@ -77,7 +77,7 @@ export default function AdminApprove() {
 
                 {/* CATEGORY */}
                 <div className="flex items-center text-gray-600">
-                  {item.field}
+                  {item.TypesName}
                 </div>
 
                 {/* STATUS */}

@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { applyAdvisor, fetchTypes, uploadToCloudinary } from "../app/Api";
+import { applyAdvisor, fetchTypes } from "../app/Api";
+import { useNavigate } from "react-router-dom";
 
 
 export default function AdvisorApply() {
-
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     Fname: "",
     Lname: "",
     email: "",
-    field: "",
+    TypesID: "",
     experience_years: "",
     portfolio_url: "",
     certificate_url: "",
@@ -26,6 +27,7 @@ export default function AdvisorApply() {
     mutationFn: applyAdvisor,
     onSuccess: () => {
       alert("Application submitted");
+      navigate("../");
     }
   });
 
@@ -60,14 +62,19 @@ export default function AdvisorApply() {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [name]: name === "TypesID" ? parseInt(value) : value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (mutation.isPending) return;
+
     mutation.mutate(form);
   };
 
@@ -113,8 +120,8 @@ export default function AdvisorApply() {
             Field
           </label>
           <select
-            value={form.field}
-            name="field"
+            value={form.TypesID}
+            name="TypesID"
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -122,7 +129,7 @@ export default function AdvisorApply() {
             <option value="">Select Field</option>
 
             {types.map((type) => (
-              <option key={type.TypesID} value={type.TypesName}>
+              <option key={type.TypesID} value={type.TypesID}>
                 {type.TypesName}
               </option>
             ))}
@@ -198,13 +205,20 @@ export default function AdvisorApply() {
             value={form.license_number}
             onChange={handleChange}
           />
+          {mutation.isPending ?(
+            <button
+              type="submit"
+              className="w-full bg-gray-600 text-white py-2 rounded-lg"
+            >
+              Submiting......
+            </button>
+          ):( <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            >
+              Submit Application
+            </button>)}
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Submit Application
-          </button>
 
         </form>
 
