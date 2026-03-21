@@ -66,12 +66,6 @@ function Section({ title, children }) {
     );
 }
 
-
-
-
-/* ════════════════════════════════════════════════════════════════
-   MAIN COMPONENT
-═══════════════════════════════════════════════════════════════════ */
 export default function DetailAdvisor() {
     const queryClient = useQueryClient();
 
@@ -97,8 +91,11 @@ export default function DetailAdvisor() {
         queryKey: ["advisorProfile"],
         queryFn: fetchDetailAdvisor,
     });
+    console.log(data);
 
-    
+
+
+
 
     /* ── skill mutations ──────────── */
     const inv = () => queryClient.invalidateQueries({ queryKey: ["advisorProfile"] });
@@ -168,44 +165,49 @@ export default function DetailAdvisor() {
         addBioMutation.mutate({ bio });
         setEditingBio(false);
     };
-    /* ════════════════════════════════════════════════════
-       RENDER
-    ═══════════════════════════════════════════════════════ */
+
     return (
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-xl mx-auto font-sans">
-
-            {/* ── banner ── */}
-            <div className="h-32 bg-gradient-to-br from-indigo-400 via-violet-400 to-fuchsia-300 relative">
-                <div className="absolute -bottom-10 left-6 w-20 h-20 rounded-2xl bg-white shadow-md flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-200 to-violet-200" />
-                </div>
-            </div>
-
-            <div className="px-6 pt-14 pb-6">
-
+        <div className="bg-white rounded-2xl px-6 pt-5 pb-6 shadow-lg overflow-hidden  max-w-xl mx-2 font-sans relative">
+           
                 {/* ── profile header ── */}
-                <div className="flex items-start justify-between mb-1">
+                <div className="flex flex-col items-center  justify-center gap-2">
+                    <div className="w-25 h-25  md:w-37 md:h-37 rounded-full overflow-hidden bg-gray-200">
+                        {advisor[0].imageAdvisorUrl ? (
+                            <img
+                                src={advisor[0].imageAdvisorUrl}
+                                className="w-full h-full object-cover"
+                                alt="profile"
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </div>
                     <div>
                         <h2 className="text-xl font-bold text-slate-800">
-                            {advisor[0].Fadvisor} {advisor[0].Ladvisor}  ({advisor[0].Type}) 
+                            {advisor[0].Fadvisor} {advisor[0].Ladvisor}
                         </h2>
                         <p className="text-sm text-slate-500">{advisor.Age}</p>
                     </div>
-                    
+                    <h2 className="text-x text-slate-800">
+                        ({advisor[0].Type})
+                    </h2>
+
                     <div >
                         <span className="text-yellow-500">
                             {"★".repeat(Math.round(rating[0].AverageRating || 0))}
-                            
+
                         </span>
-                         <span className="text-gray-500 text-sm mx-1">
-                            {rating[0].AverageRating || 0}   
+                        <span className="text-gray-500 text-sm mx-1">
+                            {rating[0].AverageRating || 0}
                         </span>
 
                         <span className="text-gray-500 text-sm">
                             ({rating[0].ReviewCount})
                         </span>
                     </div>
+
                 </div>
+
 
                 <Section title="เกี่ยวกับฉัน">
                     {editingBio ? (
@@ -413,7 +415,7 @@ export default function DetailAdvisor() {
                     </div>
                 </Section>
 
-            </div>
+            
         </div>
     );
 }

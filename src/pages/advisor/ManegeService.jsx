@@ -275,7 +275,7 @@ export default function ManageService() {
 
             <button
               type="submit"
-              className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 hidden md:block"
             >
               {isEdit ? "Update Service" : "Create Service"}
             </button>
@@ -297,6 +297,13 @@ export default function ManageService() {
             />
 
           </div>
+
+          <button
+              type="submit"
+              className=" md:hidden w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              {isEdit ? "Update Service" : "Create Service"}
+            </button>
 
         </div>
 

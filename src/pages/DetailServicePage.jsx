@@ -14,6 +14,7 @@ export default function DetailServicePage() {
 
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [openBooking, setOpenBooking] = useState(false);
 
   /* SERVICE INFO */
   const { data } = useQuery({
@@ -44,9 +45,9 @@ export default function DetailServicePage() {
     topicRatings.length > 0
       ? topicRatings
       : (topics || []).map((t) => ({
-          TopicName: t.TopicName,
-          AvgScore: 0,
-        }));
+        TopicName: t.TopicName,
+        AvgScore: 0,
+      }));
 
   /* STAR RENDER */
   const renderStars = (rating = 0) => {
@@ -85,7 +86,7 @@ export default function DetailServicePage() {
             <div>
 
               {/* MAIN IMAGE */}
-              <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+              <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
 
                 {mainImage ? (
                   <img
@@ -127,15 +128,14 @@ export default function DetailServicePage() {
             </div>
 
             {/* RATING SUMMARY */}
-            <div className="flex mt-10 mb-10">
+            <div className="flex flex-col md:flex-row justify-center md:justify-start mt-10 mb-10 text-center md:text-left">
 
-              <div className="mt-6 items-center">
-
+              {/* RATING SUMMARY */}
+              <div className="flex flex-col items-center">
                 <Link
                   to={`/AdviserProfile/${service.advisorID}`}
                   className="w-20 h-20 flex flex-col justify-center items-center bg-gray-100 rounded-full"
                 >
-
                   <span className="text-xl font-bold">
                     {rating?.AverageScore || "0.0"}
                   </span>
@@ -143,44 +143,31 @@ export default function DetailServicePage() {
                   <span className="text-xs text-gray-500">
                     จาก {rating?.ReviewCount || 0} รีวิว
                   </span>
-
                 </Link>
 
-                <div className="text-yellow-500 text-xl">
+                <div className="text-yellow-500 text-xl mt-2">
                   {renderStars(rating?.AverageScore || 0)}
                 </div>
-
               </div>
 
-              <div className="border-l mx-20 border-gray-300"></div>
+              {/* Divider */}
+              <div className="hidden md:block border-l mx-6 h-24 border-gray-300"></div>
 
-              {/* TOPIC RATINGS */}
-              <div className="mt-6 grid grid-cols-2 gap-x-40 gap-y-5">
-
+              {/* TOPICS */}
+              <div className="grid grid-cols-2 gap-4 mt-6 md:mt-0">
                 {topicList.map((topic) => (
+                  <div key={topic.TopicName} className="text-center md:text-left">
+                    <p className="text-gray-700 text-sm">{topic.TopicName}</p>
 
-                  <div key={topic.TopicName}>
-
-                    <p className="text-lg text-gray-700">
-                      {topic.TopicName}
-                    </p>
-
-                    <div className="flex gap-2 text-yellow-500 text-xl mb-2">
-
+                    <div className="text-yellow-500 flex items-center justify-center md:justify-start gap-1">
                       {renderStars(topic?.AvgScore || 0)}
-
-                      <div className="text-black font-bold">
+                      <span className="text-black font-bold text-sm">
                         ({topic?.AvgScore || 0})
-                      </div>
-
+                      </span>
                     </div>
-
                   </div>
-
                 ))}
-
               </div>
-
             </div>
 
             {/* REVIEWS */}
@@ -229,13 +216,39 @@ export default function DetailServicePage() {
           </div>
 
           {/* BOOKING SIDEBAR */}
-          <div>
+          <div className="hidden md:block">
             <BookingSidebar serviceID={service?.ServiceID} />
           </div>
 
         </div>
 
       </div>
+
+      {/* MOBILE BOOKING BAR */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 md:hidden z-50">
+        <button
+          onClick={() => setOpenBooking(true)}
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
+        >
+          จองตอนนี้
+        </button>
+      </div>
+      {openBooking && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center">
+
+          <div className="bg-white w-full md:max-w-md p-6 rounded-t-2xl md:rounded-lg">
+
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-bold text-lg">จองบริการ</h2>
+              <button onClick={() => setOpenBooking(false)}>✕</button>
+            </div>
+
+            <BookingSidebar serviceID={service?.ServiceID} />
+
+          </div>
+
+        </div>
+      )}
 
       <Footer />
 

@@ -13,6 +13,8 @@ export default function SessionRoom() {
     const [searchParams] = useSearchParams();
     const BookingID = searchParams.get("BookingID");
 
+    const [showSidebar, setShowSidebar] = useState(false);
+
     const socketRef = useRef(null);
     const bottomRef = useRef(null);
 
@@ -22,7 +24,7 @@ export default function SessionRoom() {
     const { startCall } = useVideo();
     const { user } = useAuth();
 
-    // ---------------- GET ROOM ----------------
+    // -------- QUERY --------
     const { data: roomInfo } = useQuery({
         queryKey: ["roomByBooking", BookingID, user],
         queryFn: () =>
@@ -30,10 +32,7 @@ export default function SessionRoom() {
                 ? getRoomByBooking(BookingID)
                 : getRoomByBookingAdvisor(BookingID),
         enabled: !!BookingID && !!user,
-        refetchOnWindowFocus: false
     });
-
-    console.log("from froned sessionroom", roomInfo?.[0])
 
     const myRole = user;
 
@@ -47,12 +46,10 @@ export default function SessionRoom() {
             ? roomInfo?.AdvisorName
             : roomInfo?.UserName;
 
-    // ---------------- OLD MESSAGES ----------------
     const { data: oldMessages = [] } = useQuery({
         queryKey: ["messages", roomInfo?.RoomID],
         queryFn: () => fetchMessages(roomInfo.RoomID),
         enabled: !!roomInfo?.RoomID,
-        refetchOnWindowFocus: false
     });
 
     useEffect(() => {
@@ -60,7 +57,8 @@ export default function SessionRoom() {
             setMessages(oldMessages);
         }
     }, [oldMessages]);
-    // ---------------- SOCKET ----------------
+
+    // -------- SOCKET --------
     useEffect(() => {
         if (!roomInfo?.RoomID || !myId) return;
 
@@ -80,24 +78,12 @@ export default function SessionRoom() {
         connectSocket();
 
         return () => {
-            if (socket) {
-                socket.off("newMessage");
-                socket.disconnect();
-            }
+            socket?.disconnect();
         };
     }, [roomInfo?.RoomID, myId]);
 
     const sendMessage = () => {
-        if (!text.trim() || !socketRef.current) return;
-
-        const optimisticMsg = {
-            SenderID: myId,
-            SenderRole: myRole,
-            MessageText: text,
-            CreatedAt: new Date().toISOString()
-        };
-
-        setMessages((prev) => [...prev, optimisticMsg]);
+        if (!text.trim()) return;
 
         socketRef.current.emit("sendMessage", {
             roomId: roomInfo.RoomID,
@@ -115,18 +101,27 @@ export default function SessionRoom() {
         <div className="flex flex-col h-screen bg-white">
             <NavbarSwitcher />
 
-            <div className="flex flex-1 overflow-hidden bg-gray-100">
-                {/* SIDEBAR */}
-                <div className="w-80 bg-white border-r flex flex-col">
-                    <div className="p-4 border-b">
-                        <h2 className="font-bold text-lg mb-3">Booking Sessions</h2>
-                        <div className="relative">
-                            <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                            <input
-                                className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-lg outline-none text-sm"
-                                placeholder="ค้นหา..."
-                            />
+            <div className="flex flex-1 overflow-hidden">
+
+                {/* ✅ MOBILE SIDEBAR (overlay) */}
+                {showSidebar && (
+                    <div className="fixed inset-0 bg-black/40 z-40 md:hidden">
+                        <div className="w-72 bg-white h-full p-3">
+                            <button
+                                onClick={() => setShowSidebar(false)}
+                                className="mb-3 text-sm"
+                            >
+                                ❌ ปิด
+                            </button>
+                            <SessionList />
                         </div>
+                    </div>
+                )}
+
+                {/* ✅ DESKTOP SIDEBAR */}
+                <div className="hidden md:flex w-72 bg-white border-r flex-col">
+                    <div className="p-4 border-b">
+                        <h2 className="font-bold text-lg">Sessions</h2>
                     </div>
                     <div className="flex-1 overflow-y-auto p-3">
                         <SessionList />
@@ -134,18 +129,29 @@ export default function SessionRoom() {
                 </div>
 
                 {/* MAIN */}
-                <div className="flex-1 flex flex-col h-full">
+                <div className="flex-1 flex flex-col">
+
                     {/* HEADER */}
-                    <div className="flex items-center justify-between bg-gray-300 px-6 py-4">
-                        <div >
-                            <p className="text-sm text-gray-500">{roomInfo?.ServiceName}</p>
-                        </div>
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-gray-200">
+
+                        {/* 🔥 MOBILE MENU BUTTON */}
+                        <button
+                            onClick={() => setShowSidebar(true)}
+                            className="md:hidden text-sm"
+                        >
+                            ☰
+                        </button>
+
+                        <p className="text-sm truncate">
+                            {roomInfo?.ServiceName}
+                        </p>
 
                         <Video
-                            className={`${roomInfo?.RoomStatus === "active"
-                                ? "cursor-pointer hover:text-blue-600"
-                                : "text-gray-400 cursor-not-allowed"
-                                }`}
+                            className={`${
+                                roomInfo?.RoomStatus === "active"
+                                    ? "cursor-pointer"
+                                    : "text-gray-400"
+                            }`}
                             onClick={() => {
                                 if (roomInfo?.RoomStatus !== "active") return;
                                 startCall(roomInfo.RoomURL, myUserName);
@@ -154,7 +160,7 @@ export default function SessionRoom() {
                     </div>
 
                     {/* CHAT */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-2 sm:space-y-3">
                         {messages.map((msg, i) => {
                             const isMine =
                                 msg.SenderID === myId &&
@@ -163,14 +169,16 @@ export default function SessionRoom() {
                             return (
                                 <div
                                     key={i}
-                                    className={`flex ${isMine ? "justify-end" : "justify-start"
-                                        }`}
+                                    className={`flex ${
+                                        isMine ? "justify-end" : "justify-start"
+                                    }`}
                                 >
                                     <div
-                                        className={`p-3 rounded-xl border max-w-xs text-sm ${isMine
-                                            ? "bg-blue-500 text-white border-blue-500"
-                                            : "bg-white text-gray-800"
-                                            }`}
+                                        className={`px-3 py-2 rounded-xl max-w-[75%] text-sm ${
+                                            isMine
+                                                ? "bg-blue-500 text-white"
+                                                : "bg-white border"
+                                        }`}
                                     >
                                         {msg.MessageText}
                                     </div>
@@ -180,9 +188,10 @@ export default function SessionRoom() {
                         <div ref={bottomRef} />
                     </div>
 
+                    {/* INPUT */}
                     {roomInfo?.RoomStatus === "active" && (
-                        <div className="p-4 bg-gray-200">
-                            <div className="flex items-center gap-4 bg-white rounded-full px-6 py-3">
+                        <div className="p-3 sm:p-4 bg-gray-100">
+                            <div className="flex items-center gap-2 sm:gap-4 bg-white rounded-full px-4 py-2">
                                 <input
                                     value={text}
                                     onChange={(e) => setText(e.target.value)}
@@ -191,7 +200,7 @@ export default function SessionRoom() {
                                 />
                                 <button
                                     onClick={sendMessage}
-                                    className="text-blue-500 font-semibold"
+                                    className="text-blue-500 text-sm font-semibold"
                                 >
                                     ส่ง
                                 </button>

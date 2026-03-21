@@ -53,15 +53,24 @@ export default function AdvisorServiceList() {
     return (
         <div className="min-h-screen bg-gray-50">
             <NavbarAdvisor />
-            <div className="w-full h-64 bg-gray-200 flex justify-center items-center">
-                <div className="w-60 h-48 bg-gray-300"></div>
+
+            <div className="w-full h-40 sm:h-52 md:h-64 relative overflow-hidden">
+                {services.length > 0 && (
+                    <img
+                        src={services[0].ImageURL}
+                        alt="banner"
+                        className="w-full h-full object-cover blur-md scale-110"
+                    />
+                )}
+
+                <div className="absolute inset-0 bg-black/30"></div>
             </div>
 
             <div className="max-w-8xl mx-auto px-6 -mt-32">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 ">
 
                     <DetailAdvisor />
-                    <div className="lg:col-span-3 mt-40">
+                    <div className="lg:col-span-3 md:mt-40">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {services?.map((service) => (
                                 <div key={service.ServiceID} className="flex flex-col border p-4 rounded bg-gray-50 h-full">
@@ -134,13 +143,9 @@ export default function AdvisorServiceList() {
                                 <div className="flex items-center justify-center w-full h-full bg-gray-200 rounded mb-4">
                                     <span className="text-3xl text-gray-400 group-hover:text-blue-500 font-light">+</span>
                                 </div>
-
                             </Link>
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
         </div>

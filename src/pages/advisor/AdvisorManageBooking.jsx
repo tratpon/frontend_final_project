@@ -8,49 +8,40 @@ import {
 export default function AdvisorManageBooking() {
   const queryClient = useQueryClient();
 
-  /* ===============================
-     FETCH INCOMING BOOKINGS
-     (Status = pending)
-  =============================== */
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["incomingBookings"],
     queryFn: fetchBookingsByAdvisor,
   });
-console.log(bookings)
-  /* ===============================
-     UPDATE STATUS (ACCEPT / REJECT)
-  =============================== */
+  console.log(bookings)
+
   const updateMutation = useMutation({
     mutationFn: mangeBooking,
     onSuccess: () => {
-      queryClient.invalidateQueries(["incomingBookings"]);
-      queryClient.invalidateQueries(["advisorAvailability"]);
+      console.log("onsuccess");
+      queryClient.invalidateQueries({
+        queryKey: ["incomingBookings"]
+      });
     },
   });
 
   const handleUpdate = (bookingID, status) => {
     updateMutation.mutate({
       bookingID,
-      status, // "confirmed" | "rejected"
+      status,
     });
   };
-
-  /* ===============================
-     UI
-  =============================== */
 
   return (
     <div>
       <NavbarSwitcher />
-
       <div className="max-w-4xl mx-auto p-6">
 
         <h1 className="text-2xl font-bold mb-6">
-          Incoming Jobs
+          งานที่เข้ามา
         </h1>
 
         {isLoading && (
-          <div className="text-gray-500">Loading...</div>
+          <div className="text-gray-500">โหลด...</div>
         )}
 
         {!isLoading && bookings.length === 0 && (
@@ -61,54 +52,58 @@ console.log(bookings)
 
         <div className="space-y-4">
           {bookings.map((job) => (
-  <div
-    key={job.BookID}
-    className="border rounded-lg p-5 shadow-sm bg-white"
-  >
-    <div className="flex justify-between items-start">
+            <div
+              key={job.BookID}
+              className="border rounded-lg p-5 shadow-sm bg-white"
+            >
+              <div className="flex justify-between items-start">
 
-      {/* LEFT SIDE INFO */}
-      <div>
-        <div className="text-lg font-semibold">
-          {job.UserName}
-        </div>
+                {/* LEFT SIDE INFO */}
+                <div>
+                  <div className="text-lg font-semibold">
+                    {job.UserName}
+                  </div>
 
-        <div className="text-sm text-gray-600 mt-1">
-          Service: {job.ServiceName}
-        </div>
+                  <div className="text-sm text-gray-600 mt-1">
+                    บริการ: {job.ServiceName}
+                  </div>
 
-        <div className="text-sm text-gray-600">
-          Date: {new Date(job.AvailableDate).toLocaleDateString()}
-        </div>
+                  <div className="text-sm text-gray-600">
+                    วันที่: {new Date(job.AvailableDate).toLocaleDateString()}
+                  </div>
 
-        <div className="text-sm text-gray-600">
-          Time: {job.StartTime.slice(0,5)} - {job.EndTime.slice(0,5)}
-        </div>
-      </div>
+                  <div className="text-sm text-gray-600">
+                    เวลา: {job.StartTime.slice(0, 5)} - {job.EndTime.slice(0, 5)}
+                  </div>
 
-      {/* ACTION BUTTONS */}
-      <div className="flex gap-2">
-        <button
-          onClick={() =>
-            handleUpdate(job.BookID, "confirmed")
-          }
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          Accept
-        </button>
+                  <div className="text-sm text-gray-600">
+                    โน๊ต: {job.note}
+                  </div>
+                </div>
 
-        <button
-          onClick={() =>
-            handleUpdate(job.BookID, "rejected")
-          }
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Reject
-        </button>
-      </div>
-    </div>
-  </div>
-))}
+                {/* ACTION BUTTONS */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      handleUpdate(job.BookID, "confirmed")
+                    }
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  >
+                    Accept
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleUpdate(job.BookID, "rejected")
+                    }
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
       </div>

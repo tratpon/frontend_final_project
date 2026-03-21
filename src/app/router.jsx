@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import RequireRole from "./RequireRole";
 import { ROLES } from "./roles";
 
+
 import Mainpage from '../pages/MainPage.jsx';
 import ServicePage from '../pages/ServicePage.jsx';
 import DetailServicePage from '../pages/DetailServicePage.jsx';
@@ -13,6 +14,7 @@ import Hisrory from '../pages/user/HistoryPage.jsx';
 import Booking from "../pages/user/Booking.jsx";
 import UserProfile from "../pages/user/UserProfile.jsx";
 import ChatPage from "../pages/ChatPage.jsx";
+
 
 import Admin from '../pages/admin/AdminPage.jsx';
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
@@ -74,9 +76,8 @@ export default function AppRouter() {
                 <Route path="/Advisor/AdvisorProfile" element={<AdvisorProfile />} />
                 <Route path="/Advisor/ServiceList" element={<AdvisorServiceList />} />
                 <Route path="/Advisor/ManegeService/:id?" element={<ManegeSevice />} />
-                <Route path="/Advisor/TimeManegemet" element={<AdvisorTimeManegemet />} />
+                <Route path="/Advisor/TimeManagement" element={<AdvisorTimeManegemet />} />
                 <Route path="/Advisor/ManageBooking" element={<AdvisorManageBooking/>}/>
-               
             </Route>
            
 
