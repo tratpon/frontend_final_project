@@ -30,6 +30,7 @@ import AdvisorServiceList from "../pages/advisor/AdvisorServiceList.jsx";
 import ManegeSevice from "../pages/advisor/ManegeService.jsx";
 import AdvisorTimeManegemet from "../pages/advisor/AdvisortimeManegement.jsx";
 import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
+import AdviosrHistory from "../pages/advisor/AdvisorHistory.jsx";
 
 import RequireAuth from "./RequireAuth.jsx";
 import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
@@ -37,6 +38,7 @@ import AdvisorApply from "../pages/applyAdvisorPage.jsx";
 
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AdvisorRegister from "../pages/AdvisorRegister.jsx";
+import AdminApproveSlip from "../pages/admin/AdminApproveSlip.jsx";
 
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
@@ -78,6 +80,7 @@ export default function AppRouter() {
                 <Route path="/Advisor/ManegeService/:id?" element={<ManegeSevice />} />
                 <Route path="/Advisor/TimeManagement" element={<AdvisorTimeManegemet />} />
                 <Route path="/Advisor/ManageBooking" element={<AdvisorManageBooking/>}/>
+                <Route path="/Advisor/AdviosrHistory" element={<AdviosrHistory/>}/>
             </Route>
            
 
@@ -89,6 +92,7 @@ export default function AppRouter() {
                 <Route path="/admin/Approve" element={<AdminApprove />} ></Route>
                 <Route path="/admin/Approve/Form/:id" element={<AdminApproveForm />} ></Route>
                 <Route path="/admin/Approve/post" element={<AdminApprovePost />} ></Route>
+                <Route path="/admin/Approve/slip" element={<AdminApproveSlip />} ></Route>
             </Route>
         </Routes>
     );

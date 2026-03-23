@@ -3,7 +3,7 @@ import NavbarAdvisor from "../../components/NavbarAdvisor";
 import Footer from "../../components/Footer";
 import {
     fetchMyAdvisorProfile,
-    updateMyProfile,
+    updateProfileAdvisor,
     fetchAdvisorDashboard
 } from "../../app/Api";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -46,7 +46,8 @@ export default function AdvisorProfile() {
         Age: "",
         Email: "",
         Phone: "",
-        imageAdvisorUrl: ""
+        imageAdvisorUrl: "",
+        Promptpay: ""
     });
 
     const [editMode, setEditMode] = useState(false);
@@ -63,9 +64,11 @@ export default function AdvisorProfile() {
         queryFn: fetchAdvisorDashboard
     });
 
-    const stats = dataD?.data?.stats;
-    const rating = dataD?.data?.rating;
-    const services = dataD?.data?.topService;
+    const stats = dataD?.stats;
+    const rating = dataD?.rating;
+    const services = dataD?.topService;
+    console.log(stats, rating, services);
+
 
     useEffect(() => {
         if (data) {
@@ -75,7 +78,7 @@ export default function AdvisorProfile() {
 
     // 🟡 Update
     const updateMutation = useMutation({
-        mutationFn: updateMyProfile,
+        mutationFn: updateProfileAdvisor,
         onSuccess: () => {
             alert("Updated!");
             setEditMode(false);
@@ -126,16 +129,25 @@ export default function AdvisorProfile() {
                             </div>
                         </div>
                         {/* Form */}
-                        <div className=" mb-5"> 
+                        <div className=" mb-5">
                             <Field label="Username" name="Username" value={form.Username} disabled />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                             <Field label="First Name" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
                             <Field label="Last Name" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Gender" name="Gender" value={form.Gender} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
+                            <div>
+                                <label label="Gender" className="block text-sm mb-1">Gender</label>
+                                <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base">
+                                    <option value="ชาย">ชาย</option>
+                                    <option value="หญิง">หญิง</option>
+                                    <option value="ไม่ระบุ">ไม่ระบุ</option>
+                                    <option value="อื่นๆ">อื่นๆ</option>
+                                </select>
+                            </div>
+                            <Field label="Age" name="Age" type='number' value={form.Age} onChange={handleChange} disabled={!editMode} />
+                            <Field label="Phone" name="Phone" type='number' value={form.Phone} onChange={handleChange} disabled={!editMode} />
+                            <Field label="Promptpay" name="Promptpay" type='number' value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
                             <Field label="Email" name="Email" value={form.Email} disabled />
                         </div>
                         {/* Buttons */}
@@ -193,7 +205,7 @@ export default function AdvisorProfile() {
 }
 
 // 🔹 Field
-function Field({ label, name, value, onChange, disabled }) {
+function Field({ label, name, value, onChange, disabled, type }) {
     return (
         <div>
             <label className="block text-sm mb-1">{label}</label>
@@ -201,6 +213,7 @@ function Field({ label, name, value, onChange, disabled }) {
                 name={name}
                 value={value || ""}
                 onChange={onChange}
+                type={type}
                 disabled={disabled}
                 className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base"
             />

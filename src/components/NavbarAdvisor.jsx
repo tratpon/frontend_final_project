@@ -43,10 +43,10 @@ const NavbarAdvisor = () => {
 
             {/* Desktop Menu */}
             <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">
-                <Link to="/">HOME</Link>
-                <Link to="/service">SERVICE</Link>
-                <Link to="/community">COMMUNITY</Link>
-                <Link to="/notfound">ABOUT US</Link>
+                <Link to="/">หน้าหลัก</Link>
+                <Link to="/service">บริการ</Link>
+                <Link to="/community">คอมมูนิตี้</Link>
+                <Link to="/notfound">เกี่ยวกับเรา</Link>
             </nav>
 
             {/* Right Side */}
@@ -86,27 +86,27 @@ const NavbarAdvisor = () => {
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                             <Link to="/advisor/AdvisorProfile" className="block px-4 py-2 hover:bg-gray-100">
-                                Profile
+                                โปรไฟล์
                             </Link>
 
                             <Link to="/session" className="block px-4 py-2 hover:bg-gray-100">
-                                Chat
+                                แชท
                             </Link>
 
                             <Link to="/advisor/TimeManagement" className="block px-4 py-2 hover:bg-gray-100">
-                                Manage Time
+                                จัดการเวลา
                             </Link>
 
                             <Link to="/advisor/ServiceList" className="block px-4 py-2 hover:bg-gray-100">
-                                Manage Service
+                                จัดการบริการ
                             </Link>
 
                             <Link to="/advisor/ManageBooking" className="block px-4 py-2 hover:bg-gray-100">
-                                Manage Booking
+                                จัดการการจอง
                             </Link>
 
-                            <Link to="/history" className="block px-4 py-2 hover:bg-gray-100">
-                                History
+                            <Link to="/advisor/AdviosrHistory" className="block px-4 py-2 hover:bg-gray-100">
+                                ประวัติ
                             </Link>
 
                             <hr className="my-1" />
@@ -115,7 +115,7 @@ const NavbarAdvisor = () => {
                                 onClick={handleLogOut}
                                 className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
                             >
-                                Logout
+                                ออกจากระบบ
                             </button>
                         </div>
                     )}

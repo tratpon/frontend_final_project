@@ -19,8 +19,8 @@ export const fetchMySessions = () => privateApi.get("session/mysessions").then(r
 export const fetchMySessionsAdvisor= () => privateApi.get("session/mysessionsadvisor").then(res => res.data);
 export const getRoomByBookingAdvisor = (bookingId) => privateApi.get(`/session/joinforadvisor/${bookingId}`).then(res => res.data);
 export const getRoomByBooking = (bookingId) => privateApi.get(`/session/join/${bookingId}`).then(res => res.data);
-export const joinRoom = (roomId) => privateApi.post(`/session/joinroom`, { roomId }).then(res => res.data);
-export const leaveRoom = (roomId) => privateApi.post(`/session/leaveRoom`, { roomId }).then(res => res.data);
+export const joinRoom = (roomId) => privateApi.post(`/session/joinroom`,{roomId}).then(res => res.data);
+export const completedRoom = (roomId) => privateApi.post(`/session/completedRoom`,roomId).then(res => res.data);
 export const fetchMessages = (roomId) =>privateApi.get(`/session/getmessage/${roomId}`).then(res => res.data);
             
 
@@ -38,6 +38,7 @@ export const addComment = async (data) => await privateApi.post('/community/addC
 export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
 export const createBill = (data) => privateApi.post('/booking/createbill', data).then(res => res.data);
+export const uploadSlip = (data) => privateApi.post('/booking/uploadSlip', data).then(res => res.data);
 
 export const updateBillStatus = (billId) =>
   privateApi.push(`/service/${billId}`).then(res => res.data);
@@ -54,6 +55,8 @@ export const createBooking = async (data) => await privateApi.post('/booking/cre
 export const fetchBookingsByUser = () => privateApi.get('/booking/fetchBookingsByUser').then(res => res.data);
 
 export const fetchBookingsByAdvisor = () => privateApi.get('/booking/fetchBookingsByAdvisor').then(res => res.data);
+export const fetchBookingsByAdmin= () => privateApi.get('/booking/fetchBookingsByAdmin').then(res => res.data);
+export const updateStatusSlip = (data) => privateApi.post('/booking/updateStatusSlip', data ).then(res => res.data);
 
 export const mangeBooking = (data) =>
   privateApi.post('/booking/mangeBooking', data )
@@ -97,6 +100,10 @@ export const fetchMyAdvisorProfile = async () =>
 
 export const updateMyProfile = async (data) =>
   await privateApi.put("/userprofile/updateMyProfile", data).then(res => res.data);
+
+
+export const updateProfileAdvisor = async (data) =>
+  await privateApi.put("/userprofile/updateProfileAdvisor", data).then(res => res.data);
 
 
 export const fetchDetailAdvisor = async () =>
@@ -220,6 +227,7 @@ export const updateApplyAdvisor = ({id,status}) => {
 
 export const fetchAdvisorDashboard = () =>
   privateApi.get(`/dashboard/getAdvisorDashboard`).then(res => res.data);
+
 export const fetchAdminDashboard = () =>
   privateApi.get(`/dashboard/getAdminDashboard`).then(res => res.data);
 

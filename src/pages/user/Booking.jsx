@@ -1,26 +1,29 @@
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import Footer from "../../components/Footer";
-import { fetchMyProfile, createBooking, fetchBookingDetail, createBill } from "../../app/Api";
+import { fetchMyProfile, createBooking, fetchBookingDetail, createBill, uploadSlip, uploadToCloudinary } from "../../app/Api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import NotFound from "../NotFound";
 export default function Booking() {
     const queryClient = useQueryClient();
     const [searchParams] = useSearchParams();
     const availabilityId = searchParams.get("availabilityId");
-
+    const billID = searchParams.get("billID");
+    const [slipFile, setSlipFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const navigate = useNavigate();
     const [bill, setBill] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [note, setNote] =useState("")
-  
+    const [note, setNote] = useState("")
+
     // 🔵 FETCH PROFILE
     const { data: profile, isLoading: profileLoading } = useQuery({
         queryKey: ["myProfile"],
         queryFn: fetchMyProfile
     });
     console.log(profile);
-    
+
 
     // 🔵 FETCH DETAIL
     const { data: detail, isLoading: detailLoading } = useQuery({
@@ -30,7 +33,7 @@ export default function Booking() {
     });
 
     console.log(detail);
-    
+
     // 🔴 SUBMIT
     const handleSubmit = async () => {
         if (loading) return;
@@ -56,10 +59,17 @@ export default function Booking() {
                 bookId,
                 amount: detail?.price || 0
             });
-
+            
+            navigate(`/Booking?availabilityId=${availabilityId}&billID=${newBill.BillID}`);
+            
             // 3️⃣ set QR
             setBill(newBill);
+            console.log(newBill);
 
+            queryClient.invalidateQueries({
+                queryKey: ["pendingBookings"],
+            });
+            
             alert("Booking Success");
         } catch (err) {
             console.error(err);
@@ -69,14 +79,39 @@ export default function Booking() {
         }
     };
 
+    const handleUploadSlip = async () => {
+        if (!slipFile) return;
+
+        try {
+            setUploading(true);
+            const upslipFile = await uploadToCloudinary(slipFile)
+            console.log(upslipFile);
+            
+            const slip = await uploadSlip({
+                billId:billID,
+                SlipURL: upslipFile.url
+            });
+        
+            alert("อัปโหลดสำเร็จ รอตรวจสอบ");
+            navigate("../history")
+            
+        } catch (err) {
+            console.error(err);
+           
+        } finally {
+            setUploading(false);
+        }
+    };
+
     // ⏳ LOADING
     if (profileLoading || detailLoading) {
         return <div className="p-10 text-center">Loading...</div>;
     }
 
-    if(detail?.Status == "booked"){
-        return(<NotFound />)
-    }
+    // if (detail?.Status == "booked") {
+    //     return (<NotFound />)
+    // }
+    
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <NavbarSwitcher />
@@ -133,19 +168,42 @@ export default function Booking() {
                     <button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className={`px-6 py-2 rounded text-white ${
-                            loading ? "bg-gray-400" : "bg-blue-600"
-                        }`}
+                        className={`px-6 py-2 rounded text-white ${loading ? "bg-gray-400" : "bg-blue-600"
+                            }`}
                     >
                         {loading ? "Processing..." : "Confirm Booking"}
                     </button>
 
                     {/* QR */}
+                
                     {bill && (
-                        <div className="mt-4 flex justify-center">
-                            <img src={bill.QRCode} alt="PromptPay QR" />
+                        <div className="mt-6 space-y-4 text-center">
+
+                            <img src={bill.QRCode} alt="PromptPay QR" className="mx-auto" />
+
+                            <div>
+                                <p className="text-sm mb-2">แนบสลิปการโอนเงิน</p>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setSlipFile(e.target.files[0])}
+                                    className="block mx-auto"
+                                />
+                            </div>
+
+                            <button
+                                onClick={handleUploadSlip}
+                                disabled={!slipFile || uploading}
+                                className={`px-4 py-2 rounded text-white ${uploading ? "bg-gray-400" : "bg-green-600"
+                                    }`}
+                            >
+                                {uploading ? "Uploading..." : "ยืนยันการชำระเงิน"}
+                            </button>
+
                         </div>
                     )}
+
                 </div>
             </main>
 

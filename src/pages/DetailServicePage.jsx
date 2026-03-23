@@ -11,7 +11,6 @@ import {
 import BookingSidebar from "../components/BookingSidebar.jsx";
 
 export default function DetailServicePage() {
-
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
   const [openBooking, setOpenBooking] = useState(false);

@@ -120,7 +120,15 @@ export default function UserProfile() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <Field label="First Name" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
             <Field label="Last Name" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
-            <Field label="Gender" name="Gender" value={form.Gender} onChange={handleChange} disabled={!editMode} />
+            <div>
+              <label label="Gender" className="block text-sm mb-1">Gender</label>
+              <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base">
+                <option value="ชาย">ชาย</option>
+                <option value="หญิง">หญิง</option>
+                <option value="ไม่ระบุ">ไม่ระบุ</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+            </div>
             <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
             <Field label="Email" value={form.Email} disabled />
             <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />

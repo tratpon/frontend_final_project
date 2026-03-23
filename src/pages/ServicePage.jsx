@@ -50,7 +50,7 @@ export default function ServicePage() {
             <span className="text-gray-400 mr-2">🔍</span>
             <input
               type="text"
-              placeholder="Search for..."
+              placeholder="ค้นหา..."
               value={keyword}
               className="w-full py-2 outline-none text-sm sm:text-base"
               onChange={(e) => {

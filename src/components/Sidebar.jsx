@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { House, Airplay, User, MessageSquareText } from "lucide-react";
+import { House, Airplay, User, MessageSquareText, Receipt} from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
@@ -54,6 +54,12 @@ const Sidebar = () => {
                         <MessageSquareText />
                         <NavLink to="/admin/Approve/post" className={getNavLinkClass}>
                             Approve Post
+                        </NavLink>
+                    </div>
+                    <div className="flex items-center gap-3 hover:text-blue-600">
+                        <Receipt />
+                        <NavLink to="/admin/Approve/slip " className={getNavLinkClass}>
+                            ตรวจสอบสลิป
                         </NavLink>
                     </div>
                 </nav>
