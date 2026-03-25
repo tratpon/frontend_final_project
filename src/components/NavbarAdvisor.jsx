@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 import { signOut } from "firebase/auth";
@@ -10,6 +10,13 @@ const NavbarAdvisor = () => {
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const { setUser, imageUserUrl } = useAuth();
+
+    const getNavLinkClass = ({ isActive }) =>
+        isActive ? "text-blue-700 " : "hover:text-blue-600";
+
+
+    const getNavLinkhambergerClass = ({ isActive }) =>
+        isActive ? "block px-4 py-2 text-blue-700 " : "block px-4 py-2 hover:bg-gray-100";
 
     const handleLogOut = async () => {
         try {
@@ -42,11 +49,11 @@ const NavbarAdvisor = () => {
             </div>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">
-                <Link to="/">หน้าหลัก</Link>
-                <Link to="/service">บริการ</Link>
-                <Link to="/community">คอมมูนิตี้</Link>
-                <Link to="/notfound">เกี่ยวกับเรา</Link>
+            <nav className="hidden md:flex items-center space-x-6 text-x text-gray-700">
+                <NavLink to="/" className={getNavLinkClass}>หน้าหลัก</NavLink>
+                <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
+                <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
+                <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
             </nav>
 
             {/* Right Side */}
@@ -85,29 +92,29 @@ const NavbarAdvisor = () => {
                     {/* Dropdown menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <Link to="/advisor/AdvisorProfile" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/AdvisorProfile" className="block px-4 py-2 hover:bg-gray-100">
                                 โปรไฟล์
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/session" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/session" className="block px-4 py-2 hover:bg-gray-100">
                                 แชท
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/advisor/TimeManagement" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/TimeManagement" className="block px-4 py-2 hover:bg-gray-100">
                                 จัดการเวลา
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/advisor/ServiceList" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/ServiceList" className="block px-4 py-2 hover:bg-gray-100">
                                 จัดการบริการ
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/advisor/ManageBooking" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/ManageBooking" className="block px-4 py-2 hover:bg-gray-100">
                                 จัดการการจอง
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/advisor/AdviosrHistory" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/AdviosrHistory" className="block px-4 py-2 hover:bg-gray-100">
                                 ประวัติ
-                            </Link>
+                            </NavLink>
 
                             <hr className="my-1" />
 
@@ -125,10 +132,10 @@ const NavbarAdvisor = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start p-4 space-y-4 md:hidden">
-                    <Link to="/" onClick={() => setIsOpen(false)}>HOME</Link>
-                    <Link to="/service" onClick={() => setIsOpen(false)}>SERVICE</Link>
-                    <Link to="/community" onClick={() => setIsOpen(false)}>COMMUNITY</Link>
-                    <Link to="/notfound" onClick={() => setIsOpen(false)}>ABOUT US</Link>
+                    <NavLink to="/" onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
+                    <NavLink to="/service" onClick={() => setIsOpen(false)}>บริการ</NavLink>
+                    <NavLink to="/community" onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
+                    <NavLink to="/notfound" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
                 </div>
             )}
         </header>

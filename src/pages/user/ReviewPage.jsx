@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchtopics, createreview } from "../../app/Api";
 import { useState } from "react";
 
@@ -8,18 +8,23 @@ export default function ReviewModal({ booking, onClose }) {
     queryKey: ["topics"],
     queryFn: fetchtopics
   });
-
+  const queryClient = useQueryClient();
   const [scores, setScores] = useState({});
   const [reviewText, setReviewText] = useState("");
 
   const mutation = useMutation({
     mutationFn: createreview,
     onSuccess: () => {
+      queryClient.invalidateQueries(["Myhistory"]);
       onClose();
     }
   });
 
   const handleSubmit = () => {
+    if (Object.keys(scores).length !== topics.length) {
+      alert("กรอกคะแนนให้ครบ");
+      return;
+    }
 
     const scoreArray = Object.entries(scores).map(([topicId, score]) => ({
       topicId: Number(topicId),
@@ -50,7 +55,7 @@ export default function ReviewModal({ booking, onClose }) {
 
             <div className="flex gap-2 mt-1">
 
-              {[1,2,3,4,5].map((star) => (
+              {[1, 2, 3, 4, 5].map((star) => (
 
                 <button
                   key={star}
@@ -60,11 +65,10 @@ export default function ReviewModal({ booking, onClose }) {
                       [topic.TopicID]: star
                     })
                   }
-                  className={`text-2xl ${
-                    scores[topic.TopicID] >= star
+                  className={`text-2xl ${scores[topic.TopicID] >= star
                       ? "text-yellow-500"
                       : "text-gray-300"
-                  }`}
+                    }`}
                 >
                   ★
                 </button>
@@ -97,7 +101,7 @@ export default function ReviewModal({ booking, onClose }) {
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-600 text-white rounded"
           >
-            Submit
+            {mutation.isLoading ? "Submitting..." : "Submit"}
           </button>
 
         </div>

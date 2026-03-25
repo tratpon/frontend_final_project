@@ -53,6 +53,7 @@ export const fetchBookingDetail = (availabilityId) => privateApi.get(`/booking/d
 export const createBooking = async (data) => await privateApi.post('/booking/createbooking', data).then(res => res.data);
 
 export const fetchBookingsByUser = () => privateApi.get('/booking/fetchBookingsByUser').then(res => res.data);
+export const fetchHistoryUser = () => privateApi.get('/booking/fetchHistoryUser').then(res => res.data);
 
 export const fetchBookingsByAdvisor = () => privateApi.get('/booking/fetchBookingsByAdvisor').then(res => res.data);
 export const fetchBookingsByAdmin= () => privateApi.get('/booking/fetchBookingsByAdmin').then(res => res.data);
@@ -63,7 +64,7 @@ export const mangeBooking = (data) =>
     .then(res => res.data);
     
 export const updateBookingStatus = (data) => privateApi.put("/booking/updateStatus", data).then((res) => res.data);
-
+export const fetchPayoutByAdvisor = () => privateApi.get("/booking/getPayoutByAdvisor").then((res) => res.data);
 export const fetchSlots = (id, selectedDate) =>
   api.get(`/service/getSlotByDate/${id}/${selectedDate}`)
      .then(res => res.data);
@@ -224,6 +225,20 @@ export const fetchApplyAdvisorByID = (id) =>
 export const updateApplyAdvisor = ({id,status}) => {
   privateApi.put(`/admin/updateApplyAdvisor/${id}`,{status}).then(res => res.data);
 };
+
+export const updateStatusAccount = (data) => {
+  privateApi.put(`/admin/updateStatusAccount`,data).then(res => res.data);
+};
+
+export const fetchPayout = () =>
+  privateApi.get(`/admin/getPayout`).then(res => res.data);
+
+export const updatePayoutWithSlip = (data) => {
+  privateApi.put('/admin/updatePayoutWithSlip', data).then(res => res.data);
+};
+
+
+
 
 export const fetchAdvisorDashboard = () =>
   privateApi.get(`/dashboard/getAdvisorDashboard`).then(res => res.data);

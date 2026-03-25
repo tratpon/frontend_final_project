@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 import { signOut } from "firebase/auth";
@@ -10,6 +10,13 @@ const NavbarLoin = () => {
     const menuRef = useRef();
     const navigate = useNavigate();
     const { setUser, imageUserUrl } = useAuth();
+
+    const getNavLinkClass = ({ isActive }) =>
+        isActive ? "text-blue-700 " : "hover:text-blue-600";
+
+
+    const getNavLinkhambergerClass = ({ isActive }) =>
+        isActive ? "block px-4 py-2 text-blue-700 " : "block px-4 py-2 hover:bg-gray-100";
 
     const handleLogOut = async () => {
         try {
@@ -46,11 +53,11 @@ const NavbarLoin = () => {
             </div>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">
-                <Link to="/">HOME</Link>
-                <Link to="/service">SERVICE</Link>
-                <Link to="/community">COMMUNITY</Link>
-                <Link to="/notfound">ABOUT US</Link>
+            <nav className="hidden md:flex items-center space-x-6 text-x text-gray-700">
+                <NavLink to="/main" end className={getNavLinkClass}>หน้าหลัก</NavLink>
+                <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
+                <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
+                <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
             </nav>
 
             {/* Right Side */}
@@ -58,14 +65,14 @@ const NavbarLoin = () => {
                 {/* Hamburger */}
                 <button
                     className="md:hidden w-10 h-10 flex items-center justify-center text-xl"
-                    onClick={() =>{setIsOpen(!isOpen),setOpenMenu(false)}}
+                    onClick={() => { setIsOpen(!isOpen), setOpenMenu(false) }}
                 >
                     ☰
                 </button>
                 {/* Profile */}
                 <div className="relative" ref={menuRef}>
                     <button
-                        onClick={() => {setOpenMenu(!openMenu),setIsOpen(false);}}
+                        onClick={() => { setOpenMenu(!openMenu), setIsOpen(false); }}
                         className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center"
                     >
                         {imageUserUrl ? (
@@ -75,9 +82,10 @@ const NavbarLoin = () => {
 
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <Link to="/UserProfile" className="block px-4 py-2 hover:bg-gray-100">Profile</Link>
-                            <Link to="/session" className="block px-4 py-2 hover:bg-gray-100">Chat</Link>
-                            <Link to="/history" className="block px-4 py-2 hover:bg-gray-100">History</Link>
+                            <NavLink to="/UserProfile" className={getNavLinkhambergerClass}>หน้าหลัก</NavLink>
+                            <NavLink to="/session" className={getNavLinkhambergerClass}>แชท</NavLink>
+                            <NavLink to="/BookingStatus" className={getNavLinkhambergerClass}>สถานะการจอง</NavLink>
+                            <NavLink to="/history" className={getNavLinkhambergerClass}>ประวัติ</NavLink>
                             <hr />
                             <button onClick={handleLogOut} className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
                                 Logout
@@ -90,10 +98,10 @@ const NavbarLoin = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start p-4 space-y-4 md:hidden">
-                    <Link to="/" onClick={() => setIsOpen(false)}>HOME</Link>
-                    <Link to="/service" onClick={() => setIsOpen(false)}>SERVICE</Link>
-                    <Link to="/community" onClick={() => setIsOpen(false)}>COMMUNITY</Link>
-                    <Link to="/notfound" onClick={() => setIsOpen(false)}>ABOUT US</Link>
+                    <NavLink to="/" onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
+                    <NavLink to="/service" onClick={() => setIsOpen(false)}>บริการ</NavLink>
+                    <NavLink to="/community" onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
+                    <NavLink to="/notfound" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
                 </div>
             )}
 

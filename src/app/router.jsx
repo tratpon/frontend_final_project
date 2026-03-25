@@ -14,6 +14,7 @@ import Hisrory from '../pages/user/HistoryPage.jsx';
 import Booking from "../pages/user/Booking.jsx";
 import UserProfile from "../pages/user/UserProfile.jsx";
 import ChatPage from "../pages/ChatPage.jsx";
+import BookingStatus from "../pages/user/BookingStatus.jsx";
 
 
 import Admin from '../pages/admin/AdminPage.jsx';
@@ -39,6 +40,7 @@ import AdvisorApply from "../pages/applyAdvisorPage.jsx";
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AdvisorRegister from "../pages/AdvisorRegister.jsx";
 import AdminApproveSlip from "../pages/admin/AdminApproveSlip.jsx";
+import AdminPayout from "../pages/admin/AdminPayout.jsx";
 
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
@@ -70,6 +72,7 @@ export default function AppRouter() {
                 <Route path="/enrollment" element={<Enrollment />} />
                 <Route path="/UserProfile" element={<UserProfile />} />
                 <Route path="/chat" element={<ChatPage />} />
+                <Route path="/BookingStatus" element={<BookingStatus />} />
             </Route>
             
             {/* ADVISOR */}
@@ -93,6 +96,7 @@ export default function AppRouter() {
                 <Route path="/admin/Approve/Form/:id" element={<AdminApproveForm />} ></Route>
                 <Route path="/admin/Approve/post" element={<AdminApprovePost />} ></Route>
                 <Route path="/admin/Approve/slip" element={<AdminApproveSlip />} ></Route>
+                <Route path="/admin/Approve/Payout" element={<AdminPayout />} ></Route>
             </Route>
         </Routes>
     );

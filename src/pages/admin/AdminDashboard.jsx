@@ -11,19 +11,24 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 
 export default function AdminDashboard() {
 
-  const { data } = useQuery({
-    queryKey:["adminDashboard"],
+  const { data, isLoading } = useQuery({
+    queryKey: ["adminDashboard"],
     queryFn: fetchAdminDashboard
   });
 
-  const charts = data?.data?.charts;
-  const rankings = data?.data?.rankings;
-  const users = data?.data?.userStats;
+  if (isLoading) return <div>Loading...</div>;
+
+  console.log(data);
+
+  // ✅ แก้ตรงนี้ (สำคัญมาก)
+  const charts = data?.charts;
+  const rankings = data?.rankings;
+  const users = data?.userStats;
 
   const monthlyRevenue = charts?.monthlyRevenue || [];
   const bookingPerMonth = charts?.bookingPerMonth || [];
@@ -31,6 +36,11 @@ export default function AdminDashboard() {
 
   const topAdvisors = rankings?.topAdvisors || [];
   const topServices = rankings?.topServices || [];
+
+  const chartData = monthlyRevenue.map(item => ({
+  ...item,
+  profit: item.revenue * 0.10 
+}));
 
   return (
     <div className="min-h-screen bg-gray-200">
@@ -45,20 +55,21 @@ export default function AdminDashboard() {
 
           <StatCard
             icon="💰"
-            title="Monthly Revenue"
-            value={`$${monthlyRevenue?.[monthlyRevenue.length-1]?.revenue || 0}`}
+            title="รายได้/กำไร"
+            value={`$${monthlyRevenue.at(-1)?.revenue || 0}`}
+            sup={`$${monthlyRevenue.at(-1)?.revenue * 0.10 || 0}`}
           />
 
           <StatCard
             icon="📦"
-            title="Bookings"
-            value={bookingPerMonth?.[bookingPerMonth.length-1]?.total || 0}
+            title="การจอง"
+            value={bookingPerMonth.at(-1)?.total || 0}
           />
 
           <StatCard
             icon="👤"
-            title="New Users"
-            value={newUsers?.[newUsers.length-1]?.total || 0}
+            title="ผู้ใช้ไหม"
+            value={newUsers.at(-1)?.total || 0}
           />
 
         </div>
@@ -66,23 +77,42 @@ export default function AdminDashboard() {
         {/* CHARTS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
 
-          <ChartCard title="Monthly Revenue">
+          <ChartCard title="รายรับรายเดือน">
 
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={monthlyRevenue}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="revenue" />
-              </LineChart>
-            </ResponsiveContainer>
+
+
+
+            <ResponsiveContainer width="100%" height={250}>
+  <LineChart data={chartData}> {/* ใช้ข้อมูลที่ map แล้ว */}
+    <XAxis dataKey="month" />
+    <YAxis />
+    <Tooltip />
+    
+    {/* เส้นรายรับ */}
+    <Line 
+      type="monotone" 
+      dataKey="revenue" 
+      name="รายรับ" 
+      stroke="#8884d8" 
+      strokeWidth={2} 
+    />
+    
+    {/* เส้นกำไร (เส้นที่สอง) */}
+    <Line 
+      type="monotone" 
+      dataKey="profit" 
+      name="กำไร" 
+      stroke="#82ca9d" 
+      strokeWidth={2} 
+    />
+  </LineChart>
+</ResponsiveContainer>
 
           </ChartCard>
 
+          <ChartCard title="การจองต่อแเดือน">
 
-          <ChartCard title="Bookings per Month">
-
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={250}>
               <BarChart data={bookingPerMonth}>
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -107,7 +137,7 @@ export default function AdminDashboard() {
     </div>
   );
 }
-function StatCard({ icon, title, value }) {
+function StatCard({ icon, title, value, sup }) {
 
   return (
     <div className="bg-white rounded-xl p-6 flex items-center gap-4 shadow-sm">
@@ -118,7 +148,10 @@ function StatCard({ icon, title, value }) {
 
       <div>
         <p className="text-sm text-gray-400">{title}</p>
-        <p className="font-bold text-lg">{value}</p>
+        <div className="flex items-baseline font-bold text-lg">
+          <p>{value}</p>
+          {sup && <p className="text-green-600">/{sup}</p>}
+        </div>
       </div>
 
     </div>
@@ -147,7 +180,7 @@ function TopAdvisor({ advisors }) {
 
       <div className="space-y-4">
 
-        {advisors?.map((a)=>(
+        {advisors?.map((a) => (
           <div
             key={a.AdvisorID}
             className="flex justify-between border-b pb-2"
@@ -179,7 +212,7 @@ function TopService({ services }) {
 
       <div className="space-y-4">
 
-        {services?.map((s)=>(
+        {services?.map((s) => (
           <div
             key={s.ServiceID}
             className="flex justify-between border-b pb-2"

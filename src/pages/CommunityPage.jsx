@@ -11,7 +11,7 @@ import {
 } from "../app/Api.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MessageSquareText } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/authContext.jsx";
 
 export default function Community() {
   const [commentText, setCommentText] = useState({});
@@ -21,7 +21,7 @@ export default function Community() {
   const [openCommentId, setOpenCommentId] = useState(null);
   const [postId, setpostId] = useState("");
 
-  const { imageUserUrl } = useAuth();
+  const { imageUserUrl, user } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: posts = [] } = useQuery({
@@ -89,50 +89,55 @@ export default function Community() {
 
       {/* Container */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 flex-1">
+        {user && (
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-6 sm:mb-10">
 
-        {/* Create Post */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-6 sm:mb-10">
-          
-          {/* Profile */}
-          <div className="hidden md:flex w-10 h-10 rounded-full overflow-hidden bg-gray-200 items-center justify-center">
-            {imageUserUrl ? (
-              <img src={imageUserUrl} className="w-full h-full object-cover" />
-            ) : (
-              "👤"
-            )}
+            {/* Profile */}
+            <div className="hidden md:flex w-10 h-10 rounded-full overflow-hidden bg-gray-200 items-center justify-center">
+              {imageUserUrl ? (
+                <img src={imageUserUrl} className="w-full h-full object-cover" />
+              ) : (
+                "👤"
+              )}
+            </div>
+
+
+
+            {/* Input */}
+            <input
+              type="text"
+              value={postText}
+              onChange={(e) => setPostText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAddPost();
+              }}
+              placeholder="คุณกำลังคิดอะไรอยู่..."
+              className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm sm:text-base outline-none w-full"
+            />
+
+            {/* Filter */}
+            <select
+              value={type}
+              onChange={(e) => {
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("type", e.target.value);
+                setSearchParams(newParams);
+                setOpenCommentId(null);
+              }}
+              className="border rounded-lg px-3 py-2 bg-white text-sm w-full sm:w-auto"
+            >
+              <option value="">All</option>
+              {types.map((t) => (
+                <option key={t.TypesID} value={t.TypesName}>
+                  {t.TypesName}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Input */}
-          <input
-            type="text"
-            value={postText}
-            onChange={(e) => setPostText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAddPost();
-            }}
-            placeholder="คุณกำลังคิดอะไรอยู่..."
-            className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm sm:text-base outline-none w-full"
-          />
+        )}
 
-          {/* Filter */}
-          <select
-            value={type}
-            onChange={(e) => {
-              const newParams = new URLSearchParams(searchParams);
-              newParams.set("type", e.target.value);
-              setSearchParams(newParams);
-              setOpenCommentId(null);
-            }}
-            className="border rounded-lg px-3 py-2 bg-white text-sm w-full sm:w-auto"
-          >
-            <option value="">All</option>
-            {types.map((t) => (
-              <option key={t.TypesID} value={t.TypesName}>
-                {t.TypesName}
-              </option>
-            ))}
-          </select>
-        </div>
+
 
         {/* Posts */}
         <div className="space-y-6">
@@ -186,33 +191,39 @@ export default function Community() {
                 <div className="mt-4 border-t pt-4 max-h-60 overflow-y-auto space-y-4">
 
                   {/* Add Comment */}
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                      {imageUserUrl ? (
-                        <img src={imageUserUrl} className="w-full h-full object-cover" />
-                      ) : (
-                        "👤"
-                      )}
+                  {user && (
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                        {imageUserUrl ? (
+                          <img src={imageUserUrl} className="w-full h-full object-cover" />
+                        ) : (
+                          "👤"
+                        )}
+                      </div>
+
+                      <input
+                        type="text"
+                        value={commentText[post.PostID] || ""}
+                        onChange={(e) =>
+                          setCommentText({
+                            ...commentText,
+                            [post.PostID]: e.target.value,
+                          })
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleAddComment(post.PostID);
+                          }
+                        }}
+                        placeholder="เขียนความคิดเห็น..."
+                        className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm"
+                      />
                     </div>
 
-                    <input
-                      type="text"
-                      value={commentText[post.PostID] || ""}
-                      onChange={(e) =>
-                        setCommentText({
-                          ...commentText,
-                          [post.PostID]: e.target.value,
-                        })
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleAddComment(post.PostID);
-                        }
-                      }}
-                      placeholder="เขียนความคิดเห็น..."
-                      className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm"
-                    />
-                  </div>
+
+                  )}
+
+
 
                   {/* Comment List */}
                   {comments.map((comment) => (
@@ -226,11 +237,10 @@ export default function Community() {
                       </div>
 
                       <div
-                        className={`rounded-2xl px-3 py-2 text-sm ${
-                          comment.CommenterType === "advisor"
-                            ? "bg-blue-100"
-                            : "bg-gray-100"
-                        }`}
+                        className={`rounded-2xl px-3 py-2 text-sm ${comment.CommenterType === "advisor"
+                          ? "bg-blue-100"
+                          : "bg-gray-100"
+                          }`}
                       >
                         <div className="font-semibold text-xs sm:text-sm">
                           {comment.username}

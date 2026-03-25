@@ -67,12 +67,21 @@ export default function SessionList() {
 
     const leaveMutation = useMutation({
         mutationFn: completedRoom,
-        onSuccess: () => {
-            console.log("completedRoom");
+        onSuccess: (data) => {  
+            alert(data.message);
             queryClient.invalidateQueries({
                 queryKey: ["mySessions"],
             });
-        }
+        },
+        onError: (error) => {
+        console.error("ERROR:", error);
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            "เกิดข้อผิดพลาด";
+
+        alert(message);
+    }
     });
 
     // ✅ Handlers

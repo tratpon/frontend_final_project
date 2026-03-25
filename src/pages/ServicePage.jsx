@@ -71,7 +71,7 @@ export default function ServicePage() {
             }}
             className="border rounded-lg px-3 py-2 bg-white w-full sm:w-auto text-sm sm:text-base"
           >
-            <option value="">All Types</option>
+            <option value="">ทุกประเภท</option>
             {types.map((t) => (
               <option key={t.TypesID} value={t.TypesName}>
                 {t.TypesName}
@@ -158,7 +158,7 @@ export default function ServicePage() {
         {/* Empty State */}
         {services.length === 0 && (
           <div className="text-center text-gray-400 mt-10">
-            No services found
+            ไม่พบบริการ
           </div>
         )}
 

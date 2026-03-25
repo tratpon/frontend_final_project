@@ -178,7 +178,7 @@ export default function Booking() {
                 
                     {bill && (
                         <div className="mt-6 space-y-4 text-center">
-
+                            
                             <img src={bill.QRCode} alt="PromptPay QR" className="mx-auto" />
 
                             <div>
@@ -206,7 +206,6 @@ export default function Booking() {
 
                 </div>
             </main>
-
             <Footer />
         </div>
     );

@@ -49,6 +49,8 @@ export default function AdvisorProfile() {
         imageAdvisorUrl: "",
         Promptpay: ""
     });
+    console.log({form});
+    
 
     const [editMode, setEditMode] = useState(false);
 
