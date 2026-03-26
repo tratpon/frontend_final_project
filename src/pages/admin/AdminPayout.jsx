@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import NavbarAdim from "../../components/NavbarAdmin";
 import Sidebar from "../../components/Sidebar";
 import QRCode from "react-qr-code";
 import {

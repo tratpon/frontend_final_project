@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
-import NavbarAdmin from "../../components/NavbarAdmin";
 import Sidebar from "../../components/Sidebar";
 import { fetchApplyAdvisor } from "../../app/Api";
 import { useState } from "react";

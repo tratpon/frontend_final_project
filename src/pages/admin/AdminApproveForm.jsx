@@ -1,4 +1,3 @@
-import NavbarAdim from "../../components/NavbarAdmin";
 import Sidebar from "../../components/Sidebar";
 import { useQuery, useMutation,useQueryClient } from "@tanstack/react-query";
 import { fetchApplyAdvisorByID, updateApplyAdvisor } from "../../app/Api";

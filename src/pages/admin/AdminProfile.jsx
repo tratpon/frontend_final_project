@@ -1,6 +1,3 @@
-
-import NavbarSwitcher from "../../app/NavbarSwitcht";
-import Footer from "../../components/Footer";
 import { fetchAdminProfile } from "../../app/Api"; // สมมติว่ามี API แยกสำหรับ Admin
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "../../components/Sidebar";
