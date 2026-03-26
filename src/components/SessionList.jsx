@@ -7,7 +7,7 @@ import {
 } from "../app/Api";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function SessionList() {
     const [selectedRoom, setSelectedRoom] = useState(null);
@@ -58,7 +58,7 @@ export default function SessionList() {
         mutationFn: joinRoom,
         onSuccess: () => {
             console.log("joinroom");
-            
+
             queryClient.invalidateQueries({
                 queryKey: ["mySessions"],
             });
@@ -67,33 +67,33 @@ export default function SessionList() {
 
     const leaveMutation = useMutation({
         mutationFn: completedRoom,
-        onSuccess: (data) => {  
+        onSuccess: (data) => {
             alert(data.message);
             queryClient.invalidateQueries({
                 queryKey: ["mySessions"],
             });
         },
         onError: (error) => {
-        console.error("ERROR:", error);
-        const message =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            "เกิดข้อผิดพลาด";
+            console.error("ERROR:", error);
+            const message =
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                "เกิดข้อผิดพลาด";
 
-        alert(message);
-    }
+            alert(message);
+        }
     });
 
     // ✅ Handlers
     const handleStartRoom = (roomId) => {
-        if (!confirm("Do you want to start this room?")) return;
+        if (!confirm("คุณต้องการเริ่มต้นการสนทนาในห้องนี้ใช่หรือไม่?")) return;
         joinMutation.mutate(roomId);
     };
 
     const handleLeave = (roomId, BookingID) => {
-        if (!confirm("Do you want to end this room?")) return;
+        if (!confirm("คุณต้องการจบการสนทนาและออกจากห้องนี้ใช่หรือไม่?")) return;
         console.log(roomId, BookingID);
-        
+
         leaveMutation.mutate({ roomId, BookingID });
     };
 
@@ -107,10 +107,10 @@ export default function SessionList() {
                     className="px-4 py-2 rounded-lg border text-sm font-semibold bg-white"
                 >
                     <option value="all">ทั้งหมด</option>
-                    <option value="waiting">⏳ Waiting</option>
-                    <option value="active">🟢 Active</option>
-                    <option value="completed">🔒 Completed</option>
-                    <option value="cancelled">❌ Cancelled</option>
+                    <option value="waiting">⏳ กำลังรอ</option>
+                    <option value="active">🟢 เปิดใช้งาน</option>
+                    <option value="completed">🔒 เสร์จสิ้น</option>
+                    <option value="cancelled">❌ ยกเลิก</option>
                 </select>
             </div>
 
@@ -177,7 +177,7 @@ export default function SessionList() {
                         {/* Buttons */}
                         {user === "advisor" && status === "completed" && (
                             <p className="bg-gray-400 rounded-full px-6 py-3 text-white text-center font-semibold w-full">
-                                Completed
+                                สิ้นสุด
                             </p>
                         )}
 
@@ -190,7 +190,7 @@ export default function SessionList() {
                                     }}
                                     className="text-white font-semibold w-full"
                                 >
-                                    Start Room
+                                    เริ่มห้อง
                                 </button>
                             </div>
                         )}
@@ -200,13 +200,13 @@ export default function SessionList() {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log('from test',session.RoomID, session.BookingID);
-                                        
+                                        console.log('from test', session.RoomID, session.BookingID);
+
                                         handleLeave(session.RoomID, session.BookingID);
                                     }}
                                     className="text-white font-semibold w-full"
                                 >
-                                    End Room
+                                    จบห้อง
                                 </button>
                             </div>
                         )}

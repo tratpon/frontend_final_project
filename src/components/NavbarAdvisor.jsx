@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -50,7 +50,7 @@ const NavbarAdvisor = () => {
 
             {/* Desktop Menu */}
             <nav className="hidden md:flex items-center space-x-6 text-x text-gray-700">
-                <NavLink to="/" className={getNavLinkClass}>หน้าหลัก</NavLink>
+                <NavLink to="/main" className={getNavLinkClass}>หน้าหลัก</NavLink>
                 <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
                 <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
                 <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
@@ -92,27 +92,28 @@ const NavbarAdvisor = () => {
                     {/* Dropdown menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            <NavLink to="/advisor/AdvisorProfile" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/AdvisorProfile" className={getNavLinkhambergerClass}>
                                 โปรไฟล์
                             </NavLink>
 
-                            <NavLink to="/session" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/session" className={getNavLinkhambergerClass}>
                                 แชท
                             </NavLink>
 
-                            <NavLink to="/advisor/TimeManagement" className="block px-4 py-2 hover:bg-gray-100">
-                                จัดการเวลา
-                            </NavLink>
 
-                            <NavLink to="/advisor/ServiceList" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/ServiceList" className={getNavLinkhambergerClass}>
                                 จัดการบริการ
                             </NavLink>
 
-                            <NavLink to="/advisor/ManageBooking" className="block px-4 py-2 hover:bg-gray-100">
+                            <NavLink to="/advisor/ManageBooking" className={getNavLinkhambergerClass}>
                                 จัดการการจอง
                             </NavLink>
 
-                            <NavLink to="/advisor/AdviosrHistory" className="block px-4 py-2 hover:bg-gray-100">
+                              <NavLink to="/advisor/TimeManagement" className={getNavLinkhambergerClass}>
+                                จัดการเวลา
+                            </NavLink>
+
+                            <NavLink to="/advisor/AdviosrHistory" className={getNavLinkhambergerClass}>
                                 ประวัติ
                             </NavLink>
 
@@ -132,10 +133,10 @@ const NavbarAdvisor = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start p-4 space-y-4 md:hidden">
-                    <NavLink to="/" onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
-                    <NavLink to="/service" onClick={() => setIsOpen(false)}>บริการ</NavLink>
-                    <NavLink to="/community" onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
-                    <NavLink to="/notfound" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
+                    <NavLink to="/main" className={getNavLinkClass} onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
+                    <NavLink to="/service" className={getNavLinkClass} onClick={() => setIsOpen(false)}>บริการ</NavLink>
+                    <NavLink to="/community" className={getNavLinkClass} onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
+                    <NavLink to="/notfound" className={getNavLinkClass} onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
                 </div>
             )}
         </header>

@@ -14,7 +14,7 @@ export default function DetailServicePage() {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
   const [openBooking, setOpenBooking] = useState(false);
-
+  
   /* SERVICE INFO */
   const { data } = useQuery({
     queryKey: ["service", id],
@@ -216,7 +216,7 @@ export default function DetailServicePage() {
 
           {/* BOOKING SIDEBAR */}
           <div className="hidden md:block">
-            <BookingSidebar serviceID={service?.ServiceID} />
+            <BookingSidebar serviceID={id} />
           </div>
 
         </div>

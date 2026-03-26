@@ -1,14 +1,13 @@
 import NavbarAdim from "../../components/NavbarAdmin";
 import Sidebar from "../../components/Sidebar";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation,useQueryClient } from "@tanstack/react-query";
 import { fetchApplyAdvisorByID, updateApplyAdvisor } from "../../app/Api";
 import { useNavigate, useParams } from "react-router-dom";
-
 
 export default function AdminApproveForm() {
   const { id } = useParams()
   const navigate = useNavigate()
-
+const queryClient = useQueryClient();
   const { data: applyrows = [], isLoading } = useQuery({
     queryKey: ["applicationsByID", id],
     queryFn: () => fetchApplyAdvisorByID(id)
@@ -18,6 +17,7 @@ export default function AdminApproveForm() {
   const updateAmutation = useMutation({
     mutationFn: updateApplyAdvisor,
     onSuccess: () => {
+      queryClient.invalidateQueries(["applications"]);
       alert("Updated!");
     }
   });

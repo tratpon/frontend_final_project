@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient  } from "@tanstack/react-query";
 import { applyAdvisor, fetchTypes } from "../app/Api";
 import { useNavigate } from "react-router-dom";
 
 
 export default function AdvisorApply() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     Fname: "",
     Lname: "",
@@ -26,6 +27,7 @@ export default function AdvisorApply() {
   const mutation = useMutation({
     mutationFn: applyAdvisor,
     onSuccess: () => {
+      queryClient.invalidateQueries(["applications"]);
       alert("Application submitted");
       navigate("../");
     }

@@ -36,17 +36,17 @@ export default function ServicePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-linear-to-b from-blue-50 to-white">
       <NavbarSwitcher />
 
-      {/* Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 grow">
-
-        {/* Search + Filter */}
+      <div className="max-w-7xl sm:mx-auto px-4 sm:px-6 py-6 sm:py-10 grow ">
+        <header className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">ค้นหาบริการ</h1>
+          <p className="text-gray-500 text-sm sm:text-base">เลือกบริการที่ปรึกษาที่ตรงใจคุณ</p>
+        </header>
         <div className="flex flex-col sm:flex-row gap-3 mb-6 sm:mb-10">
 
-          {/* Search */}
-          <div className="flex items-center bg-white border rounded-lg px-3 w-full">
+          <div className="flex flex-1 items-center bg-white border rounded-lg shadow-sm px-3 focus-within:ring-2 focus-within:ring-blue-400 transition-all hover:shadow-xl">
             <span className="text-gray-400 mr-2">🔍</span>
             <input
               type="text"
@@ -61,7 +61,6 @@ export default function ServicePage() {
             />
           </div>
 
-          {/* Filter */}
           <select
             value={type}
             onChange={(e) => {
@@ -69,7 +68,7 @@ export default function ServicePage() {
               newParams.set("type", e.target.value);
               setSearchParams(newParams);
             }}
-            className="border rounded-lg px-3 py-2 bg-white w-full sm:w-auto text-sm sm:text-base"
+            className="border rounded-lg px-4 py-2 bg-white shadow-sm outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base w-full sm:w-48 cursor-pointer hover:shadow-xl"
           >
             <option value="">ทุกประเภท</option>
             {types.map((t) => (
@@ -78,21 +77,30 @@ export default function ServicePage() {
               </option>
             ))}
           </select>
+
         </div>
 
+
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {services?.map((service) => (
             <div
               key={service.ServiceID}
-              className="border p-3 sm:p-4 rounded bg-gray-50 h-full"
+              className="border rounded-lg shadow-xl p-3 sm:p-4 bg-gray-50 h-full hover:-translate-y-2 hover:shadow-2xl duration-300"
+
             >
               <Link
                 to={`/detail/${service.ServiceID}`}
                 className="flex flex-col h-full"
               >
+
                 {/* Image */}
-                <div className="w-full h-32 sm:h-40 bg-gray-200 rounded mb-3 sm:mb-4 overflow-hidden">
+                <div className="relative w-full h-32 sm:h-40 bg-gray-200 rounded mb-3 sm:mb-4 overflow-hidden">
+                  <div className="absolute top-2 right-2 z-10 bg-white/80 px-2 py-1 rounded shadow-sm">
+                    <p className="text-[10px] sm:text-xs font-bold text-green-600">
+                      #{service.TypesName}
+                    </p>
+                  </div>
 
                   {service.ImageURL ? (
                     <img
@@ -101,7 +109,9 @@ export default function ServicePage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    ""
+                    <div className="flex items-center justify-center h-full text-gray-400">
+                      No Image
+                    </div>
                   )}
                 </div>
 
@@ -123,9 +133,8 @@ export default function ServicePage() {
                     <h3 className="font-medium text-sm sm:text-base line-clamp-1">
                       {service.ServiceName}
                     </h3>
-
                     <p className="text-xs sm:text-sm text-gray-500">
-                      {service.Fadvisor} {service.Ladvisor} ({service.TypesName})
+                      {service.Fadvisor} {service.Ladvisor}
                     </p>
 
                     <div className="flex items-center gap-2 text-yellow-500 text-xs">

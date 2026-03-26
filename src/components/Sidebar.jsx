@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { House, Airplay, User, MessageSquareText, Receipt, BanknoteArrowDown} from "lucide-react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -32,28 +32,28 @@ const Sidebar = () => {
                     <div className="flex items-center gap-3 hover:text-blue-600">
                         <House />
                         <NavLink to="/admin" end className={getNavLinkClass}>
-                            Account
+                            บัญชี
                         </NavLink>
                     </div>
 
                     <div className="flex items-center gap-3 hover:text-blue-600">
                         <Airplay />
                         <NavLink to="/admin/Dashboard" className={getNavLinkClass}>
-                            Dashboard
+                            แดชบอร์ด
                         </NavLink>
                     </div>
 
                     <div className="flex items-center gap-3 hover:text-blue-600">
                         <User />
                         <NavLink to="/admin/Approve" end className={getNavLinkClass}>
-                            Approve
+                            อนุมัติ advisor
                         </NavLink>
                     </div>
 
                     <div className="flex items-center gap-3 hover:text-blue-600">
                         <MessageSquareText />
                         <NavLink to="/admin/Approve/post" end className={getNavLinkClass}>
-                            Approve Post
+                            โพสต์
                         </NavLink>
                     </div>
                     <div className="flex items-center gap-3 hover:text-blue-600">

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTypes } from '../app/Api.js';
 import { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 
 
 
@@ -23,53 +24,65 @@ export default function Mainpage() {
     }
   }, [types]);;
 
+  const handleSearch = () => {
+    navigate(`/service?keyword=${encodeURIComponent(keyword)}&type=${encodeURIComponent(type)}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <NavbarSwitcher />
-      <section className="min-h-screen bg-gray-200 py-20 flex flex-col items-center justify-center text-center px-4">
-
-        {/* Welcome Text */}
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-semibold mb-8">
-          welcome
-        </h1>
-
-        {/* Search Bar */}
-        <div className="flex flex-col md:flex-row w-full md:w-3/4 lg:w-1/2 bg-white border rounded shadow-sm overflow-hidden">
-
-          {/* Input */}
-          <div className="flex items-center px-3 text-gray-400">
-            🔍
-          </div>
-
-          <input
-            className="flex-1 py-3 px-2 outline-none"
-            placeholder="Search for..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-
-          {/* Select */}
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="border-t md:border-t-0 md:border-l px-3 py-2 text-sm text-gray-600"
-          >
-            {types.map((type) => (
-              <option key={type.TypesID}>{type.TypesName}</option>
-            ))}
-          </select>
-
-          {/* Button */}
-          <button
-            onClick={() => navigate(`/service?keyword=${keyword}&type=${type}`)}
-            className="px-6 py-3 bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Search
-          </button>
-
+      <section className=" flex-1 flex flex-col items-center justify-center px-4 bg-linear-to-b from-blue-50 to-white py-20">
+        
+        {/* Welcome Text Area */}
+        <div className="max-w-4xl w-full text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+            ค้นหาคำปรึกษาที่ <span className="text-blue-600">ใช่สำหรับคุณ</span>
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            ไม่ว่าจะเป็นเรื่องสุขภาพจิต การทำงาน หรือการเงิน เรามีผู้เชี่ยวชาญพร้อมดูแลคุณ
+          </p>
         </div>
 
+        {/* Improved Search Bar Design */}
+        <div className="w-full max-w-3xl bg-white p-2 rounded-2xl md:rounded-full shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-2 transition-all hover:shadow-2xl">
+          
+          {/* Input Group */}
+          <div className="flex flex-1 items-center w-full px-4 border-b md:border-b-0 md:border-r border-gray-100">
+            <Search className="text-gray-400 mr-2" size={20} />
+            <input
+              className="w-full py-4 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+              placeholder="ค้นหาบริการหรือผู้ให้คำปรึกษา..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+          </div>
+
+          {/* Select Group */}
+          <div className="w-full md:w-auto px-4 border-b md:border-b-0 md:border-r border-gray-100">
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full py-4 bg-transparent outline-none text-gray-600 font-medium cursor-pointer"
+            >
+              {types.map((t) => (
+                <option key={t.TypesID} value={t.TypesName}>
+                  {t.TypesName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Search Button */}
+          <button
+            onClick={handleSearch}
+            className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl md:rounded-full hover:bg-blue-700 active:scale-95 transition-all shadow-md hover:shadow-lg"
+          >
+            ค้นหา
+          </button>
+        </div>
+
+       
       </section>
       <Footer />
     </div>

@@ -10,11 +10,8 @@ const Footer = () => {
     </span>
 
     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
-      <NavLink to="/AdvisorApply">work with us</NavLink>
-      <span>Twelve</span>
-      <span>Thirteen</span>
-      <span>Fourteen</span>  
-      <span>Fifteen</span>
+      <NavLink to="/AdvisorApply">ทำงานกับเรา</NavLink>
+      
     </div>
 
     {/* Social Icons */}

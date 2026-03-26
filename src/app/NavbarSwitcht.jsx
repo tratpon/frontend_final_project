@@ -1,4 +1,4 @@
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 import NavbarLoin from "../components/NavbarLoing";
 import NavbarGuest from "../components/NavbarGuest";
 import NavbarAdvisor from "../components/NavbarAdvisor";

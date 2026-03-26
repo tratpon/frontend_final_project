@@ -73,15 +73,28 @@ export default function AdvisorServiceList() {
                     <div className="lg:col-span-3 md:mt-40">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {services?.map((service) => (
-                                <div key={service.ServiceID} className="flex flex-col border p-4 rounded bg-gray-50 h-full">
+                                <div key={service.ServiceID} className="flex flex-col border p-4 rounded bg-gray-50 h-full hover:-translate-y-2 hover:shadow-2xl duration-300">
 
                                     <Link to={`/detail/${service.ServiceID}`} className="flex flex-col flex-1">
 
-                                        <div className="w-full h-40 bg-gray-200 rounded mb-4">
-                                            <img
-                                                src={service.ImageURL}
-                                                className="w-full h-full object-cover"
-                                            />
+                                        <div className="relative w-full h-32 sm:h-40 bg-gray-200 rounded mb-3 sm:mb-4 overflow-hidden">
+                                            <div className="absolute top-2 right-2 z-10 bg-white/80 px-2 py-1 rounded shadow-sm">
+                                                <p className="text-[10px] sm:text-xs font-bold text-green-600">
+                                                    #{service.TypesName}
+                                                </p>
+                                            </div>
+
+                                            {service.ImageURL ? (
+                                                <img
+                                                    src={service.ImageURL}
+                                                    alt={service.ServiceName}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex items-center justify-center h-full text-gray-400">
+                                                    No Image
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="flex items-center gap-3 mb-3">

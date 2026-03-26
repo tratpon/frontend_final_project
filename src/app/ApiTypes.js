@@ -1,13 +1,15 @@
 import axios from "axios";
 import { auth } from "../firebase";
 
+const web = import.meta.env.VITE_API_BASE_URL;
+const localhost = "http://localhost:3001/api"
 
 export const publicApi = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: web,
 });
 
 export const privateApi = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: web,
 });
 
 privateApi.interceptors.request.use(

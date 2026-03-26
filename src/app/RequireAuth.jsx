@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 import { ROLES } from "./roles";
 
 export default function RequireAuth() {
@@ -12,7 +12,7 @@ export default function RequireAuth() {
         case ROLES.ADMIN:
             return <Navigate to="/admin" replace />;
         case ROLES.ADVISOR:
-            return <Navigate to="/advisor" replace />;
+            return <Navigate to="/main" replace />;
         default:
             return <Navigate to="/notfound" replace />;
     }

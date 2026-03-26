@@ -93,7 +93,7 @@ export default function Booking() {
             });
         
             alert("อัปโหลดสำเร็จ รอตรวจสอบ");
-            navigate("../history")
+            navigate("../BookingStatus")
             
         } catch (err) {
             console.error(err);
@@ -121,7 +121,7 @@ export default function Booking() {
 
                     {/* TITLE */}
                     <h2 className="text-lg font-semibold border-b pb-2">
-                        Booking Detail
+                        รายละเอียดการจอง
                     </h2>
 
                     {/* USER INFO */}

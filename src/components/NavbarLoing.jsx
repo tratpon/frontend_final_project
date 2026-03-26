@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -98,10 +98,10 @@ const NavbarLoin = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start p-4 space-y-4 md:hidden">
-                    <NavLink to="/" onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
-                    <NavLink to="/service" onClick={() => setIsOpen(false)}>บริการ</NavLink>
-                    <NavLink to="/community" onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
-                    <NavLink to="/notfound" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
+                    <NavLink to="/main" className={getNavLinkClass} onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
+                    <NavLink to="/service" className={getNavLinkClass} onClick={() => setIsOpen(false)}>บริการ</NavLink>
+                    <NavLink to="/community" className={getNavLinkClass} onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
+                    <NavLink to="/notfound" className={getNavLinkClass} onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
                 </div>
             )}
 

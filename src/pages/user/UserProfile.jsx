@@ -75,11 +75,11 @@ export default function UserProfile() {
     });
   };
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-linear-to-b from-blue-50 to-white">
       <NavbarSwitcher />
 
-      <div className="flex-1 py-6 sm:py-10 px-4">
-        <div className="max-w-3xl mx-auto bg-white border rounded-2xl p-4 sm:p-8 shadow-sm">
+      <div className="flex-1 py-6 sm:py-10 px-4 ">
+        <div className="max-w-3xl mx-auto bg-white border rounded-2xl p-4 sm:p-8 shadow-sm bg-linear-to-b from-blue-50 to-white">
 
           {/* PROFILE IMAGE */}
           <div className="flex flex-col items-center mb-6">
@@ -107,7 +107,7 @@ export default function UserProfile() {
                 onClick={handleUpload}
                 className="mt-3 px-4 py-2 bg-blue-600 text-white rounded text-sm"
               >
-                Upload Image
+                อัปโหลดรูป
               </button>
             )}
           </div>
@@ -122,7 +122,7 @@ export default function UserProfile() {
             <Field label="Last Name" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
             <div>
               <label label="Gender" className="block text-sm mb-1">Gender</label>
-              <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base">
+              <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-white px-4 py-2 rounded border text-sm md:text-base">
                 <option value="ชาย">ชาย</option>
                 <option value="หญิง">หญิง</option>
                 <option value="ไม่ระบุ">ไม่ระบุ</option>
@@ -143,9 +143,9 @@ export default function UserProfile() {
                   setForm(data);
                   setEditMode(false);
                 }}
-                className="bg-gray-400 text-white px-6 py-2 rounded-full"
+                className="text-red px-6 py-2 rounded-full"
               >
-                Cancel
+                ยกเลิก
               </button>
             )}
 
@@ -153,7 +153,7 @@ export default function UserProfile() {
               onClick={handleSubmit}
               className={`px-8 py-2 rounded-full text-white ${editMode ? "bg-blue-600" : "bg-green-600"}`}
             >
-              {editMode ? "Submit" : "Edit"}
+              {editMode ? "ตกลง" : "แก้ไข"}
             </button>
 
           </div>
@@ -176,7 +176,7 @@ function Field({ label, name, value, onChange, disabled }) {
         value={value || ""}
         onChange={onChange}
         disabled={disabled}
-        className="w-full bg-gray-100 px-3 py-2 text-sm rounded border outline-none"
+        className="w-full bg-white px-3 py-2 text-sm rounded border outline-none"
       />
     </div>
   );

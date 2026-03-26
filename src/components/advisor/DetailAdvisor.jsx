@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     fetchDetailAdvisor,
     addSkill,
@@ -96,7 +96,6 @@ export default function DetailAdvisor() {
 
 
 
-
     /* ── skill mutations ──────────── */
     const inv = () => queryClient.invalidateQueries({ queryKey: ["advisorProfile"] });
 
@@ -116,6 +115,15 @@ export default function DetailAdvisor() {
     const updateExpMutation = useMutation({ mutationFn: updateExperience, onSuccess: inv });
     const deleteExpMutation = useMutation({ mutationFn: deleteExperience, onSuccess: inv });
 
+    useEffect(() => {
+
+        const advisorData = data?.advisor;
+        if (advisorData && advisorData.length > 0) {
+            const currentBio = advisorData[0]?.Bio;
+            setBio(currentBio?.trim() ? currentBio : "ยังไม่มีข้อมูลประวัติ");
+        }
+    }, [data]);
+
     /* ── loading ──────────────────── */
     if (isLoading)
         return (
@@ -124,7 +132,15 @@ export default function DetailAdvisor() {
             </div>
         );
 
-    const { advisor, skills, education, experience, rating } = data;
+    const { advisor , skills, education, experience, rating } = data;
+
+
+
+
+
+
+    console.log(bio);
+
 
     /* ── handlers: skill ─────────── */
     const handleAddSkill = () => {
@@ -168,254 +184,254 @@ export default function DetailAdvisor() {
 
     return (
         <div className="bg-white rounded-2xl px-6 pt-5 pb-6 shadow-lg overflow-hidden  max-w-xl mx-2 font-sans relative">
-           
-                {/* ── profile header ── */}
-                <div className="flex flex-col items-center  justify-center gap-2">
-                    <div className="w-25 h-25  md:w-37 md:h-37 rounded-full overflow-hidden bg-gray-200">
-                        {advisor[0].imageAdvisorUrl ? (
-                            <img
-                                src={advisor[0].imageAdvisorUrl}
-                                className="w-full h-full object-cover"
-                                alt="profile"
-                            />
-                        ) : (
-                            "👤"
-                        )}
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-800">
-                            {advisor[0].Fadvisor} {advisor[0].Ladvisor}
-                        </h2>
-                        <p className="text-sm text-slate-500">{advisor.Age}</p>
-                    </div>
-                    <h2 className="text-x text-slate-800">
-                        ({advisor[0].Type})
+
+            {/* ── profile header ── */}
+            <div className="flex flex-col items-center  justify-center gap-2">
+                <div className="w-25 h-25  md:w-37 md:h-37 rounded-full overflow-hidden bg-gray-200">
+                    {advisor[0].imageAdvisorUrl ? (
+                        <img
+                            src={advisor[0].imageAdvisorUrl}
+                            className="w-full h-full object-cover"
+                            alt="profile"
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </div>
+                <div>
+                    <h2 className="text-xl font-bold text-slate-800">
+                        {advisor[0].Fadvisor} {advisor[0].Ladvisor}
                     </h2>
+                    <p className="text-sm text-slate-500">{advisor.Age}</p>
+                </div>
+                <h2 className="text-x text-slate-800">
+                    ({advisor[0].Type})
+                </h2>
 
-                    <div >
-                        <span className="text-yellow-500">
-                            {"★".repeat(Math.round(rating[0].AverageRating || 0))}
+                <div >
+                    <span className="text-yellow-500">
+                        {"★".repeat(Math.round(rating[0].AverageRating || 0))}
 
-                        </span>
-                        <span className="text-gray-500 text-sm mx-1">
-                            {rating[0].AverageRating || 0}
-                        </span>
+                    </span>
+                    <span className="text-gray-500 text-sm mx-1">
+                        {rating[0].AverageRating || 0}
+                    </span>
 
-                        <span className="text-gray-500 text-sm">
-                            ({rating[0].ReviewCount})
-                        </span>
-                    </div>
-
+                    <span className="text-gray-500 text-sm">
+                        ({rating[0].ReviewCount})
+                    </span>
                 </div>
 
+            </div>
 
-                <Section title="เกี่ยวกับฉัน">
-                    {editingBio ? (
-                        <div className="flex flex-col gap-2">
-                            <textarea
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value)}
-                                rows={4}
-                                className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                            />
 
-                            <div className="flex gap-2 justify-end">
-                                <button
-                                    onClick={handleUpdateBio}
-                                    disabled={addBioMutation.isPending}
-                                    className="text-green-500"
-                                >
-                                    confirm
-                                </button>
+            <Section title="เกี่ยวกับฉัน">
+                {editingBio ? (
+                    <div className="flex flex-col gap-2">
+                        <textarea
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            rows={4}
+                            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        />
 
-                                <button
-                                    onClick={() => setEditingBio(false)}
-                                    className="text-gray-400"
-                                >
-                                    cancel
-                                </button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="flex justify-between items-start gap-2">
-                            <p className="text-sm text-slate-600 whitespace-pre-line">
-                                {advisor[0].Bio || "ยังไม่ได้เพิ่ม bio"}
-                            </p>
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={handleUpdateBio}
+                                disabled={addBioMutation.isPending}
+                                className="text-green-500"
+                            >
+                                confirm
+                            </button>
 
                             <button
-                                onClick={() => setEditingBio(true)}
-                                className="text-blue-500 text-sm"
+                                onClick={() => setEditingBio(false)}
+                                className="text-gray-400"
                             >
-                                Edit
+                                cancel
                             </button>
                         </div>
-                    )}
-                </Section>
+                    </div>
+                ) : (
+                    <div className="flex justify-between items-start gap-2">
+                        <p className="text-sm text-slate-600 whitespace-pre-line">
+                            {advisor[0].Bio || "ยังไม่ได้เพิ่ม bio"}
+                        </p>
 
-                {/* ══════════ SKILLS ══════════ */}
-                <Section title="ทักษะ">
-                    <ul className="space-y-2">
-                        {skills.map((s) => (
-                            <li key={s.SkillID} className="flex items-center justify-between gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                        <button
+                            onClick={() => setEditingBio(true)}
+                            className="text-blue-500 text-sm"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                )}
+            </Section>
+
+            {/* ══════════ SKILLS ══════════ */}
+            <Section title="ทักษะ">
+                <ul className="space-y-2">
+                    {skills.map((s) => (
+                        <li key={s.SkillID} className="flex items-center justify-between gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                            {editingSkillId === s.SkillID ? (
+                                <input
+                                    value={editSkillValue}
+                                    onChange={(e) => setEditSkillValue(e.target.value)}
+                                    className="flex-1 text-sm border border-indigo-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            ) : (
+                                <span className="flex-1 text-sm text-slate-700">{s.Description}</span>
+                            )}
+                            <div className="flex gap-2">
                                 {editingSkillId === s.SkillID ? (
-                                    <input
-                                        value={editSkillValue}
-                                        onChange={(e) => setEditSkillValue(e.target.value)}
-                                        className="flex-1 text-sm border border-indigo-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                    />
-                                ) : (
-                                    <span className="flex-1 text-sm text-slate-700">{s.Description}</span>
-                                )}
-                                <div className="flex gap-2">
-                                    {editingSkillId === s.SkillID ? (
-                                        <button
-                                            disabled={updateSkillMutation.isPending}
-                                            onClick={() => handleConfirmEditSkill(s.SkillID)}
-                                            className="text-green-500"
-                                        >
-                                            confirm
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => { setEditingSkillId(s.SkillID); setEditSkillValue(s.Description); }}
-                                            className="text-blue-500"
-                                        >
-                                            Edit
-                                        </button>
-                                    )}
                                     <button
-                                        onClick={() => deleteSkillMutation.mutate(s.SkillID)}
-                                        disabled={deleteSkillMutation.isPending}
-                                        className="text-red-500"
+                                        disabled={updateSkillMutation.isPending}
+                                        onClick={() => handleConfirmEditSkill(s.SkillID)}
+                                        className="text-green-500"
                                     >
-                                        Delete
+                                        confirm
                                     </button>
+                                ) : (
+                                    <button
+                                        onClick={() => { setEditingSkillId(s.SkillID); setEditSkillValue(s.Description); }}
+                                        className="text-blue-500"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => deleteSkillMutation.mutate(s.SkillID)}
+                                    disabled={deleteSkillMutation.isPending}
+                                    className="text-red-500"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+
+                {/* add skill */}
+                <div className="flex gap-2 mt-3">
+                    <input
+                        value={skill}
+                        onChange={(e) => setSkill(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
+                        placeholder="เพิ่มทักษะใหม่..."
+                        className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    />
+                    <button onClick={handleAddSkill} disabled={addSkillMutation.isPending}
+                        className="bg-blue-500 text-white px-3 rounded">
+                        +
+                    </button>
+                </div>
+            </Section>
+
+            {/* ══════════ EDUCATION ══════════ */}
+            <Section title="การศึกษา">
+                <ul className="space-y-2">
+                    {education.map((e) => (
+                        <li key={e.EducationID} className="bg-slate-50 rounded-lg px-3 py-2">
+                            {editingEduId === e.EducationID ? (
+                                <div className="flex flex-col gap-2">
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Field placeholder="วุฒิการศึกษา" value={editEdu.degree} onChange={(v) => setEditEdu({ ...editEdu, degree: v })} />
+                                        <Field placeholder="มหาวิทยาลัย" value={editEdu.university} onChange={(v) => setEditEdu({ ...editEdu, university: v })} />
+                                    </div>
+                                    <Field placeholder="ปีที่จบ" value={editEdu.year} onChange={(v) => setEditEdu({ ...editEdu, year: v })} />
+
+                                    <div className="flex gap-2 justify-end">
+                                        <button disabled={updateEduMutation.isPending} onClick={() => handleConfirmEditEdu(e.EducationID)} className="text-green-500">confirm</button>
+                                        <button onClick={() => setEditingEduId(null)} className="text-gray-400">cancel</button>
+                                    </div>
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm font-medium text-slate-700">{e.Degree}</p>
+                                        <p className="text-xs text-slate-500">{e.University} · {e.GraduationYear}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button className="text-blue-500" onClick={() => { setEditingEduId(e.EducationID); setEditEdu({ degree: e.Degree, university: e.University, year: e.GraduationYear }); }}>Edit</button>
+                                        <button className="text-red-500" disabled={deleteEduMutation.isPending} onClick={() => deleteEduMutation.mutate(e.EducationID)}>Delete</button>
+                                    </div>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
 
-                    {/* add skill */}
-                    <div className="flex gap-2 mt-3">
-                        <input
-                            value={skill}
-                            onChange={(e) => setSkill(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
-                            placeholder="เพิ่มทักษะใหม่..."
-                            className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                        />
-                        <button onClick={handleAddSkill} disabled={addSkillMutation.isPending}
-                            className="bg-blue-500 text-white px-3 rounded">
-                            +
-                        </button>
+                {/* add education */}
+                <div className="mt-3 bg-indigo-50 rounded-xl p-3 flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                        <Field placeholder="วุฒิการศึกษา" value={edu.degree} onChange={(v) => setEdu({ ...edu, degree: v })} />
+                        <Field placeholder="มหาวิทยาลัย" value={edu.university} onChange={(v) => setEdu({ ...edu, university: v })} />
                     </div>
-                </Section>
+                    <YearSelect
+                        value={edu.year}
+                        onChange={(v) => setEdu({ ...edu, year: v })}
+                    />
+                    <button onClick={handleAddEdu} disabled={addEduMutation.isPending}
+                        className="self-end bg-blue-500 text-white px-3 py-1 rounded">
+                        +
+                    </button>
+                </div>
+            </Section>
 
-                {/* ══════════ EDUCATION ══════════ */}
-                <Section title="การศึกษา">
-                    <ul className="space-y-2">
-                        {education.map((e) => (
-                            <li key={e.EducationID} className="bg-slate-50 rounded-lg px-3 py-2">
-                                {editingEduId === e.EducationID ? (
-                                    <div className="flex flex-col gap-2">
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Field placeholder="วุฒิการศึกษา" value={editEdu.degree} onChange={(v) => setEditEdu({ ...editEdu, degree: v })} />
-                                            <Field placeholder="มหาวิทยาลัย" value={editEdu.university} onChange={(v) => setEditEdu({ ...editEdu, university: v })} />
-                                        </div>
-                                        <Field placeholder="ปีที่จบ" value={editEdu.year} onChange={(v) => setEditEdu({ ...editEdu, year: v })} />
-
-                                        <div className="flex gap-2 justify-end">
-                                            <button disabled={updateEduMutation.isPending} onClick={() => handleConfirmEditEdu(e.EducationID)} className="text-green-500">confirm</button>
-                                            <button onClick={() => setEditingEduId(null)} className="text-gray-400">cancel</button>
-                                        </div>
+            {/* ══════════ EXPERIENCE ══════════ */}
+            <Section title="ประสบการณ์">
+                <ul className="space-y-2">
+                    {experience.map((e) => (
+                        <li key={e.ExperienceID} className="bg-slate-50 rounded-lg px-3 py-2">
+                            {editingExpId === e.ExperienceID ? (
+                                <div className="flex flex-col gap-2">
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Field placeholder="องค์กร" value={editExp.organization} onChange={(v) => setEditExp({ ...editExp, organization: v })} />
+                                        <Field placeholder="ตำแหน่ง" value={editExp.position} onChange={(v) => setEditExp({ ...editExp, position: v })} />
                                     </div>
-                                ) : (
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-700">{e.Degree}</p>
-                                            <p className="text-xs text-slate-500">{e.University} · {e.GraduationYear}</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button className="text-blue-500" onClick={() => { setEditingEduId(e.EducationID); setEditEdu({ degree: e.Degree, university: e.University, year: e.GraduationYear }); }}>Edit</button>
-                                            <button className="text-red-500" disabled={deleteEduMutation.isPending} onClick={() => deleteEduMutation.mutate(e.EducationID)}>Delete</button>
-                                        </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Field placeholder="ปีเริ่มต้น" value={editExp.startYear} onChange={(v) => setEditExp({ ...editExp, startYear: v })} />
+                                        <Field placeholder="ปีสิ้นสุด" value={editExp.endYear} onChange={(v) => setEditExp({ ...editExp, endYear: v })} />
                                     </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
+                                    <div className="flex gap-2 justify-end">
+                                        <button disabled={updateExpMutation.isPending} onClick={() => handleConfirmEditExp(e.ExperienceID)} className="text-green-500">confirm</button>
+                                        <button onClick={() => setEditingExpId(null)} className="text-gray-400">cancel</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm font-medium text-slate-700">{e.Position}</p>
+                                        <p className="text-xs text-slate-500">{e.Organization} · {e.StartYear} – {e.EndYear ?? "ปัจจุบัน"}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button className="text-blue-500" onClick={() => { setEditingExpId(e.ExperienceID); setEditExp({ organization: e.Organization, position: e.Position, startYear: e.StartYear, endYear: e.EndYear ?? "" }); }}>Edit</button>
+                                        <button className="text-red-500" disabled={deleteExpMutation.isPending} onClick={() => deleteExpMutation.mutate(e.ExperienceID)}>Delete</button>
+                                    </div>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
 
-                    {/* add education */}
-                    <div className="mt-3 bg-indigo-50 rounded-xl p-3 flex flex-col gap-2">
-                        <div className="grid grid-cols-2 gap-2">
-                            <Field placeholder="วุฒิการศึกษา" value={edu.degree} onChange={(v) => setEdu({ ...edu, degree: v })} />
-                            <Field placeholder="มหาวิทยาลัย" value={edu.university} onChange={(v) => setEdu({ ...edu, university: v })} />
-                        </div>
-                        <YearSelect
-                            value={edu.year}
-                            onChange={(v) => setEdu({ ...edu, year: v })}
-                        />
-                        <button onClick={handleAddEdu} disabled={addEduMutation.isPending}
-                            className="self-end bg-blue-500 text-white px-3 py-1 rounded">
-                            +
-                        </button>
+                {/* add experience */}
+                <div className="mt-3 bg-indigo-50 rounded-xl p-3 flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                        <Field placeholder="องค์กร" value={exp.organization} onChange={(v) => setExp({ ...exp, organization: v })} />
+                        <Field placeholder="ตำแหน่ง" value={exp.position} onChange={(v) => setExp({ ...exp, position: v })} />
                     </div>
-                </Section>
-
-                {/* ══════════ EXPERIENCE ══════════ */}
-                <Section title="ประสบการณ์">
-                    <ul className="space-y-2">
-                        {experience.map((e) => (
-                            <li key={e.ExperienceID} className="bg-slate-50 rounded-lg px-3 py-2">
-                                {editingExpId === e.ExperienceID ? (
-                                    <div className="flex flex-col gap-2">
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Field placeholder="องค์กร" value={editExp.organization} onChange={(v) => setEditExp({ ...editExp, organization: v })} />
-                                            <Field placeholder="ตำแหน่ง" value={editExp.position} onChange={(v) => setEditExp({ ...editExp, position: v })} />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Field placeholder="ปีเริ่มต้น" value={editExp.startYear} onChange={(v) => setEditExp({ ...editExp, startYear: v })} />
-                                            <Field placeholder="ปีสิ้นสุด" value={editExp.endYear} onChange={(v) => setEditExp({ ...editExp, endYear: v })} />
-                                        </div>
-                                        <div className="flex gap-2 justify-end">
-                                            <button disabled={updateExpMutation.isPending} onClick={() => handleConfirmEditExp(e.ExperienceID)} className="text-green-500">confirm</button>
-                                            <button onClick={() => setEditingExpId(null)} className="text-gray-400">cancel</button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-700">{e.Position}</p>
-                                            <p className="text-xs text-slate-500">{e.Organization} · {e.StartYear} – {e.EndYear ?? "ปัจจุบัน"}</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button className="text-blue-500" onClick={() => { setEditingExpId(e.ExperienceID); setEditExp({ organization: e.Organization, position: e.Position, startYear: e.StartYear, endYear: e.EndYear ?? "" }); }}>Edit</button>
-                                            <button className="text-red-500" disabled={deleteExpMutation.isPending} onClick={() => deleteExpMutation.mutate(e.ExperienceID)}>Delete</button>
-                                        </div>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-
-                    {/* add experience */}
-                    <div className="mt-3 bg-indigo-50 rounded-xl p-3 flex flex-col gap-2">
-                        <div className="grid grid-cols-2 gap-2">
-                            <Field placeholder="องค์กร" value={exp.organization} onChange={(v) => setExp({ ...exp, organization: v })} />
-                            <Field placeholder="ตำแหน่ง" value={exp.position} onChange={(v) => setExp({ ...exp, position: v })} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                            <Field placeholder="ปีเริ่มต้น" value={exp.startYear} onChange={(v) => setExp({ ...exp, startYear: v })} />
-                            <Field placeholder="ปีสิ้นสุด (ว่างได้)" value={exp.endYear} onChange={(v) => setExp({ ...exp, endYear: v })} />
-                        </div>
-                        <button onClick={handleAddExp} disabled={addExpMutation.isPending}
-                            className="self-end bg-blue-500 text-white px-3 py-1 rounded">
-                            +
-                        </button>
+                    <div className="grid grid-cols-2 gap-2">
+                        <Field type='Number' placeholder="ปีเริ่มต้น" value={exp.startYear} onChange={(v) => setExp({ ...exp, startYear: v })} />
+                        <Field type='Number' placeholder="ปีสิ้นสุด (ว่างได้)" value={exp.endYear} onChange={(v) => setExp({ ...exp, endYear: v })} />
                     </div>
-                </Section>
+                    <button onClick={handleAddExp} disabled={addExpMutation.isPending}
+                        className="self-end bg-blue-500 text-white px-3 py-1 rounded">
+                        +
+                    </button>
+                </div>
+            </Section>
 
-            
+
         </div>
     );
 }

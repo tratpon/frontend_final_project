@@ -110,14 +110,14 @@ export default function AdvisorProfile() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-gray-50 bg-linear-to-b from-blue-50 to-white">
             <NavbarAdvisor />
 
             <main className="grow">
                 {/* Main Layout */}
-                <div className="flex flex-col lg:flex-row gap-6 max-w-5xl mx-auto pt-6 px-4">
+                <div className="flex flex-col lg:flex-row gap-6 max-w-5xl mx-auto pt-6 px-4 ">
                     {/* Profile */}
-                    <div className="bg-white border rounded-2xl p-6 md:p-8 w-full lg:w-2/3">
+                    <div className="bg-white border rounded-2xl p-6 md:p-8 w-full lg:w-2/3 ">
                         {/* Avatar */}
                         <div className="flex justify-center mb-6">
                             <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
@@ -162,7 +162,7 @@ export default function AdvisorProfile() {
                                     }}
                                     className="bg-gray-400 text-white px-6 py-2 rounded-full"
                                 >
-                                    Cancel
+                                    ยกเลิก
                                 </button>
                             )}
                             <button
@@ -170,7 +170,7 @@ export default function AdvisorProfile() {
                                 className={`px-8 py-2 rounded-full text-white
                                 ${editMode ? "bg-blue-600" : "bg-green-600"}`}
                             >
-                                {editMode ? "Submit" : "Edit"}
+                                {editMode ? "ตกลง" : "แก้ไข"}
                             </button>
                         </div>
                     </div>
@@ -193,7 +193,7 @@ export default function AdvisorProfile() {
                                         />
                                     ))
                                 ) : (
-                                    <p className="text-gray-400">No service data</p>
+                                    <p className="text-gray-400">ไม่มีข้อมูล</p>
                                 )}
                             </div>
                         </div>

@@ -31,9 +31,10 @@ export const deleteAvailability = (id) => privateApi.post(`/mangeservice/deleteA
 
 
 
-export const fetchTypes = () => api.get('/service').then(res => res.data.types);
-export const fetchfilterPost = (type) => api.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
-export const fetchComment = (postId) => api.get(`/community/getComment/${postId}`).then(res => res.data.comments);
+export const fetchTypes = () => publicApi.get('/service').then(res => res.data.types);
+export const fetchfilterPost = (type) => publicApi.get(`/community/getFillter?Type=${type}`).then(res => res.data.posts);
+export const fetchYourPost = (type) => privateApi.get(`/community/getyourpost?Type=${type}`).then(res => res.data.posts);
+export const fetchComment = (postId) => publicApi.get(`/community/getComment/${postId}`).then(res => res.data.comments);
 export const addComment = async (data) => await privateApi.post('/community/addComment', data).then(res => res.data);
 export const addPost = async (data) => await privateApi.post('/community/addpost', data).then(res => res.data);
 
@@ -43,9 +44,9 @@ export const uploadSlip = (data) => privateApi.post('/booking/uploadSlip', data)
 export const updateBillStatus = (billId) =>
   privateApi.push(`/service/${billId}`).then(res => res.data);
 
-export const fetchAllService = () => api.get('/service/getlist').then(res => res.data);
-export const fetchDetailService = (id) => api.get(`/service/getdetail/${id}`).then(res => res.data);
-export const fetchSlotDaysInMonth = (serviceID, year, month) => api.get(`/service/getSlotDaysInMonth/${serviceID}/${year}/${month}`).then(res => res.data);
+export const fetchAllService = () => publicApi.get('/service/getlist').then(res => res.data);
+export const fetchDetailService = (id) => publicApi.get(`/service/getdetail/${id}`).then(res => res.data);
+export const fetchSlotDaysInMonth = (serviceID, year, month) => publicApi.get(`/service/getSlotDaysInMonth/${serviceID}/${year}/${month}`).then(res => res.data);
 
 export const fetchBookingDetail = (availabilityId) => privateApi.get(`/booking/detail/${availabilityId}`).then(res => res.data);
 
@@ -69,7 +70,7 @@ export const fetchSlots = (id, selectedDate) =>
   api.get(`/service/getSlotByDate/${id}/${selectedDate}`)
      .then(res => res.data);
 
-export const fetchfilterService = (Type, keyword) => api.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
+export const fetchfilterService = (Type, keyword) => publicApi.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
 
 
 export const registerUser = async (data) => await  privateApi.post('/auth/register', data).then(res => res.data);
@@ -109,9 +110,6 @@ export const updateProfileAdvisor = async (data) =>
 
 export const fetchDetailAdvisor = async () =>
   await privateApi.get("/userprofile/getdetailadvisor").then(res => res.data);
-
-
-
 
 
 
@@ -168,17 +166,17 @@ export const createreview = (data) =>
   privateApi.post(`/review/createReview`,data).then(res => res.data);
 
 export const fetchservicerating = (id) =>
-  api.get(`/review/getServiceRating/${id}`).then(res => res.data);
+  publicApi.get(`/review/getServiceRating/${id}`).then(res => res.data);
 
 export const fetchadvisorrating = () =>
   privateApi.get(`/review/getAdvisorRating`).then(res => res.data);
 
 
 export const fetchAllServiceAdvisorByID = (id) =>
-  api.get(`/service/getAllServiceAdvisorByID/${id}`).then(res => res.data);
+  publicApi.get(`/service/getAllServiceAdvisorByID/${id}`).then(res => res.data);
 
 export const fetchDetailAdvisorByID = (id) =>
-  api.get(`/service/getDetailAdvisorByID/${id}`).then(res => res.data);
+  publicApi.get(`/service/getDetailAdvisorByID/${id}`).then(res => res.data);
 
 
 
@@ -214,13 +212,13 @@ export const deleteServiceImage = (id) =>
   privateApi.post(`/mangeservice/deleteServiceImage/${id}`).then(res => res.data);
 
 export const applyAdvisor = (data) =>
-  api.post(`/admin/applyAdvisor`,data).then(res => res.data);
+  publicApi.post(`/admin/applyAdvisor`,data).then(res => res.data);
 
 export const fetchApplyAdvisor = () =>
   privateApi.get(`/admin/getApplyAdvisor`).then(res => res.data.applyrows);
 
 export const fetchApplyAdvisorByID = (id) =>
-  api.get(`/admin/getApplyAdvisorByID/${id}`).then(res => res.data.applyrows);
+  publicApi.get(`/admin/getApplyAdvisorByID/${id}`).then(res => res.data.applyrows);
 
 export const updateApplyAdvisor = ({id,status}) => {
   privateApi.put(`/admin/updateApplyAdvisor/${id}`,{status}).then(res => res.data);

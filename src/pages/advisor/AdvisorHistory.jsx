@@ -38,102 +38,114 @@ export default function AdvisorPayoutHistory() {
     <div className="min-h-screen flex flex-col bg-white">
       <NavbarSwitcher />
 
-      <h1 className="text-3xl font-bold text-center mt-10 mb-6">
-        Payout History
-      </h1>
+      {/* ✅ สำคัญ: ทำให้ content ยืดเต็มจอ */}
+      <main className="flex-1">
 
-      {/* FILTER */}
-      <div className="flex justify-center gap-2 mb-6 flex-wrap">
-        {["all", "pending", "paid"].map((status) => (
-          <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`px-4 py-2 rounded-full border ${
-              statusFilter === status
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            {status}
-          </button>
-        ))}
-      </div>
+        <h1 className="text-3xl font-bold text-center mt-10 mb-6">
+          Payout History
+        </h1>
 
-      {/* Loading */}
-      {isLoading && <div className="text-center">Loading...</div>}
-
-      {/* Error */}
-      {error && <div className="text-center text-red-500">Error loading data</div>}
-
-      {/* Empty */}
-      {!isLoading && payouts.length === 0 && (
-        <div className="text-center text-gray-500">
-          No payout history
+        {/* FILTER */}
+        <div className="flex justify-center gap-2 mb-6 flex-wrap">
+          {["all", "pending", "paid"].map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-4 py-2 rounded-full border ${
+                statusFilter === status
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              {status}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* LIST */}
-      <div className="max-w-5xl mx-auto w-full px-4 space-y-4 mb-10">
-        {filtered.map((item) => (
-          <div
-            key={item.PayoutID}
-            className="bg-gray-100 p-5 rounded-xl shadow-sm flex flex-col sm:flex-row gap-4"
-          >
-            {/* LEFT */}
-            <div className="flex-1">
-              <p className="font-semibold text-lg">
-                Booking #{item.BookID}
-              </p>
+        {/* Loading */}
+        {isLoading && (
+          <div className="text-center mt-10">Loading...</div>
+        )}
 
-              <p className="text-gray-500 text-sm">
-                Service: {item.ServiceName}
-              </p>
-
-              <p className="text-gray-500 text-sm">
-                Date: {new Date(item.AvailableDate).toLocaleDateString()}
-              </p>
-            </div>
-
-            {/* MONEY */}
-            <div className="flex flex-col text-sm">
-              <p>Amount: {item.Amount} ฿</p>
-              <p>Fee: {item.PlatformFee} ฿</p>
-              <p className="font-bold text-green-600">
-                Net: {item.NetAmount} ฿
-              </p>
-            </div>
-
-            {/* STATUS */}
-            <div className="flex flex-col items-end">
-              <p className={`font-semibold ${getStatusColor(item.Status)}`}>
-                {item.Status}
-              </p>
-
-              {item.PaidAt && (
-                <p className="text-xs text-gray-500">
-                  Paid: {new Date(item.PaidAt).toLocaleDateString("th-TH")}
-                </p>
-              )}
-            </div>
-
-            {/* SLIP */}
-            <div className="w-20 h-20 border rounded overflow-hidden">
-              {item.SlipURL ? (
-                <img
-                  src={item.SlipURL}
-                  alt="slip"
-                  className="w-full h-full object-cover cursor-pointer"
-                  onClick={() => window.open(item.SlipURL)}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
-                  -
-                </div>
-              )}
-            </div>
+        {/* Error */}
+        {error && (
+          <div className="text-center text-red-500 mt-10">
+            Error loading data
           </div>
-        ))}
-      </div>
+        )}
+
+        {/* Empty */}
+        {!isLoading && payouts.length === 0 && (
+          <div className="text-center text-gray-500 mt-20">
+            No payout history
+          </div>
+        )}
+
+        {/* LIST */}
+        <div className="max-w-5xl mx-auto w-full px-4 space-y-4 mb-10">
+          {filtered.map((item) => (
+            <div
+              key={item.PayoutID}
+              className="bg-gray-100 p-5 rounded-xl shadow-sm flex flex-col sm:flex-row gap-4"
+            >
+              {/* LEFT */}
+              <div className="flex-1">
+                <p className="font-semibold text-lg">
+                  Booking #{item.BookID}
+                </p>
+
+                <p className="text-gray-500 text-sm">
+                  Service: {item.ServiceName}
+                </p>
+
+                <p className="text-gray-500 text-sm">
+                  Date: {new Date(item.AvailableDate).toLocaleDateString()}
+                </p>
+              </div>
+
+              {/* MONEY */}
+              <div className="flex flex-col text-sm">
+                <p>Amount: {item.Amount} ฿</p>
+                <p>Fee: {item.PlatformFee} ฿</p>
+                <p className="font-bold text-green-600">
+                  Net: {item.NetAmount} ฿
+                </p>
+              </div>
+
+              {/* STATUS */}
+              <div className="flex flex-col items-end">
+                <p className={`font-semibold ${getStatusColor(item.Status)}`}>
+                  {item.Status}
+                </p>
+
+                {item.PaidAt && (
+                  <p className="text-xs text-gray-500">
+                    Paid:{" "}
+                    {new Date(item.PaidAt).toLocaleDateString("th-TH")}
+                  </p>
+                )}
+              </div>
+
+              {/* SLIP */}
+              <div className="w-20 h-20 border rounded overflow-hidden">
+                {item.SlipURL ? (
+                  <img
+                    src={item.SlipURL}
+                    alt="slip"
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => window.open(item.SlipURL)}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    -
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </main>
 
       <Footer />
     </div>

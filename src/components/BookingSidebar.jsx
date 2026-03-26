@@ -4,7 +4,7 @@ import { fetchSlots, fetchSlotDaysInMonth } from "../app/Api";
 import { useNavigate } from "react-router-dom";
 
 export default function BookingSidebar({ serviceID }) {
-
+console.log(serviceID);
   const navigate = useNavigate();
   const today = new Date();
 
@@ -29,8 +29,10 @@ export default function BookingSidebar({ serviceID }) {
   const { data: slots = [] } = useQuery({
     queryKey: ["slots", serviceID, selectedDate],
     queryFn: () => fetchSlots(serviceID, selectedDate),
-    enabled: !!serviceID && !!selectedDate,
+    enabled: !!serviceID ,
   });
+  console.log(slots);
+  
 
   /* 📅 fetch วันในเดือนที่มี slot */
   const { data: monthSlots = [] } = useQuery({
