@@ -34,10 +34,10 @@ export default function AdminApprove() {
   return (
     <div className="min-h-screen bg-gray-100">
 
-      <NavbarAdmin />
+    
       <Sidebar />
 
-      <main className="ml-64 pt-24 px-10 pb-10 space-y-4">
+      <main className="ml-64 pt-10 px-10 pb-10 space-y-4">
 
         {/* 🔥 FILTER BUTTON */}
         <div className="flex gap-3 mb-4">

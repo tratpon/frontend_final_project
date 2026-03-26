@@ -3,7 +3,6 @@ import { privateApi ,publicApi } from './ApiTypes';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
-const api = axios.create({ baseURL: 'http://localhost:3001/api' });
 
 
 export const fetchRooms = () => api.get('/chatroom').then(res => res.data.rooms);
@@ -67,7 +66,7 @@ export const mangeBooking = (data) =>
 export const updateBookingStatus = (data) => privateApi.put("/booking/updateStatus", data).then((res) => res.data);
 export const fetchPayoutByAdvisor = () => privateApi.get("/booking/getPayoutByAdvisor").then((res) => res.data);
 export const fetchSlots = (id, selectedDate) =>
-  api.get(`/service/getSlotByDate/${id}/${selectedDate}`)
+  publicApi.get(`/service/getSlotByDate/${id}/${selectedDate}`)
      .then(res => res.data);
 
 export const fetchfilterService = (Type, keyword) => publicApi.get(`/service/getFillter?Type=${encodeURIComponent(Type)}&keyword=${keyword}`).then(res => res.data.services);
@@ -183,7 +182,8 @@ export const fetchDetailAdvisorByID = (id) =>
 export const uploadImageMyProfile = async ({imageUserUrl}) =>
   await privateApi.put("/userprofile/uploadImageMyProfile",{imageUserUrl}).then(res => res.data);
 
-
+export const uploadImageAdvisor = async ({imageAdvisorUrl}) =>
+  await privateApi.put("/userprofile/uploadImageAdvisor",{imageAdvisorUrl}).then(res => res.data);
 
 export const fetchImageMyProfile= () =>
   privateApi.get(`/userprofile/getImageMyProfile`).then(res => res.data);
@@ -231,6 +231,9 @@ export const updateStatusAccount = (data) => {
 export const fetchPayout = () =>
   privateApi.get(`/admin/getPayout`).then(res => res.data);
 
+export const fetchAdminProfile = () =>
+  privateApi.get(`/admin/getAdminProfile`).then(res => res.data);
+
 export const updatePayoutWithSlip = (data) => {
   privateApi.put('/admin/updatePayoutWithSlip', data).then(res => res.data);
 };
@@ -254,7 +257,7 @@ export const uploadToCloudinary = async (file) => {
   formData.append("upload_preset", "final_project");
 
     const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dncviozee/image/upload",
+        import.meta.env.VITE_API_cloudinary,
         {
             method: "POST",
             body: formData

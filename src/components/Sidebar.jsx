@@ -1,5 +1,5 @@
-import { NavLink } from "react-router-dom";
-import { House, Airplay, User, MessageSquareText, Receipt, BanknoteArrowDown} from "lucide-react";
+import { NavLink, Link } from "react-router-dom";
+import { House, Airplay, User, MessageSquareText, Receipt, BanknoteArrowDown } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
@@ -73,9 +73,24 @@ const Sidebar = () => {
             </div>
 
             {/* ด้านล่าง */}
-            <div className="flex justify-end gap-3 hover:text-blue-600">
-                <button onClick={handleLogOut} className="w-full px-4 py-2 text-center text-red-600 hover:bg-gray-100">
-                    Logout
+            <div className="flex flex-col justify-center gap-1 p-2">
+                {/* เมนูบัญชี */}
+                <Link
+                    to="/admin/AdminProfile"
+                    end
+                    className={`${getNavLinkClass} flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-blue-50 hover:text-blue-600`}
+                >
+                    <span>👤</span> บัญชีผู้ดูแลระบบ
+                </Link>
+
+                <hr className="my-2 border-gray-100" />
+
+                {/* ปุ่มออกจากระบบ */}
+                <button
+                    onClick={handleLogOut}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-left text-red-600 rounded-lg transition-colors hover:bg-red-50"
+                >
+                    <span>🚪</span> ออกจากระบบ
                 </button>
             </div>
 

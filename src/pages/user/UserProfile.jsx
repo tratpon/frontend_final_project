@@ -4,10 +4,11 @@ import Footer from "../../components/Footer";
 import {
   fetchMyProfile,
   updateMyProfile,
-  uploadImageMyProfile
+  uploadImageMyProfile,
+  uploadToCloudinary
 } from "../../app/Api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadImage } from "../../app/uploadImage";
+
 
 export default function UserProfile() {
   const queryClient = useQueryClient();
@@ -55,13 +56,25 @@ export default function UserProfile() {
   const handleUpload = async () => {
     if (!image) return alert("Please select image");
 
-    const imageUserUrl = await uploadImage(image);
-    if (!imageUserUrl) return;
+    try {
+      const response = await uploadToCloudinary(image);
 
-    uploadImageMutation.mutate({ imageUserUrl });
+      if (!response.secure_url) {
+        return alert("Upload failed, please try again");
+      }
 
-    setForm({ ...form, imageUserUrl });
-    setImage(null);
+      const secureUrl = response.secure_url; 
+
+      
+      uploadImageMutation.mutate({ imageUserUrl: secureUrl });
+      setForm({ ...form, imageUserUrl: secureUrl });
+      setImage(null);
+
+      alert("Upload successfully!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Something went wrong");
+    }
   };
 
   const handleSubmit = () => {

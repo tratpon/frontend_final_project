@@ -4,7 +4,9 @@ import Footer from "../../components/Footer";
 import {
     fetchMyAdvisorProfile,
     updateProfileAdvisor,
-    fetchAdvisorDashboard
+    fetchAdvisorDashboard,
+    uploadImageAdvisor,
+    uploadToCloudinary
 } from "../../app/Api";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
@@ -49,10 +51,11 @@ export default function AdvisorProfile() {
         imageAdvisorUrl: "",
         Promptpay: ""
     });
-    console.log({form});
-    
+    console.log({ form });
+
 
     const [editMode, setEditMode] = useState(false);
+    const [image, setImage] = useState(null);
 
     // 🔵 Profile
     const { data, isLoading } = useQuery({
@@ -65,6 +68,38 @@ export default function AdvisorProfile() {
         queryKey: ["advisorDashboard"],
         queryFn: fetchAdvisorDashboard
     });
+
+    const uploadImageMutation = useMutation({
+        mutationFn: uploadImageAdvisor,
+        onSuccess: () => {
+            queryClient.invalidateQueries(["myProfile"]);
+            alert("Image updated!");
+        }
+    });
+
+    const handleUpload = async () => {
+        if (!image) return alert("Please select image");
+
+        try {
+            const response = await uploadToCloudinary(image);
+
+            if (!response.secure_url) {
+                return alert("Upload failed, please try again");
+            }
+
+            const secureUrl = response.secure_url;
+
+
+            uploadImageMutation.mutate({ imageAdvisorUrl: secureUrl });
+            setForm({ ...form, imageAdvisorUrl: secureUrl });
+            setImage(null);
+
+            alert("Upload successfully!");
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Something went wrong");
+        }
+    };
 
     const stats = dataD?.stats;
     const rating = dataD?.rating;
@@ -119,16 +154,34 @@ export default function AdvisorProfile() {
                     {/* Profile */}
                     <div className="bg-white border rounded-2xl p-6 md:p-8 w-full lg:w-2/3 ">
                         {/* Avatar */}
-                        <div className="flex justify-center mb-6">
-                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                                {form.imageAdvisorUrl ? (
-                                    <img
-                                        src={form.imageAdvisorUrl}
-                                        className="w-full h-full object-cover"
-                                        alt="profile"
-                                    />
-                                ) : "👤"}
-                            </div>
+                        <div className="flex flex-col items-center mb-6">
+                            <label className="cursor-pointer">
+                                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                    {form.imageAdvisorUrl ? (
+                                        <img
+                                            src={form.imageAdvisorUrl}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        "👤"
+                                    )}
+                                </div>
+
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => setImage(e.target.files[0])}
+                                />
+                            </label>
+
+                            {image && (
+                                <button
+                                    onClick={handleUpload}
+                                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded text-sm"
+                                >
+                                    อัปโหลดรูป
+                                </button>
+                            )}
                         </div>
                         {/* Form */}
                         <div className=" mb-5">

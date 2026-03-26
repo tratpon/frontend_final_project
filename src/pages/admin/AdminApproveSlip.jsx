@@ -30,10 +30,9 @@ export default function AdminApproveSlip() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <NavbarAdim />
             <Sidebar />
 
-            <div className="ml-64 pt-24 px-10 pb-10 space-y-6">
+            <div className="ml-64 pt-10 px-10 pb-10 space-y-6">
                 {/* Header */}
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-gray-800">Pending Bookings</h1>

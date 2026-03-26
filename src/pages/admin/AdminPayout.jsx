@@ -50,10 +50,9 @@ export default function AdminPayout() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <NavbarAdim />
             <Sidebar />
 
-            <div className="ml-64 pt-24 px-10">
+            <div className="ml-64 pt-10 px-10">
                 <h1 className="text-3xl font-bold mb-6">
                     💰 Payout Management
                 </h1>

@@ -42,7 +42,7 @@ export default function AdvisorApply() {
       formData.append("upload_preset", "final_project");
 
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dncviozee/raw/upload",
+        import.meta.env.VITE_API_cloudinary_file,
         {
           method: "POST",
           body: formData

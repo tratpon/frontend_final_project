@@ -45,10 +45,10 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-200">
 
-      <NavbarAdim />
+     
       <Sidebar />
 
-      <main className="flex-1 pl-70 pt-30 pr-10">
+      <main className="flex-1 pl-70 pt-10 pr-10">
 
         {/* STAT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

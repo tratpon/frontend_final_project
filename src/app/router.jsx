@@ -41,6 +41,7 @@ import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AdvisorRegister from "../pages/AdvisorRegister.jsx";
 import AdminApproveSlip from "../pages/admin/AdminApproveSlip.jsx";
 import AdminPayout from "../pages/admin/AdminPayout.jsx";
+import AdminProfile from "../pages/admin/AdminProfile.jsx";
 
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
@@ -88,7 +89,7 @@ export default function AppRouter() {
            
 
             {/* ADMIN */}
-            
+
             <Route element={<RequireRole allow={[ROLES.ADMIN]} />}>
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/Dashboard" element={<AdminDashboard />} ></Route>
@@ -97,6 +98,7 @@ export default function AppRouter() {
                 <Route path="/admin/Approve/post" element={<AdminApprovePost />} ></Route>
                 <Route path="/admin/Approve/slip" element={<AdminApproveSlip />} ></Route>
                 <Route path="/admin/Approve/Payout" element={<AdminPayout />} ></Route>
+                <Route path="/admin/AdminProfile" element={<AdminProfile />} ></Route>
             </Route>
         </Routes>
     );

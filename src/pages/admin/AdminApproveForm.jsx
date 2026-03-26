@@ -33,10 +33,10 @@ const queryClient = useQueryClient();
   return (
     <div className="min-h-screen bg-gray-100">
 
-      <NavbarAdim />
+   
       <Sidebar />
 
-      <main className="pl-70 pt-30 pr-10 space-y-10">
+      <main className="pl-70 pt-10 pr-10 space-y-10">
 
         {applyrows.map((app) => (
           <div
