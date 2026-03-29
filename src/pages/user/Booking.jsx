@@ -4,7 +4,7 @@ import { fetchMyProfile, createBooking, fetchBookingDetail, createBill, uploadSl
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import NotFound from "../NotFound";
+
 export default function Booking() {
     const queryClient = useQueryClient();
     const [searchParams] = useSearchParams();

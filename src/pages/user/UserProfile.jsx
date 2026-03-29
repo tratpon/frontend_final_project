@@ -131,10 +131,10 @@ export default function UserProfile() {
 
           {/* FORM */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <Field label="First Name" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
-            <Field label="Last Name" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
+            <Field label="ชื่อ" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
+            <Field label="นามสกุล" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
             <div>
-              <label label="Gender" className="block text-sm mb-1">Gender</label>
+              <label label="เพศ" className="block text-sm mb-1">Gender</label>
               <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-white px-4 py-2 rounded border text-sm md:text-base">
                 <option value="ชาย">ชาย</option>
                 <option value="หญิง">หญิง</option>
@@ -142,9 +142,9 @@ export default function UserProfile() {
                 <option value="อื่นๆ">อื่นๆ</option>
               </select>
             </div>
-            <Field label="Age" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
-            <Field label="Email" value={form.Email} disabled />
-            <Field label="Phone" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
+            <Field label="อายุ" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
+            <Field label="อีเมล" value={form.Email} disabled />
+            <Field label="เบอร์" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
           </div>
 
           {/* BUTTONS */}

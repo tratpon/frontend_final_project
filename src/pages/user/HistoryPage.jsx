@@ -25,7 +25,7 @@ export default function History() {
       <NavbarSwitcher />
 
       <h1 className="text-2xl sm:text-4xl font-bold text-center mt-10 mb-6">
-        Completed History
+        ประวัติการจอง
       </h1>
 
       {/* Loading */}
@@ -43,7 +43,7 @@ export default function History() {
       {/* Empty */}
       {!isLoading && history.length === 0 && (
         <div className="text-center mt-10 text-gray-500">
-          No completed bookings yet.
+          ยังไม่มีประวัติ
         </div>
       )}
 
@@ -96,7 +96,7 @@ export default function History() {
             {/* STATUS + RATE */}
             <div className="flex flex-col items-end">
               <p className="text-green-500 font-semibold">
-                completed
+                เสร็จสิ้น
               </p>
 
               <p className="font-bold mt-2">

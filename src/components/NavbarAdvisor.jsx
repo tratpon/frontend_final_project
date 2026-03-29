@@ -44,8 +44,8 @@ const NavbarAdvisor = () => {
         <header className="relative flex justify-between items-center py-4 px-4 md:px-10 bg-white shadow-md">
             {/* Logo */}
             <div className="flex flex-col leading-snug">
-                <span className="font-bold text-xl">WebbyFrames</span>
-                <span className="text-xs text-gray-500">for Figma</span>
+                <span className="font-bold text-xl">Advisor</span>
+                <span className="text-xs text-gray-500">for help</span>
             </div>
 
             {/* Desktop Menu */}
@@ -53,7 +53,7 @@ const NavbarAdvisor = () => {
                 <NavLink to="/main" className={getNavLinkClass}>หน้าหลัก</NavLink>
                 <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
                 <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
-                <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
+                <NavLink to="/AboutUS" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
             </nav>
 
             {/* Right Side */}

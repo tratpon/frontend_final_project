@@ -4,7 +4,7 @@ import { fetchSlots, fetchSlotDaysInMonth } from "../app/Api";
 import { useNavigate } from "react-router-dom";
 
 export default function BookingSidebar({ serviceID }) {
-console.log(serviceID);
+  console.log(serviceID);
   const navigate = useNavigate();
   const today = new Date();
 
@@ -29,10 +29,10 @@ console.log(serviceID);
   const { data: slots = [] } = useQuery({
     queryKey: ["slots", serviceID, selectedDate],
     queryFn: () => fetchSlots(serviceID, selectedDate),
-    enabled: !!serviceID ,
+    enabled: !!serviceID,
   });
   console.log(slots);
-  
+
 
   /* 📅 fetch วันในเดือนที่มี slot */
   const { data: monthSlots = [] } = useQuery({
@@ -89,7 +89,7 @@ console.log(serviceID);
       {/* Week Days */}
       <div className="grid grid-cols-7 text-center text-sm mb-2">
 
-        {["S","M","T","W","T","F","S"].map((d) => (
+        {["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"].map((d) => (
           <div key={d} className="text-gray-500 py-1">
             {d}
           </div>
@@ -108,7 +108,7 @@ console.log(serviceID);
           const formattedDate = formatDate(dateObj);
 
           const isPast =
-            dateObj < new Date(today.setHours(0,0,0,0));
+            dateObj < new Date(today.setHours(0, 0, 0, 0));
 
           const isToday =
             formattedDate === formatDate(new Date());
@@ -126,10 +126,10 @@ console.log(serviceID);
               onClick={() => !isPast && handleSelectDate(day)}
               className={`relative py-2 rounded
               ${isPast ? "text-gray-300 cursor-not-allowed"
-              : "cursor-pointer hover:bg-gray-100"}
+                  : "cursor-pointer hover:bg-gray-100"}
               ${isToday ? "border border-blue-400" : ""}
               ${isSelected ? "bg-blue-600 text-white"
-              : "text-gray-700"}
+                  : "text-gray-700"}
               `}
             >
 
@@ -165,7 +165,7 @@ console.log(serviceID);
         <>
 
           <div className="mt-6 font-medium">
-            Available Time
+            เวลาที่ว่าง
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-3">
@@ -182,9 +182,9 @@ console.log(serviceID);
                   className="border rounded-lg p-3 text-sm hover:bg-gray-100"
                 >
 
-                  {slot.StartTime.slice(0,5)}
+                  {slot.StartTime.slice(0, 5)}
                   {" - "}
-                  {slot.EndTime.slice(0,5)}
+                  {slot.EndTime.slice(0, 5)}
 
                 </button>
 

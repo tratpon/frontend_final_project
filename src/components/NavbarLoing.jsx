@@ -48,8 +48,8 @@ const NavbarLoin = () => {
 
             {/* Logo */}
             <div className="flex flex-col leading-snug">
-                <span className="font-bold text-xl">WebbyFrames</span>
-                <span className="text-xs text-gray-500">for Figma</span>
+                <span className="font-bold text-xl">Advisor</span>
+                <span className="text-xs text-gray-500">for help</span>
             </div>
 
             {/* Desktop Menu */}

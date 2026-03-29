@@ -242,7 +242,7 @@ export default function DetailServicePage() {
               <button onClick={() => setOpenBooking(false)}>✕</button>
             </div>
 
-            <BookingSidebar serviceID={service?.ServiceID} />
+            <BookingSidebar serviceID={id} />
 
           </div>
 

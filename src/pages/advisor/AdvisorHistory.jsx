@@ -42,7 +42,7 @@ export default function AdvisorPayoutHistory() {
       <main className="flex-1">
 
         <h1 className="text-3xl font-bold text-center mt-10 mb-6">
-          Payout History
+          ประวิติการจ่ายเงิน
         </h1>
 
         {/* FILTER */}
@@ -64,7 +64,7 @@ export default function AdvisorPayoutHistory() {
 
         {/* Loading */}
         {isLoading && (
-          <div className="text-center mt-10">Loading...</div>
+          <div className="text-center mt-10">โหลด..</div>
         )}
 
         {/* Error */}
@@ -77,7 +77,7 @@ export default function AdvisorPayoutHistory() {
         {/* Empty */}
         {!isLoading && payouts.length === 0 && (
           <div className="text-center text-gray-500 mt-20">
-            No payout history
+            ไม่มีประวัติ
           </div>
         )}
 
@@ -91,24 +91,24 @@ export default function AdvisorPayoutHistory() {
               {/* LEFT */}
               <div className="flex-1">
                 <p className="font-semibold text-lg">
-                  Booking #{item.BookID}
+                  การจองที่ #{item.BookID}
                 </p>
 
                 <p className="text-gray-500 text-sm">
-                  Service: {item.ServiceName}
+                  บริการ: {item.ServiceName}
                 </p>
 
                 <p className="text-gray-500 text-sm">
-                  Date: {new Date(item.AvailableDate).toLocaleDateString()}
+                  วันที่: {new Date(item.AvailableDate).toLocaleDateString()}
                 </p>
               </div>
 
               {/* MONEY */}
               <div className="flex flex-col text-sm">
-                <p>Amount: {item.Amount} ฿</p>
-                <p>Fee: {item.PlatformFee} ฿</p>
+                <p>ยอด: {item.Amount} ฿</p>
+                <p>ค่าธรรมเนียม: {item.PlatformFee} ฿</p>
                 <p className="font-bold text-green-600">
-                  Net: {item.NetAmount} ฿
+                  ยอดสุทธิ: {item.NetAmount} ฿
                 </p>
               </div>
 
@@ -120,7 +120,7 @@ export default function AdvisorPayoutHistory() {
 
                 {item.PaidAt && (
                   <p className="text-xs text-gray-500">
-                    Paid:{" "}
+                    จ่าย:{" "}
                     {new Date(item.PaidAt).toLocaleDateString("th-TH")}
                   </p>
                 )}

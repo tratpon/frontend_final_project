@@ -21,7 +21,7 @@ export const getRoomByBooking = (bookingId) => privateApi.get(`/session/join/${b
 export const joinRoom = (roomId) => privateApi.post(`/session/joinroom`,{roomId}).then(res => res.data);
 export const completedRoom = (roomId) => privateApi.post(`/session/completedRoom`,roomId).then(res => res.data);
 export const fetchMessages = (roomId) =>privateApi.get(`/session/getmessage/${roomId}`).then(res => res.data);
-            
+    
 
 export const fetchServiceByAdvisor= () => privateApi.get('/mangeservice/getAllServiceAdvisor').then(res => res.data);
 export const fetchAvailability = () =>privateApi.get('/mangeservice/getAvailability').then(res => res.data);
@@ -61,6 +61,10 @@ export const updateStatusSlip = (data) => privateApi.post('/booking/updateStatus
 
 export const mangeBooking = (data) =>
   privateApi.post('/booking/mangeBooking', data )
+    .then(res => res.data);
+
+    export const cancelBooking = (data) =>
+  privateApi.post('/booking/cancelBooking', data )
     .then(res => res.data);
     
 export const updateBookingStatus = (data) => privateApi.put("/booking/updateStatus", data).then((res) => res.data);

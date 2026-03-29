@@ -10,8 +10,8 @@ const NavbarGuest = () => {
       <div className="flex justify-between items-center">
         {/* Logo */}
         <div className="flex flex-col leading-snug">
-          <span className="font-bold text-xl">WebbyFrames</span>
-          <span className="text-xs text-gray-500">for Figma</span>
+          <span className="font-bold text-xl">Advisor</span>
+          <span className="text-xs text-gray-500">for help</span>
         </div>
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-6 text-x text-gray-700">

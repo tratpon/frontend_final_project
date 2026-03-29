@@ -23,6 +23,7 @@ import AdminApprove from "../pages/admin/AdminApprove.jsx";
 import AdminApproveForm from "../pages/admin/AdminApproveForm.jsx";
 import AdminApprovePost from "../pages/admin/AdminApprovePost.jsx";
 import NotFound from "../pages/NotFound.jsx";
+import AboutUS from "../pages/AboutUS.jsx";
 
 
 import Advisor from "../pages/advisor/Advisor.jsx";
@@ -60,7 +61,7 @@ export default function AppRouter() {
             <Route path="/register" element={<Register />} />
             
             <Route path="/session" element={<SessionRoom />} />
-
+            <Route path="/AboutUS" element={<AboutUS />} />
             <Route path="/notfound" element={<NotFound />} />
             <Route path="/AdvisorApply" element={<AdvisorApply />} />
             <Route path="/community" element={<Community />} />

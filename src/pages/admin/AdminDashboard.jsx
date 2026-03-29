@@ -25,7 +25,6 @@ export default function AdminDashboard() {
 
   console.log(data);
 
-  // ✅ แก้ตรงนี้ (สำคัญมาก)
   const charts = data?.charts;
   const rankings = data?.rankings;
   const users = data?.userStats;
@@ -38,14 +37,14 @@ export default function AdminDashboard() {
   const topServices = rankings?.topServices || [];
 
   const chartData = monthlyRevenue.map(item => ({
-  ...item,
-  profit: item.revenue * 0.10 
-}));
+    ...item,
+    profit: item.revenue * 0.10
+  }));
 
   return (
     <div className="min-h-screen bg-gray-200">
 
-     
+
       <Sidebar />
 
       <main className="flex-1 pl-70 pt-10 pr-10">
@@ -55,20 +54,20 @@ export default function AdminDashboard() {
 
           <StatCard
             icon="💰"
-            title="รายได้/กำไร"
+            title="Revenue / Profit"
             value={`$${monthlyRevenue.at(-1)?.revenue || 0}`}
             sup={`$${monthlyRevenue.at(-1)?.revenue * 0.10 || 0}`}
           />
 
           <StatCard
             icon="📦"
-            title="การจอง"
+            title="Bookings"
             value={bookingPerMonth.at(-1)?.total || 0}
           />
 
           <StatCard
             icon="👤"
-            title="ผู้ใช้ไหม"
+            title="New Users"
             value={newUsers.at(-1)?.total || 0}
           />
 
@@ -77,40 +76,40 @@ export default function AdminDashboard() {
         {/* CHARTS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
 
-          <ChartCard title="รายรับรายเดือน">
+          <ChartCard title="Monthly Revenue">
 
 
 
 
             <ResponsiveContainer width="100%" height={250}>
-  <LineChart data={chartData}> {/* ใช้ข้อมูลที่ map แล้ว */}
-    <XAxis dataKey="month" />
-    <YAxis />
-    <Tooltip />
-    
-    {/* เส้นรายรับ */}
-    <Line 
-      type="monotone" 
-      dataKey="revenue" 
-      name="รายรับ" 
-      stroke="#8884d8" 
-      strokeWidth={2} 
-    />
-    
-    {/* เส้นกำไร (เส้นที่สอง) */}
-    <Line 
-      type="monotone" 
-      dataKey="profit" 
-      name="กำไร" 
-      stroke="#82ca9d" 
-      strokeWidth={2} 
-    />
-  </LineChart>
-</ResponsiveContainer>
+              <LineChart data={chartData}> {/* ใช้ข้อมูลที่ map แล้ว */}
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+
+                {/* เส้นรายรับ */}
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  name="revenue"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                />
+
+                {/* เส้นกำไร (เส้นที่สอง) */}
+                <Line
+                  type="monotone"
+                  dataKey="profit"
+                  name="profit"
+                  stroke="#82ca9d"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
 
           </ChartCard>
 
-          <ChartCard title="การจองต่อแเดือน">
+          <ChartCard title="Bookings Per Month">
 
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={bookingPerMonth}>

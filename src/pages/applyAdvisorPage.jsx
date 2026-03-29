@@ -87,21 +87,21 @@ export default function AdvisorApply() {
       <div className="bg-white p-8 rounded-xl shadow w-full max-w-lg">
 
         <h2 className="text-xl font-bold mb-6">
-          Apply to become an Advisor
+          สมัครเป็นผู้ให้คำปรึกษา
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* Username */}
           <Field
-            label="Fname"
+            label="ชื่อ"
             name="Fname"
             required
             value={form.Fname}
             onChange={handleChange}
           />
           <Field
-            label="Lname"
+            label="นามสกุล"
             name="Lname"
             required
             value={form.Lname}
@@ -109,7 +109,7 @@ export default function AdvisorApply() {
           />
 
           <Field
-            label="email"
+            label="อีเมล"
             name="email"
             type="email"
             required
@@ -119,7 +119,7 @@ export default function AdvisorApply() {
 
           {/* Field */}
           <label className="block text-sm mb-1">
-            Field
+            สาขา
           </label>
           <select
             value={form.TypesID}
@@ -128,7 +128,7 @@ export default function AdvisorApply() {
             required
             className="w-full border rounded px-3 py-2"
           >
-            <option value="">Select Field</option>
+            <option value="">--เลือก--</option>
 
             {types.map((type) => (
               <option key={type.TypesID} value={type.TypesID}>
@@ -140,7 +140,7 @@ export default function AdvisorApply() {
 
           {/* Experience */}
           <Field
-            label="Experience Years"
+            label="ประสบการณ์/ปี"
             name="experience_years"
             type="number"
             required
@@ -150,7 +150,7 @@ export default function AdvisorApply() {
 
           {/* Portfolio */}
           <div className="block text-sm mb-1">
-            portfolio_url
+            พอร์ตโฟลิโอ
           </div>
           <label className="h-24 border flex items-center justify-center cursor-pointer rounded bg-gay-100">
             {form.portfolio_url ? "Uploadted" : "+ Upload"}
@@ -176,7 +176,7 @@ export default function AdvisorApply() {
 
           {/* Certificate */}
           <div className="block text-sm mb-1">
-            certificate_url
+            ใบเซอร์ (certificate)
           </div>
           <label className="h-24 border flex items-center justify-center cursor-pointer rounded bg-gay-100">
             {form.certificate_url ? "Uploadted" : "+ Upload"}
@@ -202,7 +202,7 @@ export default function AdvisorApply() {
 
           {/* License */}
           <Field
-            label="License Number"
+            label="เลขใบอนุณาติ"
             name="license_number"
             value={form.license_number}
             onChange={handleChange}
@@ -218,7 +218,7 @@ export default function AdvisorApply() {
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
             >
-              Submit Application
+              ส่งการสมัคร
             </button>)}
 
 

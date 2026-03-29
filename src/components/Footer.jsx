@@ -9,18 +9,16 @@ const Footer = () => {
       CompanyName © 202X. All rights reserved.
     </span>
 
-    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
+    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-x">
       <NavLink to="/AdvisorApply">ทำงานกับเรา</NavLink>
       
     </div>
 
     {/* Social Icons */}
-    <div className="flex justify-center md:justify-end space-x-4 text-lg">
-      <span>▶️</span>
-      <span>👍</span>
-      <span>🐦</span>
-      <span>📸</span>
-      <span>💼</span>
+    <div className="flex justify-center md:justify-end space-x-4 text-sm">
+      <span>ติอต่อปัญหาที่ LINE ID:TEST</span>
+      <span>FACEBOOK:TEST</span>
+      <span>PHONE:084574xxxx</span>
     </div>
 
   </div>

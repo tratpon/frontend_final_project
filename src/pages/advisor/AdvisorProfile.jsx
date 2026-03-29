@@ -28,11 +28,11 @@ const ServiceCard = ({ name, users, revenue }) => (
     <div className="flex justify-between items-center border rounded-2xl p-4 bg-white min-w-[220px] md:min-w-[260px]">
         <div>
             <p className="font-semibold text-sm md:text-base">{name}</p>
-            <p className="text-xs md:text-sm text-gray-500">Revenue</p>
+            <p className="text-xs md:text-sm text-gray-500">รายได้</p>
             <p className="font-semibold">${revenue}</p>
         </div>
         <div className="text-right">
-            <p className="text-xs md:text-sm text-gray-500">Users</p>
+            <p className="text-xs md:text-sm text-gray-500">ผู้ใช้</p>
             <p className="font-semibold">{users}</p>
         </div>
     </div>
@@ -189,10 +189,10 @@ export default function AdvisorProfile() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                            <Field label="First Name" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Last Name" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
+                            <Field label="ชื่อ" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
+                            <Field label="นามสกุล" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
                             <div>
-                                <label label="Gender" className="block text-sm mb-1">Gender</label>
+                                <label label="Gender" className="block text-sm mb-1">เพศ</label>
                                 <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base">
                                     <option value="ชาย">ชาย</option>
                                     <option value="หญิง">หญิง</option>
@@ -200,10 +200,10 @@ export default function AdvisorProfile() {
                                     <option value="อื่นๆ">อื่นๆ</option>
                                 </select>
                             </div>
-                            <Field label="Age" name="Age" type='number' value={form.Age} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Phone" name="Phone" type='number' value={form.Phone} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Promptpay" name="Promptpay" type='number' value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
-                            <Field label="Email" name="Email" value={form.Email} disabled />
+                            <Field label="อายุ" name="Age" type='number' value={form.Age} onChange={handleChange} disabled={!editMode} />
+                            <Field label="เบอร์" name="Phone" type='number' value={form.Phone} onChange={handleChange} disabled={!editMode} />
+                            <Field label="พร้อมเพย์" name="Promptpay" type='number' value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
+                            <Field label="อีเมล" name="Email" value={form.Email} disabled />
                         </div>
                         {/* Buttons */}
                         <div className="flex justify-end mt-6 gap-4">
@@ -229,12 +229,12 @@ export default function AdvisorProfile() {
                     </div>
                     {/* Stats + Services */}
                     <div className="space-y-6 w-full lg:w-1/3">
-                        <StatCard label="Rating" value={rating?.AvgRating || 0} icon="⭐" />
-                        <StatCard label="Total Revenue" value={`$${stats?.TotalRevenue || 0}`} icon="💰" />
-                        <StatCard label="Total Users" value={stats?.TotalUsers || 0} icon="👥" />
+                        <StatCard label="คะแนน" value={rating?.AvgRating || 0} icon="⭐" />
+                        <StatCard label="รายได้" value={`$${stats?.TotalRevenue || 0}`} icon="💰" />
+                        <StatCard label="ลูกค้า" value={stats?.TotalUsers || 0} icon="👥" />
                         {/* Services */}
                         <div className="border rounded-2xl p-4 md:p-6 bg-white">
-                            <h3 className="text-lg font-semibold mb-4">Top Service</h3>
+                            <h3 className="text-lg font-semibold mb-4">บริการยอดนิยม</h3>
                             <div className="flex gap-4 overflow-x-auto pb-2">
                                 {services?.length ? (
                                     services.map((service) => (

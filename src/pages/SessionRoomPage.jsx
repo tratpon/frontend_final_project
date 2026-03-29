@@ -22,8 +22,10 @@ export default function SessionRoom() {
   const bottomRef = useRef(null);
 
   const [messages, setMessages] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [text, setText] = useState("");
-
+  const [previewImageUrl, setPreviewImageUrl] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const { startCall } = useVideo();
   const { user } = useAuth();
 
@@ -61,6 +63,8 @@ export default function SessionRoom() {
     enabled: !!roomInfo?.RoomID,
   });
 
+
+
   // Sync ข้อความเมื่อมีการเปลี่ยนห้องหรือโหลดข้อมูลเสร็จ
   useEffect(() => {
     if (oldMessages) {
@@ -69,6 +73,8 @@ export default function SessionRoom() {
       setMessages([]);
     }
   }, [oldMessages, roomInfo?.RoomID]);
+
+
 
   // ✅ 4. SOCKET (จัดการเรื่องการ Connect/Disconnect ให้สะอาด)
   useEffect(() => {
@@ -105,6 +111,8 @@ export default function SessionRoom() {
       socket.on("newMessage", (msg) => {
         setMessages((prev) => [...prev, msg]);
       });
+
+
     }
 
     setupSocket();
@@ -118,6 +126,33 @@ export default function SessionRoom() {
       }
     };
   }, [roomInfo?.RoomID, myId]);
+
+  const handleUploadFile = async () => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset", "final_project");
+
+    const res = await fetch(
+      import.meta.env.VITE_API_cloudinary_upload,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+    console.log(data.secure_url);
+
+    // 🔥 ส่งเข้า socket
+    socketRef.current.emit("sendFile", {
+      roomId: roomInfo.RoomID,
+      fileUrl: data.secure_url,
+    });
+
+    setSelectedFile(null);
+  };
 
   const sendMessage = () => {
     if (!text.trim() || !socketRef.current) return;
@@ -171,6 +206,7 @@ export default function SessionRoom() {
   };
 
 
+
   // Auto Scroll เมื่อมีข้อความใหม่
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -192,7 +228,7 @@ export default function SessionRoom() {
           <div className="fixed inset-0 bg-black/50 z-50 md:hidden" onClick={() => setShowSidebar(false)}>
             <div className="w-72 bg-white h-full p-4 shadow-xl" onClick={e => e.stopPropagation()}>
               <div className="flex justify-between items-center mb-6">
-                <span className="font-bold">Sessions</span>
+                <span className="font-bold">ห้องแชท</span>
                 <X className="cursor-pointer text-gray-400" onClick={() => setShowSidebar(false)} />
               </div>
               <SessionList />
@@ -260,20 +296,53 @@ export default function SessionRoom() {
             )}
 
             {messages.map((msg, i) => {
+              const content = msg.content || msg.MessageText;
               const isMine =
                 String(msg.SenderID) === String(myId) &&
                 msg.SenderRole === myRole;
 
               const isSystem =
-                msg.MessageText?.includes("📞") ||
-                msg.MessageText?.includes("❌");
+                content?.includes("📞") ||
+                content?.includes("❌");
 
               // ✅ SYSTEM MESSAGE (อยู่กลางจอ)
               if (isSystem) {
                 return (
                   <div key={i} className="text-center text-xs text-gray-400">
-                    {msg.MessageText}
+                    {content}
                   </div>
+                );
+              }
+
+              if (msg.Type === "file") {
+                const url = content;
+
+                if (url.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+                  return (
+                    <div key={i} className={isMine ? "text-right" : ""}>
+                      <img
+                        src={url}
+                        alt="chat-attachment"
+                        className="w-40 rounded-lg inline cursor-pointer hover:brightness-90 transition active:scale-95"
+                        onClick={() => setSelectedImage(url)} // ✅ กดแล้วตั้งค่า State เพื่อขยายรูป
+                      />
+                    </div>
+                  );
+                }
+
+
+                if (url.match(/\.pdf$/i)) {
+                  return (
+                    <a key={i} href={url} target="_blank" className="text-red-500 underline">
+                      📄 เปิด PDF
+                    </a>
+                  );
+                }
+
+                return (
+                  <a key={i} href={url} target="_blank" className="text-blue-500 underline">
+                    📎 ดาวน์โหลดไฟล์
+                  </a>
                 );
               }
 
@@ -287,11 +356,11 @@ export default function SessionRoom() {
                   {/* bubble */}
                   <div
                     className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm shadow-sm ${isMine
-                        ? "bg-blue-600 text-white"
-                        : "bg-white border text-gray-700"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white border text-gray-700"
                       }`}
                   >
-                    {msg.MessageText}
+                    {content}
                   </div>
 
                   {/* time */}
@@ -306,11 +375,76 @@ export default function SessionRoom() {
 
             <div ref={bottomRef} />
           </div>
+          {/* IMAGE LIGHTBOX MODAL */}
+          {
+            selectedImage && (
+              <div
+                className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4"
+                onClick={() => setSelectedImage(null)} // คลิกพื้นหลังเพื่อปิด
+              >
+                <button
+                  className="absolute top-5 right-5 text-white bg-white/10 p-2 rounded-full hover:bg-white/20 transition"
+                  onClick={() => setSelectedImage(null)}
+                >
+                  <X size={30} />
+                </button>
 
+                <img
+                  src={selectedImage}
+                  alt="Full view"
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-in zoom-in duration-200"
+                  onClick={(e) => e.stopPropagation()} // คลิกที่รูปจะไม่ปิด Modal
+                />
+              </div>
+            )
+          }
+          {selectedFile && (
+            <div className="p-2 bg-gray-100 border-t">
+              <p className="text-xs">Preview:</p>
+
+              {selectedFile.type.startsWith("image/") && (
+                <img src={selectedFile.preview} className="w-32 rounded" />
+              )}
+
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={handleUploadFile}
+                  className="text-blue-500 text-sm"
+                >
+                  ส่งไฟล์
+                </button>
+
+                <button
+                  onClick={() => setSelectedFile(null)}
+                  className="text-red-500 text-sm"
+                >
+                  ยกเลิก
+                </button>
+              </div>
+            </div>
+          )}
           {/* INPUT */}
           {roomInfo?.RoomStatus === "active" ? (
+
             <div className="p-3 bg-white border-t">
+
               <div className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2 focus-within:ring-1 ring-blue-300">
+                <input
+                  type="file"
+                  hidden
+                  id="fileInput"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    file.preview = URL.createObjectURL(file);
+                    setSelectedFile(file);
+                  }}
+                />
+
+                <label htmlFor="fileInput" className="cursor-pointer">
+                  📎
+                </label>
                 <input
                   value={text}
                   onChange={(e) => setText(e.target.value)}

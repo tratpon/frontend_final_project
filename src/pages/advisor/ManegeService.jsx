@@ -251,13 +251,18 @@ export default function ManageService() {
                 Duration (minutes)
               </label>
 
-              <input
-                type="number"
+              <select
                 name="Duration"
                 value={form.Duration}
                 onChange={handleChange}
                 className="w-full mt-1 p-2 bg-gray-100 rounded"
-              />
+              >
+                <option value="">-- Select duration --</option>
+                <option value="30">30 นาที</option>
+                <option value="60">60 นาที</option>
+                <option value="90">90 นาที</option>
+                <option value="120">120 นาที</option>
+              </select>
             </div>
 
             <div>
@@ -299,11 +304,11 @@ export default function ManageService() {
           </div>
 
           <button
-              type="submit"
-              className=" md:hidden w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              {isEdit ? "Update Service" : "Create Service"}
-            </button>
+            type="submit"
+            className=" md:hidden w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            {isEdit ? "Update Service" : "Create Service"}
+          </button>
 
         </div>
 

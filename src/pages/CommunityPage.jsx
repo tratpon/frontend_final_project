@@ -21,7 +21,7 @@ export default function Community() {
   const type = searchParams.get("type") || "ทุกประเภท";
   const [openCommentId, setOpenCommentId] = useState(null);
   const [postId, setpostId] = useState("");
-  const [view, setView] = useState("all"); // 🔥 toggle (all | mine)
+  const [view, setView] = useState("all"); // all | mine | pending | reject
 
   const { imageUserUrl, user } = useAuth();
   const queryClient = useQueryClient();
@@ -32,25 +32,26 @@ export default function Community() {
     queryFn: () => fetchfilterPost(type),
   });
   console.log(posts);
+  
 
   // 🔹 โพสต์ของฉัน
   const { data: yourPosts = [] } = useQuery({
     queryKey: ["yourPosts", type],
     queryFn: () => fetchYourPost(type),
   });
-  console.log(yourPosts);
+
+  // 🔹 ประเภทโพสต์
   const { data: types = [] } = useQuery({
     queryKey: ["types"],
     queryFn: fetchTypes,
   });
 
+  // 🔹 คอมเมนต์
   const { data: comments = [], refetch: refetchComments } = useQuery({
     queryKey: ["comments", postId],
     queryFn: () => fetchComment(postId),
     enabled: !!postId,
   });
-  console.log(comments);
-
 
   // 🔹 เพิ่มคอมเมนต์
   const addCommentMutation = useMutation({
@@ -65,7 +66,7 @@ export default function Community() {
       queryClient.invalidateQueries(["posts"]);
       queryClient.invalidateQueries(["yourPosts"]);
       setPostText("");
-      alert("รออนุมัติโพสต์");
+      alert("โพสต์ของคุณรอการอนุมัติ");
     },
   });
 
@@ -74,6 +75,7 @@ export default function Community() {
     addPostMutation.mutate({
       type: type,
       content: postText,
+      status: "pending", // default
     });
   };
 
@@ -92,7 +94,12 @@ export default function Community() {
     });
   };
 
-  // 🔹 component post card
+  const statusStyles = {
+    approve: "bg-green-50 text-green-600 border-green-200",
+    pending: "bg-yellow-50 text-yellow-600 border-yellow-200",
+    reject: "bg-red-50 text-red-600 border-red-200",
+  };
+
   const PostCard = (post) => (
     <div
       key={post.PostID}
@@ -114,28 +121,19 @@ export default function Community() {
           </div>
         </div>
 
-        {post.status === "pending" ? (
-          <div className="bg-red-50 text-red-600 border-red-200  rounded-2xl px-2">{post.status}</div>
-        ) : (
-          <div className="bg-green-50 text-green-600 border-green-200  rounded-2xl px-2">{post.status}</div>
-        )
-        }
+        <div className={`${statusStyles[post.status]} rounded-2xl px-2`}>
+          {post.status}
+        </div>
       </div>
 
-
       <hr className="my-3" />
-
-      {/* content */}
       <p className="text-gray-700">{post.content}</p>
 
-      {/* actions */}
       <div className="flex justify-end items-center gap-2 mt-3 text-gray-600">
         <button
           onClick={() => {
             setpostId(post.PostID);
-            setOpenCommentId(
-              openCommentId === post.PostID ? null : post.PostID
-            );
+            setOpenCommentId(openCommentId === post.PostID ? null : post.PostID);
           }}
         >
           <MessageSquareText size={18} />
@@ -143,35 +141,24 @@ export default function Community() {
         <span>{post.comment_count}</span>
       </div>
 
-      {/* comments */}
       {openCommentId === post.PostID && (
         <div className="mt-4 border-t pt-4 space-y-3">
-          {/* add comment */}
           {user && (
             <input
               type="text"
               value={commentText[post.PostID] || ""}
               onChange={(e) =>
-                setCommentText({
-                  ...commentText,
-                  [post.PostID]: e.target.value,
-                })
+                setCommentText({ ...commentText, [post.PostID]: e.target.value })
               }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleAddComment(post.PostID);
-                }
-              }}
+              onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.PostID)}
               placeholder="เขียนความคิดเห็น..."
               className="w-full bg-gray-100 rounded-full px-4 py-2 text-sm"
             />
           )}
 
-          {/* comment list */}
           <div className="space-y-4 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
             {comments.map((comment) => (
               <div key={comment.CommentID} className="flex gap-3 items-start">
-                {/* Profile Image - ขนาดเล็กลงหน่อยสำหรับคอมเมนต์เพื่อให้ดูต่างจากโพสต์หลัก */}
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 shrink-0 border border-gray-100 ">
                   {comment.imageUserUrl ? (
                     <img
@@ -185,12 +172,8 @@ export default function Community() {
                 </div>
 
                 <div className="flex-1 bg-gray-50 rounded-2xl px-3 py-2 border border-gray-100 min-w-0">
-                  <div className="font-bold text-xs text-gray-800 mb-0.5 truncate">
-                    {comment.username}
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed break-words">
-                    {comment.Comment}
-                  </p>
+                  <div className="font-bold text-xs text-gray-800 mb-0.5 truncate">{comment.username}</div>
+                  <p className="text-sm text-gray-600 leading-relaxed break-words">{comment.Comment}</p>
                 </div>
               </div>
             ))}
@@ -204,28 +187,36 @@ export default function Community() {
     </div>
   );
 
+  // 🔹 filter posts ตาม view
+  const displayedPosts = (() => {
+    if (view === "all") return posts;
+    if (view === "mine") return yourPosts;
+    if (view === "pending") return yourPosts.filter(post => post.status === "pending");
+    if (view === "reject") return yourPosts.filter(post => post.status === "reject");
+    return [];
+  })();
+
   return (
     <div className="min-h-screen bg-white flex flex-col bg-linear-to-b from-blue-50 to-white">
       <NavbarSwitcher />
-
-      <div className="max-w-3xl mx-auto w-full px-4 py-6 sm:py-10 flex-1 ">
+      <div className="max-w-3xl mx-auto w-full px-4 py-6 sm:py-10 flex-1">
         <header className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">คอมมูนิตี้</h1>
           <p className="text-gray-500 text-sm sm:text-base">พื้นที่สร้างสรรค์คำถาม</p>
         </header>
-        {/* 🔹 create post */}
-        {user === "user" && (
-          <div className=" flex flex-col sm:flex-row gap-3 mb-6 sm:mb-10 ">
 
-            <input
-              type="text"
-              value={postText}
-              onChange={(e) => setPostText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAddPost()}
-              placeholder="คุณกำลังคิดอะไรอยู่..."
-              className="flex-1 bg-white border rounded-lg px-4 py-2 hover:shadow-xl"
-            />
-
+        {user && (
+          <div className="flex flex-col sm:flex-row gap-3 mb-6 sm:mb-10">
+            {user === "user" && (
+              <input
+                type="text"
+                value={postText}
+                onChange={(e) => setPostText(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddPost()}
+                placeholder="คุณกำลังคิดอะไรอยู่..."
+                className="flex-1 bg-white border rounded-lg px-4 py-2 hover:shadow-xl"
+              />
+            )}
 
             <select
               value={type}
@@ -238,9 +229,7 @@ export default function Community() {
             >
               <option value="">ทุกประเภท</option>
               {types.map((t) => (
-                <option key={t.TypesID} value={t.TypesName}>
-                  {t.TypesName}
-                </option>
+                <option key={t.TypesID} value={t.TypesName}>{t.TypesName}</option>
               ))}
             </select>
           </div>
@@ -250,45 +239,42 @@ export default function Community() {
         <div className="flex gap-4 mb-6 border-b">
           <button
             onClick={() => setView("all")}
-            className={`pb-2 ${view === "all"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-400"
-              }`}
+            className={`pb-2 ${view === "all" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
           >
             โพสต์ทั้งหมด
           </button>
-
           {user === "user" && (
-            <button
-              onClick={() => setView("mine")}
-              className={`pb-2 ${view === "mine"
-                ? "border-b-2 border-blue-500 text-blue-500"
-                : "text-gray-400"
-                }`}
-            >
-              โพสต์ของฉัน
-            </button>
-
-          )
-
-          }
-
-
-        </div>
-
-        {/* 🔥 render ตาม tab */}
-        <div className="space-y-6">
-          {(view === "all" ? posts : yourPosts).map(PostCard)}
-
-          {(view === "all" ? posts : yourPosts).length === 0 && (
-            <div className="text-center text-gray-400 mt-10">
-              ไม่มีโพสต์
-            </div>
+            <>
+              <button
+                onClick={() => setView("mine")}
+                className={`pb-2 ${view === "mine" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
+              >
+                โพสต์ของฉัน
+              </button>
+              <button
+                onClick={() => setView("pending")}
+                className={`pb-2 ${view === "pending" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
+              >
+                โพสต์รออนุมัติ
+              </button>
+              <button
+                onClick={() => setView("reject")}
+                className={`pb-2 ${view === "reject" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
+              >
+                โพสต์ถูกปฏิเสธ
+              </button>
+            </>
           )}
         </div>
 
+        {/* 🔥 render posts */}
+        <div className="space-y-6">
+          {displayedPosts.map(PostCard)}
+          {displayedPosts.length === 0 && (
+            <div className="text-center text-gray-400 mt-10">ไม่มีโพสต์</div>
+          )}
+        </div>
       </div>
-
       <Footer />
     </div>
   );
