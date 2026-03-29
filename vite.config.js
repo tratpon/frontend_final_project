@@ -18,7 +18,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react()
+    react(),
   ],
   build: {
     outDir: 'dist', // Folder สำหรับ publish บน Render

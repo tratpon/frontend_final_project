@@ -9,7 +9,7 @@ const queryClient = new QueryClient();;
 export default function App() {
   return (
 
-    <BrowserRouter  basename="/">
+    <BrowserRouter >
         <VideoProvider>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
