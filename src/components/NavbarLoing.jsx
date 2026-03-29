@@ -57,7 +57,7 @@ const NavbarLoin = () => {
                 <NavLink to="/main" end className={getNavLinkClass}>หน้าหลัก</NavLink>
                 <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
                 <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
-                <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
+                <NavLink to="/AboutUS" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
             </nav>
 
             {/* Right Side */}
@@ -101,7 +101,7 @@ const NavbarLoin = () => {
                     <NavLink to="/main" className={getNavLinkClass} onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
                     <NavLink to="/service" className={getNavLinkClass} onClick={() => setIsOpen(false)}>บริการ</NavLink>
                     <NavLink to="/community" className={getNavLinkClass} onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
-                    <NavLink to="/notfound" className={getNavLinkClass} onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
+                    <NavLink to="/AboutUS" className={getNavLinkClass} onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
                 </div>
             )}
 

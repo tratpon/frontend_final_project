@@ -30,7 +30,12 @@ export default function Register() {
     const handleRegister = async () => {
 
         if (password !== confirmPassword) {
-            alert("Password not match");
+            alert("รหัสไม่ตรงกัน");
+            return;
+        }
+
+        if (password.length < 8 ) {
+            alert("รหัสต้องมีมากกว่า 8 ตัว");
             return;
         }
 
@@ -68,28 +73,30 @@ export default function Register() {
             <NavbarSwitcher />
 
             {/* Page Content */}
-            <div className="flex-1 flex items-center justify-center px-4 m-5">
-                <div className="bg-white w-full max-w-lg rounded-lg shadow p-8">
-                    <h2 className="text-3xl font-bold mb-6 text-center">Register</h2>
+            <div className="flex-1 flex items-center justify-center px-4 m-5 bg-linear-to-b from-blue-50 to-white py-20">
+                <div className="bg-white w-full max-w-lg rounded-lg shadow p-8 ">
+                    <h2 className="text-3xl font-bold mb-6 text-center">ลงทะเบียน</h2>
 
                     <div className="mb-4 flex gap-5">
                         <div>
-                            <label className="block text-sm font-medium mb-1">UserName</label>
+                            <label className="block text-sm font-medium mb-1">ชื่อ</label>
                             <input
                                 type="Frist-name"
                                 value={Fname}
                                 onChange={(e) => setFname(e.target.value)}
                                 className="w-full px-4 py-2 border rounded-md"
+                                required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">UserName</label>
+                            <label className="block text-sm font-medium mb-1">นามสกุล</label>
                             <input
                                 type="Last-name"
                                 value={Lname}
                                 onChange={(e) => setLname(e.target.value)}
                                 className="w-full px-4 py-2 border rounded-md"
+                                required
                             />
                         </div>
 
@@ -102,22 +109,24 @@ export default function Register() {
                             value={Username}
                             onChange={(e) => setUsername(e.target.value)}
                             className="w-full px-4 py-2 border rounded-md"
+                            required
                         />
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-m font-medium mb-1">Email Address</label>
+                        <label className="block text-m font-medium mb-1">อีเมล</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full px-4 py-2 border rounded-md"
+                            required
                         />
                     </div>
 
 
                     <div className="mb-4">
-                        <label className="block text-m font-medium mb-1">Password</label>
+                        <label className="block text-m font-medium mb-1">รหัสผ่าน</label>
                         <input
                             type="password"
                             value={password}
@@ -127,7 +136,7 @@ export default function Register() {
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-m font-medium mb-1">Password</label>
+                        <label className="block text-m font-medium mb-1">ยืนยันรหัสผ่าน</label>
                         <input
                             type="password"
                             value={confirmPassword}
@@ -139,7 +148,7 @@ export default function Register() {
 
 
                     <p className="text-xs text-gray-500 mb-4">
-                        It must be a combination of minimum 8 letters, numbers, and symbols.
+                        ต้องมีตัวเลข หรือตัวอักษรอย่างน้อย 8 ตัว
                     </p>
 
                     {/* Login Button */}
@@ -147,16 +156,10 @@ export default function Register() {
                         onClick={handleRegister}
                         className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
                     >
-                        Register
+                        ลงทะเบียน
                     </button>
 
-                    {/* Google Login */}
-                    <button
-                        className="w-full mt-4 py-2 border rounded-md flex items-center justify-center gap-2 hover:bg-gray-50"
-                    >
-                        <span className="text-xl">🔵</span> {/* Temporary Google icon */}
-                        <span>Log in with Google</span>
-                    </button>
+                    
 
                     <hr className="my-6" />
 

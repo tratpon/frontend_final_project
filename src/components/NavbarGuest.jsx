@@ -18,7 +18,7 @@ const NavbarGuest = () => {
           <NavLink to="/" className={getNavLinkClass}>หน้าหลัก</NavLink>
           <NavLink to="/service" className={getNavLinkClass}>บริการ</NavLink>
           <NavLink to="/community" className={getNavLinkClass}>คอมมูนิตี้</NavLink>
-          <NavLink to="/notfound" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
+          <NavLink to="/AboutUS" className={getNavLinkClass}>เกี่ยวกับเรา</NavLink>
         </nav>
 
         {/* Desktop Actions */}
@@ -45,7 +45,7 @@ const NavbarGuest = () => {
           <NavLink to="/" onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
           <NavLink to="/service" onClick={() => setIsOpen(false)}>บริการ</NavLink>
           <NavLink to="/community" onClick={() => setIsOpen(false)}>คอมมูนิตี้</NavLink>
-          <NavLink to="/notfound" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
+          <NavLink to="/AboutUS" onClick={() => setIsOpen(false)}>เกี่ยวกับเรา</NavLink>
         </div>
       )}
     </header>

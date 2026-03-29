@@ -26,5 +26,6 @@ export default defineConfig({
   server: {
     // สำหรับ dev server
     historyApiFallback: true
-  }
+  },
+  base: '/'
 })

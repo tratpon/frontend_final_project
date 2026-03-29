@@ -42,7 +42,7 @@ export default function AdminLogin() {
       {/* Page Content */}
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="bg-white w-full max-w-lg rounded-lg shadow p-8">
-          <h2 className="text-3xl font-bold mb-6 text-center">Log In</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Admin Log In</h2>
 
           {/* Email */}
           <div className="mb-4">
