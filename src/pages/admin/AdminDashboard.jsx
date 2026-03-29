@@ -78,9 +78,6 @@ export default function AdminDashboard() {
 
           <ChartCard title="Monthly Revenue">
 
-
-
-
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={chartData}> {/* ใช้ข้อมูลที่ map แล้ว */}
                 <XAxis dataKey="month" />
@@ -110,16 +107,19 @@ export default function AdminDashboard() {
           </ChartCard>
 
           <ChartCard title="Bookings Per Month">
-
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={bookingPerMonth}>
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="total" />
+               
+                <Bar
+                  dataKey="total"
+                  fill="#3b82f6"
+                  radius={[4, 4, 0, 0]} 
+                />
               </BarChart>
             </ResponsiveContainer>
-
           </ChartCard>
 
         </div>
