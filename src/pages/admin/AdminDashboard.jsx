@@ -54,20 +54,20 @@ export default function AdminDashboard() {
 
           <StatCard
             icon="💰"
-            title="Revenue / Profit"
+            title="Monthly Revenue / Profit"
             value={`$${monthlyRevenue.at(-1)?.revenue || 0}`}
             sup={`$${monthlyRevenue.at(-1)?.revenue * 0.10 || 0}`}
           />
 
           <StatCard
             icon="📦"
-            title="Bookings"
+            title="Monthly Bookings"
             value={bookingPerMonth.at(-1)?.total || 0}
           />
 
           <StatCard
             icon="👤"
-            title="New Users"
+            title="Monthly New Users"
             value={newUsers.at(-1)?.total || 0}
           />
 

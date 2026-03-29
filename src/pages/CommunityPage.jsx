@@ -190,7 +190,7 @@ export default function Community() {
   // 🔹 filter posts ตาม view
   const displayedPosts = (() => {
     if (view === "all") return posts;
-    if (view === "mine") return yourPosts;
+    if (view === "mine") return yourPosts.filter(post => post.status === "approve");
     if (view === "pending") return yourPosts.filter(post => post.status === "pending");
     if (view === "reject") return yourPosts.filter(post => post.status === "reject");
     return [];
