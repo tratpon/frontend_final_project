@@ -10,7 +10,6 @@ export default function App() {
   return (
 
     <BrowserRouter  basename="/">
-      
         <VideoProvider>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
