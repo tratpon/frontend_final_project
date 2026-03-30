@@ -156,10 +156,10 @@ export default function SessionList() {
                 }
 
                 console.log({now,start,end, canStart, status, user, tes, starts });
-                // if (canStartEarly && !hasAlerted) {
-                //     alert("คุณมีนัดในอีก 15 นาทีนี้");
-                //     setHasAlerted(true);
-                // }
+                if (canStart && !hasAlerted) {
+                    alert("คุณมีนัดในอีก 15 นาทีนี้");
+                    setHasAlerted(true);
+                }
 
                 return (
                     <div
