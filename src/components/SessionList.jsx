@@ -50,6 +50,24 @@ export default function SessionList() {
 
     //     return session.RoomStatus;
     // };
+
+    useEffect(() => {
+        if (!hasAlerted && sessions.length > 0) {
+            const now = new Date().getTime();
+            const fifteenMins = 15 * 60 * 1000;
+            
+            // เช็คว่ามีเซสชันไหนที่กำลังจะเริ่มใน 15 นาทีไหม
+            const upcomingSession = sessions.find(s => {
+                const start = new Date(s.StartTime).getTime();
+                return (start - now) > 0 && (start - now) <= fifteenMins;
+            });
+
+            if (upcomingSession) {
+                alert(`คุณมีนัดหมาย: ${upcomingSession.ServiceName} ในอีกไม่เกิน 15 นาที`);
+                setHasAlerted(true);
+            }
+        }
+    }, [sessions, hasAlerted]);
     const getRoomStatus = (session) => {
         if (["active", "completed", "cancelled"].includes(session.RoomStatus)) {
             return session.RoomStatus;
