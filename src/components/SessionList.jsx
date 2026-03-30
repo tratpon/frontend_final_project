@@ -76,13 +76,13 @@ export default function SessionList() {
         const now = new Date().getTime();
         const start = new Date(session.StartTime).getTime();
         const end = new Date(session.EndTime).getTime();
-
-
-        if (now < start) return "waiting";
-
         if (now > end && session.RoomStatus === "waiting") {
         return "completed"; // หรือ "cancelled" ตาม Business Logic ของคุณ
         }
+
+        if (now < start) return "waiting";
+
+        
 
         return session.RoomStatus;
     };
@@ -167,7 +167,7 @@ export default function SessionList() {
                 const end = new Date(session.EndTime).getTime();
 
                 
-                const canStart = (start - now) <= 400 * 60 * 1000;
+                const canStart = (start - now) <= 400 * 60 * 1000(start - now);
                 let starts = false;
                 if (now > start) {
                     starts = true;
