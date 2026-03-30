@@ -217,7 +217,7 @@ export default function SessionList() {
                                 }
 
                                 <p className="text-xs text-gray-400">
-                                    {session.StartTime?.split('T')[0]} {session.StartTime?.split('T')[1]?.substring(0, 5)}
+                                    {session.StartTime?.split('T')[0]} {session.StartTime?.split('T')[1]?.substring(0, 5)} - {session.EndTime?.split('T')[1]?.substring(0, 5)} 
                                 </p>
 
                             </div>
