@@ -12,6 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function SessionList() {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [filterStatus, setFilterStatus] = useState("all");
+    const [hasAlerted, setHasAlerted] = useState(false);
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -30,19 +31,42 @@ export default function SessionList() {
 
 
     // ✅ Status helper
-    const getRoomStatus = (session) => {
-        if (session.RoomStatus === "cancelled") return "cancelled";
-        if (session.RoomStatus === "completed") return "completed";
-        if (session.RoomStatus === "active") return "active";
+    // const getRoomStatus = (session) => {
+    //     if (session.RoomStatus === "cancelled") return "cancelled";
+    //     if (session.RoomStatus === "completed") return "completed";
+    //     if (session.RoomStatus === "active") return "active";
+    //     if (session.RoomStatus === "waiting") return "waiting";
 
-        const now = Date.now();
-        const start = new Date(session.start).getTime();
+    //     const now = new Date().getTime();
+    //     const start = new Date(session.StartTime).getTime();
+    //     const end = new Date(session.EndTime).getTime();
+
+    //     console.log({ start, end, now });
+
+
+
+    //     if (now < start) return "waiting";
+    //     if (now > end) return "cancelled";
+
+    //     return session.RoomStatus;
+    // };
+    const getRoomStatus = (session) => {
+        if (["active", "completed", "cancelled"].includes(session.RoomStatus)) {
+            return session.RoomStatus;
+        }
+
+        const now = new Date().getTime();
+        const start = new Date(session.StartTime).getTime();
         const end = new Date(session.EndTime).getTime();
 
-        if (now > end) return "cancelled";
+
         if (now < start) return "waiting";
 
-        return session.RoomStatus; // ใช้ backend ที่เหลือ
+        if (now > end && session.RoomStatus === "waiting") {
+        return "completed"; // หรือ "cancelled" ตาม Business Logic ของคุณ
+        }
+
+        return session.RoomStatus;
     };
 
     // ✅ Filter sessions
@@ -116,12 +140,26 @@ export default function SessionList() {
 
             {/* ✅ Session List */}
             {filteredSessions.map(session => {
-                const now = new Date();
-                const start = new Date(session.StartTime);
+                const now = new Date().getTime();
 
+                const tes = session.StartTime
                 const status = getRoomStatus(session);
+                    
+                const start = new Date(session.StartTime).getTime();
+                const end = new Date(session.EndTime).getTime();
 
-                const canStartEarly = (start - now) <= 15 * 60 * 1000;
+                
+                const canStart = (start - now) <= 400 * 60 * 1000;
+                let starts = false;
+                if (now > start) {
+                    starts = true;
+                }
+
+                console.log({now,start,end, canStart, status, user, tes, starts });
+                // if (canStartEarly && !hasAlerted) {
+                //     alert("คุณมีนัดในอีก 15 นาทีนี้");
+                //     setHasAlerted(true);
+                // }
 
                 return (
                     <div
@@ -161,8 +199,9 @@ export default function SessionList() {
                                 }
 
                                 <p className="text-xs text-gray-400">
-                                    {new Date(session.StartTime).toLocaleString("th-TH")}
+                                    {session.StartTime?.split('T')[0]} {session.StartTime?.split('T')[1]?.substring(0, 5)}
                                 </p>
+
                             </div>
                         </div>
 
@@ -181,7 +220,7 @@ export default function SessionList() {
                             </p>
                         )}
 
-                        {user === "advisor" && status === "waiting" && canStartEarly && (
+                        {user === "advisor" && status === "waiting" && canStart && (
                             <div className="flex items-center gap-4 bg-green-500 rounded-full px-6 py-3">
                                 <button
                                     onClick={(e) => {
@@ -194,6 +233,7 @@ export default function SessionList() {
                                 </button>
                             </div>
                         )}
+
 
                         {user === "advisor" && status === "active" && (
                             <div className="flex items-center gap-4 bg-red-500 rounded-full px-6 py-3">
