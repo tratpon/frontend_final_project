@@ -6,7 +6,7 @@ import {
     fetchMySessionsAdvisor
 } from "../app/Api";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function SessionList() {
