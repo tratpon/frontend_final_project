@@ -174,11 +174,7 @@ export default function SessionList() {
                 }
 
                 console.log({now,start,end, canStart, status, user, tes, starts });
-                if (canStart && !hasAlerted) {
-                    alert("คุณมีนัดในอีก 15 นาทีนี้");
-                    setHasAlerted(true);
-                }
-
+              
                 return (
                     <div
                         key={session.RoomID}
