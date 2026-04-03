@@ -7,7 +7,7 @@ import Sidebar from "../../components/Sidebar.jsx";
 export default function AdminApprovePost() {
   const [searchParams, setSearchParams] = useSearchParams();
   const type = searchParams.get("type") || "";
-  const [activeTab, setActiveTab] = useState("pending"); // 🔹 tab: pending, approve, reject
+  const [activeTab, setActiveTab] = useState("pending");
   const queryClient = useQueryClient();
 
   // 🔹 Query posts

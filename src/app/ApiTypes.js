@@ -5,11 +5,11 @@ const web = import.meta.env.VITE_API_BASE_URL;
 const localhost = "http://localhost:3001/api"
 
 export const publicApi = axios.create({
-  baseURL: web,
+  baseURL: localhost,
 });
 
 export const privateApi = axios.create({
-  baseURL: web,
+  baseURL: localhost,
 });
 
 privateApi.interceptors.request.use(
