@@ -11,270 +11,274 @@ import {
   addPost
 } from "../app/Api.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MessageSquareText } from "lucide-react";
+import { MessageSquareText, Send, Image as ImageIcon, PlusCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 export default function Community() {
   const [commentText, setCommentText] = useState({});
   const [postText, setPostText] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const type = searchParams.get("type") || "ทุกประเภท";
+  const type = searchParams.get("type") || "";
   const [openCommentId, setOpenCommentId] = useState(null);
   const [postId, setpostId] = useState("");
-  const [view, setView] = useState("all"); // all | mine | pending | reject
+  const [view, setView] = useState("all");
 
-  const { imageUserUrl, user } = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // 🔹 โพสต์ทั้งหมด
-  const { data: posts = [] } = useQuery({
+  // Queries (เหมือนเดิมแต่เพิ่ม isLoading เพื่อทำ Skeleton)
+  const { data: posts = [], isLoading: loadingAll } = useQuery({
     queryKey: ["posts", type],
     queryFn: () => fetchfilterPost(type),
   });
-  console.log(posts);
-  
 
-  // 🔹 โพสต์ของฉัน
   const { data: yourPosts = [] } = useQuery({
     queryKey: ["yourPosts", type],
     queryFn: () => fetchYourPost(type),
   });
 
-  // 🔹 ประเภทโพสต์
   const { data: types = [] } = useQuery({
     queryKey: ["types"],
     queryFn: fetchTypes,
   });
 
-  // 🔹 คอมเมนต์
   const { data: comments = [], refetch: refetchComments } = useQuery({
     queryKey: ["comments", postId],
     queryFn: () => fetchComment(postId),
     enabled: !!postId,
   });
 
-  // 🔹 เพิ่มคอมเมนต์
   const addCommentMutation = useMutation({
     mutationFn: addComment,
     onSuccess: () => refetchComments(),
   });
 
-  // 🔹 เพิ่มโพสต์
   const addPostMutation = useMutation({
     mutationFn: addPost,
     onSuccess: () => {
       queryClient.invalidateQueries(["posts"]);
       queryClient.invalidateQueries(["yourPosts"]);
       setPostText("");
-      alert("โพสต์ของคุณรอการอนุมัติ");
     },
   });
 
   const handleAddPost = () => {
     if (!postText.trim()) return;
     addPostMutation.mutate({
-      type: type,
+      type: type || "ทั่วไป", 
       content: postText,
-      status: "pending", // default
-    });
-  };
-
-  const handleAddComment = (id) => {
-    const text = commentText[id];
-    if (!text?.trim()) return;
-
-    addCommentMutation.mutate({
-      PostID: id,
-      Comment: text,
-    });
-
-    setCommentText({
-      ...commentText,
-      [id]: "",
+      status: "pending",
     });
   };
 
   const statusStyles = {
-    approve: "bg-green-50 text-green-600 border-green-200",
-    pending: "bg-yellow-50 text-yellow-600 border-yellow-200",
-    reject: "bg-red-50 text-red-600 border-red-200",
+    approve: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    pending: "bg-amber-50 text-amber-600 border-amber-100",
+    reject: "bg-rose-50 text-rose-600 border-rose-100",
   };
 
   const PostCard = (post) => (
     <div
       key={post.PostID}
-      className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm transition hover:shadow-xl duration-300"
+      className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300"
     >
-      {/* header */}
-      <div className="flex items-center gap-3 justify-between">
+      <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full border-2 border-white shadow-sm overflow-hidden bg-slate-100 flex items-center justify-center">
             {post.imageUserUrl ? (
-              <img src={post.imageUserUrl} className="w-full h-full object-cover" />
+              <img src={post.imageUserUrl} className="w-full h-full object-cover" alt="user" />
             ) : (
-              "👤"
+              <span className="text-xl">👤</span>
             )}
           </div>
           <div>
-            <div className="font-semibold">{post.Username}</div>
-            <div className="font text-xs text-cyan-500">#{post.TypesName}</div>
+            <div className="font-bold text-slate-800">{post.Username}</div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-600 rounded uppercase">
+                {post.TypesName}
+              </span>
+              <span className="text-[10px] text-slate-400">เมื่อสักครู่</span>
+            </div>
           </div>
         </div>
 
-        <div className={`${statusStyles[post.status]} rounded-2xl px-2`}>
-          {post.status}
-        </div>
+        {/* Status Badge - Only show for personal posts */}
+        {view !== "all" && (
+          <div className={`text-[10px] font-bold uppercase tracking-wider border px-3 py-1 rounded-full ${statusStyles[post.status] || 'bg-gray-50'}`}>
+            {post.status === 'approve' ? '● Approved' : post.status === 'pending' ? '● Pending' : '● Rejected'}
+          </div>
+        )}
       </div>
 
-      <hr className="my-3" />
-      <p className="text-gray-700">{post.content}</p>
+      <p className="text-slate-700 leading-relaxed mb-4 whitespace-pre-wrap">{post.content}</p>
 
-      <div className="flex justify-end items-center gap-2 mt-3 text-gray-600">
+      <div className="flex items-center justify-between pt-4 border-t border-slate-50">
         <button
           onClick={() => {
             setpostId(post.PostID);
             setOpenCommentId(openCommentId === post.PostID ? null : post.PostID);
           }}
+          className={`flex items-center gap-2 text-sm transition-colors ${openCommentId === post.PostID ? 'text-blue-600 font-bold' : 'text-slate-500 hover:text-blue-500'}`}
         >
           <MessageSquareText size={18} />
+          <span>{post.comment_count || 0} ความคิดเห็น</span>
         </button>
-        <span>{post.comment_count}</span>
       </div>
 
+      {/* Comment Section */}
       {openCommentId === post.PostID && (
-        <div className="mt-4 border-t pt-4 space-y-3">
-          {user && (
-            <input
-              type="text"
-              value={commentText[post.PostID] || ""}
-              onChange={(e) =>
-                setCommentText({ ...commentText, [post.PostID]: e.target.value })
-              }
-              onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.PostID)}
-              placeholder="เขียนความคิดเห็น..."
-              className="w-full bg-gray-100 rounded-full px-4 py-2 text-sm"
-            />
-          )}
-
-          <div className="space-y-4 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+        <div className="mt-4 pt-4 bg-slate-50 -mx-5 px-5 rounded-b-2xl animate-in slide-in-from-top-2 duration-300">
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pb-4 custom-scrollbar">
             {comments.map((comment) => (
               <div key={comment.CommentID} className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 shrink-0 border border-gray-100 ">
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 border border-slate-200">
                   {comment.imageUserUrl ? (
-                    <img
-                      src={comment.imageUserUrl}
-                      className="w-full h-full object-cover"
-                      alt={comment.username}
-                    />
+                    <img src={comment.imageUserUrl} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">👤</div>
+                    <div className="w-full h-full flex items-center justify-center text-[10px]">👤</div>
                   )}
                 </div>
-
-                <div className="flex-1 bg-gray-50 rounded-2xl px-3 py-2 border border-gray-100 min-w-0">
-                  <div className="font-bold text-xs text-gray-800 mb-0.5 truncate">{comment.username}</div>
-                  <p className="text-sm text-gray-600 leading-relaxed break-words">{comment.Comment}</p>
+                <div className="flex-1 bg-white rounded-2xl px-4 py-2 border border-slate-100 shadow-sm">
+                  <div className="font-bold text-xs text-slate-900 mb-0.5">{comment.username}</div>
+                  <p className="text-sm text-slate-600 leading-relaxed">{comment.Comment}</p>
                 </div>
               </div>
             ))}
-
+            
             {comments.length === 0 && (
-              <p className="text-center text-[10px] text-gray-400 py-2 italic">ยังไม่มีความคิดเห็นในขณะนี้</p>
+              <p className="text-center text-xs text-slate-400 py-4">ยังไม่มีใครแสดงความคิดเห็น มาเริ่มกันเลย!</p>
             )}
           </div>
+
+          {user && (
+            <div className="py-4 border-t border-slate-200 flex gap-2">
+               <input
+                type="text"
+                value={commentText[post.PostID] || ""}
+                onChange={(e) => setCommentText({ ...commentText, [post.PostID]: e.target.value })}
+                onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.PostID)}
+                placeholder="พิมพ์ความคิดเห็นของคุณ..."
+                className="flex-1 bg-white border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+              <button 
+                onClick={() => handleAddComment(post.PostID)}
+                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+              >
+                <Send size={16} />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 
-  // 🔹 filter posts ตาม view
   const displayedPosts = (() => {
     if (view === "all") return posts;
-    if (view === "mine") return yourPosts.filter(post => post.status === "approve");
-    if (view === "pending") return yourPosts.filter(post => post.status === "pending");
-    if (view === "reject") return yourPosts.filter(post => post.status === "reject");
+    const filterByStatus = (status) => yourPosts.filter(p => p.status === status);
+    if (view === "mine") return filterByStatus("approve");
+    if (view === "pending") return filterByStatus("pending");
+    if (view === "reject") return filterByStatus("reject");
     return [];
   })();
 
   return (
-    <div className="min-h-screen bg-white flex flex-col bg-linear-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <NavbarSwitcher />
-      <div className="max-w-3xl mx-auto w-full px-4 py-6 sm:py-10 flex-1">
+      
+      <main className="max-w-3xl mx-auto w-full px-4 py-8 flex-1">
         <header className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">คอมมูนิตี้</h1>
-          <p className="text-gray-500 text-sm sm:text-base">พื้นที่สร้างสรรค์คำถาม</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Community</h1>
+          <p className="text-slate-500 italic">"แลกเปลี่ยนความคิดเห็น ปรึกษาผู้เชี่ยวชาญ และเติบโตไปด้วยกัน"</p>
         </header>
 
-        {user && (
-          <div className="flex flex-col sm:flex-row gap-3 mb-6 sm:mb-10">
-            {user === "user" && (
-              <input
-                type="text"
+        {/* Create Post Area */}
+        {user === "user" && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 mb-8 transition-all focus-within:shadow-md">
+            <div className="flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0 font-bold">
+                U
+              </div>
+              <textarea
                 value={postText}
                 onChange={(e) => setPostText(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddPost()}
-                placeholder="คุณกำลังคิดอะไรอยู่..."
-                className="flex-1 bg-white border rounded-lg px-4 py-2 hover:shadow-xl"
+                placeholder="คุณมีอะไรที่อยากปรึกษาหรือเปล่า..."
+                className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 resize-none py-2 min-h-[80px]"
               />
-            )}
-
-            <select
-              value={type}
-              onChange={(e) => {
-                const newParams = new URLSearchParams(searchParams);
-                newParams.set("type", e.target.value);
-                setSearchParams(newParams);
-              }}
-              className="bg-white border rounded-lg px-3 py-2 hover:shadow-xl"
-            >
-              <option value="">ทุกประเภท</option>
-              {types.map((t) => (
-                <option key={t.TypesID} value={t.TypesName}>{t.TypesName}</option>
-              ))}
-            </select>
+            </div>
+            
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+              <div className="flex gap-2">
+                <select
+                  value={type}
+                  onChange={(e) => {
+                    const newParams = new URLSearchParams(searchParams);
+                    newParams.set("type", e.target.value);
+                    setSearchParams(newParams);
+                  }}
+                  className="text-xs bg-slate-100 border-none rounded-lg px-3 py-2 text-slate-600 cursor-pointer hover:bg-slate-200 transition-colors"
+                >
+                  <option value="">เลือกหมวดหมู่</option>
+                  {types.map((t) => (
+                    <option key={t.TypesID} value={t.TypesName}>{t.TypesName}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <button
+                onClick={handleAddPost}
+                disabled={!postText.trim() || addPostMutation.isLoading}
+                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-200"
+              >
+                {addPostMutation.isLoading ? "กำลังส่ง..." : <><PlusCircle size={18} /> โพสต์เลย</>}
+              </button>
+            </div>
           </div>
         )}
 
-        {/* 🔥 Toggle Tabs */}
-        <div className="flex gap-4 mb-6 border-b">
-          <button
-            onClick={() => setView("all")}
-            className={`pb-2 ${view === "all" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
-          >
-            โพสต์ทั้งหมด
-          </button>
-          {user === "user" && (
-            <>
-              <button
-                onClick={() => setView("mine")}
-                className={`pb-2 ${view === "mine" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
-              >
-                โพสต์ของฉัน
-              </button>
-              <button
-                onClick={() => setView("pending")}
-                className={`pb-2 ${view === "pending" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
-              >
-                โพสต์รออนุมัติ
-              </button>
-              <button
-                onClick={() => setView("reject")}
-                className={`pb-2 ${view === "reject" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-400"}`}
-              >
-                โพสต์ถูกปฏิเสธ
-              </button>
-            </>
-          )}
+        {/* Navigation Tabs */}
+        <div className="flex items-center justify-between mb-6 overflow-x-auto no-scrollbar">
+          <div className="flex gap-6 border-b border-slate-200 w-full">
+            {[
+              { id: "all", label: "ฟีดทั้งหมด" },
+              { id: "mine", label: "โพสต์ของฉัน", userOnly: true },
+              { id: "pending", label: "รออนุมัติ", userOnly: true },
+              { id: "reject", label: "ไม่ผ่านการอนุมัติ", userOnly: true },
+            ].map((tab) => (
+              (!tab.userOnly || user === "user") && (
+                <button
+                  key={tab.id}
+                  onClick={() => setView(tab.id)}
+                  className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${
+                    view === tab.id ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  {tab.label}
+                  {view === tab.id && (
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-full" />
+                  )}
+                </button>
+              )
+            ))}
+          </div>
         </div>
 
-        {/* 🔥 render posts */}
+        {/* Post List */}
         <div className="space-y-6">
-          {displayedPosts.map(PostCard)}
-          {displayedPosts.length === 0 && (
-            <div className="text-center text-gray-400 mt-10">ไม่มีโพสต์</div>
+          {loadingAll ? (
+            <div className="text-center py-10 text-slate-400 animate-pulse">กำลังโหลดเรื่องราวที่น่าสนใจ...</div>
+          ) : displayedPosts.length > 0 ? (
+            displayedPosts.map(PostCard)
+          ) : (
+            <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+              <div className="text-5xl mb-4">🍃</div>
+              <h3 className="text-lg font-bold text-slate-800">ที่นี่ดูเงียบเหงาจัง</h3>
+              <p className="text-slate-400 text-sm">ยังไม่มีโพสต์ในหมวดหมู่นี้ เริ่มต้นบทสนทนาได้เลย!</p>
+            </div>
           )}
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );
