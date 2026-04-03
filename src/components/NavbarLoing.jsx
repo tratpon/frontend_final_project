@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import { Menu, X, User, LogOut, ChevronDown, Bell } from "lucide-react"; // ใช้ Icon จาก Lucide
+import { Menu, X, User, LogOut, ChevronDown, Bell, MessagesSquare,ClipboardClock ,Info } from "lucide-react"; // ใช้ Icon จาก Lucide
 
 const NavbarLogin = () => {
     const [openMenu, setOpenMenu] = useState(false);
@@ -12,9 +12,18 @@ const NavbarLogin = () => {
     const navigate = useNavigate();
     const { setUser, imageUserUrl } = useAuth();
 
+    // 🔹 ฟังก์ชันกำหนดสีสำหรับ Desktop Nav (เน้นแค่ตัวหนังสือ)
     const getNavLinkClass = ({ isActive }) =>
         `transition-colors duration-200 font-medium ${
             isActive ? "text-blue-600" : "text-gray-600 hover:text-blue-500"
+        }`;
+
+    // 🔹 ฟังก์ชันสำหรับ Dropdown Nav (เน้นแถบสีพื้นหลังเพื่อให้เห็นชัดว่าอยู่หน้าไหน)
+    const getDropdownLinkClass = ({ isActive }) =>
+        `flex items-center space-x-3 px-4 py-2.5 transition-all duration-200 ${
+            isActive 
+                ? "bg-blue-50 text-blue-600 font-bold border-r-4 border-blue-600" 
+                : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
         }`;
 
     const handleLogOut = async () => {
@@ -65,7 +74,12 @@ const NavbarLogin = () => {
 
                 {/* Right Side Actions */}
                 <div className="flex items-center space-x-4">
-                    {/* User Interaction Area */}
+                    <button
+                        className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        onClick={() => { setIsOpen(!isOpen); setOpenMenu(false); }}
+                    >
+                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                     <div className="flex items-center bg-gray-50 p-1 rounded-full border border-gray-100">
                         <div className="relative px-2 hidden sm:block">
                             <Bell size={20} className="text-gray-400 hover:text-blue-500 cursor-pointer transition-colors" />
@@ -76,7 +90,7 @@ const NavbarLogin = () => {
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => { setOpenMenu(!openMenu); setIsOpen(false); }}
-                                className="flex items-center space-x-2 p-0.5 rounded-full hover:bg-white hover:shadow-sm transition-all"
+                                className={`flex items-center space-x-2 p-0.5 rounded-full transition-all ${openMenu ? 'bg-white shadow-md' : 'hover:bg-white hover:shadow-sm'}`}
                             >
                                 <div className="w-9 h-9 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center border-2 border-white shadow-sm">
                                     {imageUserUrl ? (
@@ -85,24 +99,30 @@ const NavbarLogin = () => {
                                         <User size={20} className="text-blue-600" />
                                     )}
                                 </div>
-                                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${openMenu ? 'rotate-180' : ''}`} />
+                                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 mr-1 ${openMenu ? 'rotate-180' : ''}`} />
                             </button>
 
-                            {/* Dropdown Menu */}
+                            {/* Dropdown Menu - แก้ไข NavLink ตรงนี้ */}
                             {openMenu && (
                                 <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in zoom-in duration-200">
                                     <div className="px-4 py-2 border-b border-gray-50 mb-1">
                                         <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">บัญชีผู้ใช้</p>
                                     </div>
-                                    <NavLink to="/UserProfile" className="flex items-center space-x-3 px-4 py-2.5 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                                    
+                                    {/* 🔹 ใส่ className={getDropdownLinkClass} ทุกอัน */}
+                                    <NavLink to="/UserProfile" className={getDropdownLinkClass} onClick={() => setOpenMenu(false)}>
                                         <User size={18} /> <span>โปรไฟล์ของฉัน</span>
                                     </NavLink>
-                                    <NavLink to="/session" className="flex items-center space-x-3 px-4 py-2.5 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                                        <span>ข้อความ/แชท</span>
+                                    <NavLink to="/session" className={getDropdownLinkClass} onClick={() => setOpenMenu(false)}>
+                                        <MessagesSquare size={18}  /><span>ข้อความ/แชท</span>
                                     </NavLink>
-                                    <NavLink to="/BookingStatus" className="flex items-center space-x-3 px-4 py-2.5 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                                        <span>สถานะการจอง</span>
+                                    <NavLink to="/BookingStatus" className={getDropdownLinkClass} onClick={() => setOpenMenu(false)}>
+                                        <Info size={18}   /> <span>สถานะการจอง</span>
                                     </NavLink>
+                                    <NavLink to="/history" className={getDropdownLinkClass} onClick={() => setOpenMenu(false)}>
+                                        <ClipboardClock size={18} /><span>ประวัติการจอง</span>
+                                    </NavLink>
+
                                     <div className="my-1 border-t border-gray-50"></div>
                                     <button 
                                         onClick={handleLogOut} 
@@ -115,17 +135,11 @@ const NavbarLogin = () => {
                         </div>
                     </div>
 
-                    {/* Mobile Toggle */}
-                    <button
-                        className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                        onClick={() => { setIsOpen(!isOpen); setOpenMenu(false); }}
-                    >
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
+                    
                 </div>
             </div>
 
-            {/* Mobile Sidebar/Menu */}
+            {/* Mobile Sidebar */}
             {isOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 py-6 px-6 flex flex-col space-y-4 shadow-xl animate-in slide-in-from-top duration-300">
                     <NavLink to="/main" className={getNavLinkClass} onClick={() => setIsOpen(false)}>หน้าหลัก</NavLink>
@@ -137,5 +151,4 @@ const NavbarLogin = () => {
         </header>
     );
 };
-
 export default NavbarLogin;

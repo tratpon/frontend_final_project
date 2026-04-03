@@ -26,11 +26,13 @@ export default function Community() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Queries (เหมือนเดิมแต่เพิ่ม isLoading เพื่อทำ Skeleton)
+
   const { data: posts = [], isLoading: loadingAll } = useQuery({
     queryKey: ["posts", type],
     queryFn: () => fetchfilterPost(type),
   });
+  console.log(posts);
+
 
   const { data: yourPosts = [] } = useQuery({
     queryKey: ["yourPosts", type],
@@ -65,9 +67,23 @@ export default function Community() {
   const handleAddPost = () => {
     if (!postText.trim()) return;
     addPostMutation.mutate({
-      type: type || "ทั่วไป", 
+      type: type || "ทุกประเภท",
       content: postText,
       status: "pending",
+    });
+  };
+  const handleAddComment = (id) => {
+    const text = commentText[id];
+    if (!text?.trim()) return;
+
+    addCommentMutation.mutate({
+      PostID: id,
+      Comment: text,
+    });
+
+    setCommentText({
+      ...commentText,
+      [id]: "",
     });
   };
 
@@ -97,7 +113,12 @@ export default function Community() {
               <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-600 rounded uppercase">
                 {post.TypesName}
               </span>
-              <span className="text-[10px] text-slate-400">เมื่อสักครู่</span>
+              <span className="text-[10px] text-slate-400">
+                {new Date(post.Date).toLocaleString("th-TH", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </span>
             </div>
           </div>
         </div>
@@ -144,7 +165,7 @@ export default function Community() {
                 </div>
               </div>
             ))}
-            
+
             {comments.length === 0 && (
               <p className="text-center text-xs text-slate-400 py-4">ยังไม่มีใครแสดงความคิดเห็น มาเริ่มกันเลย!</p>
             )}
@@ -152,7 +173,7 @@ export default function Community() {
 
           {user && (
             <div className="py-4 border-t border-slate-200 flex gap-2">
-               <input
+              <input
                 type="text"
                 value={commentText[post.PostID] || ""}
                 onChange={(e) => setCommentText({ ...commentText, [post.PostID]: e.target.value })}
@@ -160,7 +181,7 @@ export default function Community() {
                 placeholder="พิมพ์ความคิดเห็นของคุณ..."
                 className="flex-1 bg-white border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
               />
-              <button 
+              <button
                 onClick={() => handleAddComment(post.PostID)}
                 className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
               >
@@ -185,7 +206,7 @@ export default function Community() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <NavbarSwitcher />
-      
+
       <main className="max-w-3xl mx-auto w-full px-4 py-8 flex-1">
         <header className="mb-8">
           <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Community</h1>
@@ -203,10 +224,10 @@ export default function Community() {
                 value={postText}
                 onChange={(e) => setPostText(e.target.value)}
                 placeholder="คุณมีอะไรที่อยากปรึกษาหรือเปล่า..."
-                className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 resize-none py-2 min-h-[80px]"
+                className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 resize-none py-2 min-h-80px"
               />
             </div>
-            
+
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
               <div className="flex gap-2">
                 <select
@@ -224,7 +245,7 @@ export default function Community() {
                   ))}
                 </select>
               </div>
-              
+
               <button
                 onClick={handleAddPost}
                 disabled={!postText.trim() || addPostMutation.isLoading}
@@ -249,9 +270,8 @@ export default function Community() {
                 <button
                   key={tab.id}
                   onClick={() => setView(tab.id)}
-                  className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${
-                    view === tab.id ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
-                  }`}
+                  className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${view === tab.id ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+                    }`}
                 >
                   {tab.label}
                   {view === tab.id && (

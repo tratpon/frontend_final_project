@@ -51,45 +51,50 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center px-4 bg-linear-to-b from-blue-50 to-white py-20">
         <div className="bg-white w-full max-w-lg rounded-lg shadow p-8">
           <h2 className="text-3xl font-bold mb-6 text-center">เข้าสู่ระบบ</h2>
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleLogin();
+  }}
+>
+  {/* Email */}
+  <div className="mb-4">
+    <label className="block text-sm font-medium mb-1">อีเมล</label>
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="โปรดใส่ Email"
+      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
-          {/* Email */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">อีเมล</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="โปรดใส่ Email"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+  {/* Password */}
+  <div className="mb-1">
+    <label className="block text-sm font-medium mb-1">รหัสผ่าน</label>
+    <input
+      type="password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="โปรดใส่รหัสผ่าน"
+      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
-          {/* Password */}
-          <div className="mb-1">
-            <label className="block text-sm font-medium mb-1">รหัสผ่าน</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="โปรดใส่รหัสผ่าน"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+  <p className="text-xs text-gray-500 mb-4">
+    ต้องมีตัวเลข หรือตัวอักษรอย่างน้อย 8 ตัว
+  </p>
 
-        
-           <p className="text-xs text-gray-500 mb-4">
-                        ต้องมีตัวเลข หรือตัวอักษรอย่างน้อย 8 ตัว
-                    </p>
-          {/* Login Button */}
-
-          <button
-            onClick={handleLogin}
-            disabled={loginMutation.isPending}
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-          >
-            {loginMutation.isPending ? "กำลังล็อกอิน..." : "ล็อกอิน"}
-          </button>
-
+  {/* Button */}
+  <button
+    type="submit"
+    disabled={loginMutation.isPending}
+    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+  >
+    {loginMutation.isPending ? "กำลังล็อกอิน..." : "ล็อกอิน"}
+  </button>
+</form>
+         
           {/* Signup */}
           <p className="text-center text-sm text-gray-600">
             ยังไม่มีบัญชี?{" "}

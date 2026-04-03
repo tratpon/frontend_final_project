@@ -8,7 +8,7 @@ import {
   uploadToCloudinary
 } from "../../app/Api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
+import { Camera, User, Mail, Phone, Calendar } from "lucide-react";
 
 export default function UserProfile() {
   const queryClient = useQueryClient();
@@ -27,7 +27,7 @@ export default function UserProfile() {
   const [editMode, setEditMode] = useState(false);
   const [image, setImage] = useState(null);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["myProfile"],
     queryFn: fetchMyProfile
   });
@@ -39,9 +39,9 @@ export default function UserProfile() {
   const updateMutation = useMutation({
     mutationFn: updateMyProfile,
     onSuccess: () => {
-      alert("Profile updated!");
       queryClient.invalidateQueries(["myProfile"]);
       setEditMode(false);
+      alert("อัปเดตโปรไฟล์เรียบร้อยแล้ว!");
     }
   });
 
@@ -49,31 +49,23 @@ export default function UserProfile() {
     mutationFn: uploadImageMyProfile,
     onSuccess: () => {
       queryClient.invalidateQueries(["myProfile"]);
-      alert("Image updated!");
+      setImage(null);
+      alert("เปลี่ยนรูปโปรไฟล์สำเร็จ!");
     }
   });
 
   const handleUpload = async () => {
-    if (!image) return alert("Please select image");
+    if (!image) return alert("กรุณาเลือกรูปภาพก่อน");
 
     try {
       const response = await uploadToCloudinary(image);
-
       if (!response.secure_url) {
-        return alert("Upload failed, please try again");
+        return alert("อัปโหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
       }
-
-      const secureUrl = response.secure_url; 
-
-      
-      uploadImageMutation.mutate({ imageUserUrl: secureUrl });
-      setForm({ ...form, imageUserUrl: secureUrl });
-      setImage(null);
-
-      alert("Upload successfully!");
+      uploadImageMutation.mutate({ imageUserUrl: response.secure_url });
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Something went wrong");
+      alert("เกิดข้อผิดพลาดบางอย่าง");
     }
   };
 
@@ -81,82 +73,107 @@ export default function UserProfile() {
     if (!editMode) return setEditMode(true);
     updateMutation.mutate(form);
   };
+
   const handleChange = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value
     });
   };
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>;
+
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-b from-blue-50 to-white">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       <NavbarSwitcher />
 
-      <div className="flex-1 py-6 sm:py-10 px-4 ">
-        <div className="max-w-3xl mx-auto bg-white border rounded-2xl p-4 sm:p-8 shadow-sm bg-linear-to-b from-blue-50 to-white">
+      <div className="flex-1 py-10 px-4">
+        {/* Main Card Container */}
+        <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm transition-all duration-300">
+          
+          <h2 className="text-2xl font-bold text-slate-800 mb-8 text-center sm:text-left">ข้อมูลส่วนตัว</h2>
 
-          {/* PROFILE IMAGE */}
-          <div className="flex flex-col items-center mb-6">
-            <label className="cursor-pointer">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          {/* PROFILE IMAGE - Position: Center Top */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="relative group">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-slate-100 border-4 border-white shadow-lg flex items-center justify-center transition-transform group-hover:scale-105">
                 {form.imageUserUrl ? (
                   <img
                     src={form.imageUserUrl}
                     className="w-full h-full object-cover"
+                    alt="User Profile"
                   />
                 ) : (
-                  "👤"
+                  <span className="text-4xl text-slate-300">👤</span>
                 )}
               </div>
-
-              <input
-                type="file"
-                className="hidden"
-                onChange={(e) => setImage(e.target.files[0])}
-              />
-            </label>
+              
+              <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-colors border-2 border-white">
+                <Camera size={16} />
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => setImage(e.target.files[0])}
+                />
+              </label>
+            </div>
 
             {image && (
               <button
                 onClick={handleUpload}
-                className="mt-3 px-4 py-2 bg-blue-600 text-white rounded text-sm"
+                className="mt-4 px-5 py-1.5 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-blue-700 shadow-md shadow-blue-100 transition-all animate-in fade-in slide-in-from-top-1"
               >
-                อัปโหลดรูป
+                ยืนยันการอัปโหลด
               </button>
             )}
           </div>
 
-          {/* USERNAME */}
-          <div className="mb-5"><Field label="Username" value={form.Username} disabled /></div>
+          {/* USERNAME SECTION - Read Only Layout */}
+          <div className="mb-6">
+            <Field label="ชื่อผู้ใช้งาน (Username)" value={form.Username} disabled />
+          </div>
 
+        
 
-          {/* FORM */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <Field label="ชื่อ" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
+          {/* FORM FIELDS - Grid 2 Columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+            <Field label="ชื่อจริง" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
             <Field label="นามสกุล" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
-            <div>
-              <label label="เพศ" className="block text-sm mb-1">Gender</label>
-              <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-white px-4 py-2 rounded border text-sm md:text-base">
+            
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">เพศ (Gender)</label>
+              <select
+                name="Gender"
+                value={form.Gender}
+                onChange={handleChange}
+                disabled={!editMode}
+                className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all appearance-none cursor-pointer ${
+                  !editMode 
+                    ? "bg-slate-50 border-slate-100 text-slate-400" 
+                    : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
+                }`}
+              >
                 <option value="ชาย">ชาย</option>
                 <option value="หญิง">หญิง</option>
                 <option value="ไม่ระบุ">ไม่ระบุ</option>
                 <option value="อื่นๆ">อื่นๆ</option>
               </select>
             </div>
+
             <Field label="อายุ" name="Age" value={form.Age} onChange={handleChange} disabled={!editMode} />
-            <Field label="อีเมล" value={form.Email} disabled />
-            <Field label="เบอร์" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
+            <Field label="เบอร์โทรศัพท์" name="Phone" value={form.Phone} onChange={handleChange} disabled={!editMode} />
+            <Field label="อีเมล (Email)" value={form.Email} disabled />
           </div>
 
-          {/* BUTTONS */}
-          <div className="flex justify-end mt-6 gap-4">
-
+          {/* ACTION BUTTONS - Position: Bottom Right */}
+          <div className="flex justify-end mt-12 gap-3">
             {editMode && (
               <button
                 onClick={() => {
                   setForm(data);
                   setEditMode(false);
                 }}
-                className="text-red px-6 py-2 rounded-full"
+                className="px-6 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-100 transition-colors text-sm"
               >
                 ยกเลิก
               </button>
@@ -164,13 +181,15 @@ export default function UserProfile() {
 
             <button
               onClick={handleSubmit}
-              className={`px-8 py-2 rounded-full text-white ${editMode ? "bg-blue-600" : "bg-green-600"}`}
+              className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${
+                editMode 
+                  ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700" 
+                  : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
+              }`}
             >
-              {editMode ? "ตกลง" : "แก้ไข"}
+              {editMode ? "ตกลงและบันทึก" : "แก้ไขโปรไฟล์"}
             </button>
-
           </div>
-
 
         </div>
       </div>
@@ -180,16 +199,25 @@ export default function UserProfile() {
   );
 }
 
+/**
+ * Reusable Field Component
+ * Maintains the original wireframe logic but improves visual styling
+ */
 function Field({ label, name, value, onChange, disabled }) {
   return (
-    <div>
-      <label className="block text-xs sm:text-sm mb-1">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">{label}</label>
       <input
         name={name}
         value={value || ""}
         onChange={onChange}
         disabled={disabled}
-        className="w-full bg-white px-3 py-2 text-sm rounded border outline-none"
+        className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${
+          disabled 
+            ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed" 
+            : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
+        }`}
+        placeholder={disabled ? "" : `ระบุ${label}`}
       />
     </div>
   );

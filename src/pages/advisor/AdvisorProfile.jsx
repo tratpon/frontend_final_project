@@ -8,38 +8,44 @@ import {
     uploadImageAdvisor,
     uploadToCloudinary
 } from "../../app/Api";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Camera, Star, DollarSign, Users, User, Award, TrendingUp } from "lucide-react";
 
-// 🔹 Stat Card
-const StatCard = ({ icon, label, value }) => (
-    <div className="flex items-center gap-4 border rounded-2xl p-4 md:p-6 w-full bg-white">
-        <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-gray-100">
+// 🔹 Stat Card (Modernized)
+const StatCard = ({ icon, label, value, colorClass }) => (
+    <div className="flex items-center gap-4 border border-slate-100 rounded-3xl p-5 w-full bg-white shadow-sm hover:shadow-md transition-shadow">
+        <div className={`w-12 h-12 flex items-center justify-center rounded-2xl ${colorClass} text-xl`}>
             {icon}
         </div>
         <div>
-            <p className="text-xs md:text-sm text-gray-500">{label}</p>
-            <p className="text-lg md:text-xl font-semibold">{value}</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{label}</p>
+            <p className="text-xl font-extrabold text-slate-800">{value}</p>
         </div>
     </div>
 );
 
-// 🔹 Service Card (FIXED + Responsive)
+// 🔹 Service Card (Horizontal Scroll Ready)
 const ServiceCard = ({ name, users, revenue }) => (
-    <div className="flex justify-between items-center border rounded-2xl p-4 bg-white min-w-[220px] md:min-w-[260px]">
-        <div>
-            <p className="font-semibold text-sm md:text-base">{name}</p>
-            <p className="text-xs md:text-sm text-gray-500">รายได้</p>
-            <p className="font-semibold">${revenue}</p>
+    <div className="flex flex-col justify-between border border-slate-100 rounded-2xl p-5 bg-slate-50 min-w-[240px] hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <div className="mb-4">
+            <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md w-fit mb-2 uppercase">Popular</div>
+            <p className="font-bold text-slate-800 text-base line-clamp-1">{name}</p>
         </div>
-        <div className="text-right">
-            <p className="text-xs md:text-sm text-gray-500">ผู้ใช้</p>
-            <p className="font-semibold">{users}</p>
+        <div className="flex justify-between items-end border-t border-slate-200 pt-3">
+            <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">รายได้รวม</p>
+                <p className="font-extrabold text-slate-900">฿{Number(revenue).toLocaleString()}</p>
+            </div>
+            <div className="text-right">
+                <p className="text-[10px] font-bold text-slate-400 uppercase">ลูกค้า</p>
+                <p className="font-bold text-blue-600">{users} คน</p>
+            </div>
         </div>
     </div>
 );
 
 export default function AdvisorProfile() {
-
+    const queryClient = useQueryClient();
     const [form, setForm] = useState({
         Username: "",
         Fadvisor: "",
@@ -51,19 +57,17 @@ export default function AdvisorProfile() {
         imageAdvisorUrl: "",
         Promptpay: ""
     });
-    console.log({ form });
-
 
     const [editMode, setEditMode] = useState(false);
     const [image, setImage] = useState(null);
 
-    // 🔵 Profile
+    // 🔵 Profile Data
     const { data, isLoading } = useQuery({
         queryKey: ["myProfile"],
         queryFn: fetchMyAdvisorProfile
     });
 
-    // 🔵 Dashboard (FIXED)
+    // 🔵 Dashboard Data
     const { data: dataD } = useQuery({
         queryKey: ["advisorDashboard"],
         queryFn: fetchAdvisorDashboard
@@ -73,169 +77,167 @@ export default function AdvisorProfile() {
         mutationFn: uploadImageAdvisor,
         onSuccess: () => {
             queryClient.invalidateQueries(["myProfile"]);
-            alert("Image updated!");
+            setImage(null);
+            alert("เปลี่ยนรูปโปรไฟล์สำเร็จ!");
         }
     });
 
     const handleUpload = async () => {
-        if (!image) return alert("Please select image");
-
+        if (!image) return alert("กรุณาเลือกรูปภาพ");
         try {
             const response = await uploadToCloudinary(image);
-
-            if (!response.secure_url) {
-                return alert("Upload failed, please try again");
+            if (response.secure_url) {
+                uploadImageMutation.mutate({ imageAdvisorUrl: response.secure_url });
+                setForm({ ...form, imageAdvisorUrl: response.secure_url });
             }
-
-            const secureUrl = response.secure_url;
-
-
-            uploadImageMutation.mutate({ imageAdvisorUrl: secureUrl });
-            setForm({ ...form, imageAdvisorUrl: secureUrl });
-            setImage(null);
-
-            alert("Upload successfully!");
         } catch (error) {
-            console.error("Upload error:", error);
-            alert("Something went wrong");
+            alert("เกิดข้อผิดพลาดในการอัปโหลด");
         }
     };
+
+    useEffect(() => {
+        if (data) setForm(data.data || data);
+    }, [data]);
+
+    const updateMutation = useMutation({
+        mutationFn: updateProfileAdvisor,
+        onSuccess: () => {
+            alert("บันทึกข้อมูลเรียบร้อย!");
+            setEditMode(false);
+            queryClient.invalidateQueries(["myProfile"]);
+        },
+        onError: (err) => alert(err.response?.data?.message || err.message)
+    });
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = () => {
+        if (!editMode) return setEditMode(true);
+        updateMutation.mutate(form);
+    };
+
+    if (isLoading) return <div className="min-h-screen flex items-center justify-center text-slate-400 font-medium">กำลังโหลดข้อมูล...</div>;
 
     const stats = dataD?.stats;
     const rating = dataD?.rating;
     const services = dataD?.topService;
-    console.log(stats, rating, services);
-
-
-    useEffect(() => {
-        if (data) {
-            setForm(data.data || data);
-        }
-    }, [data]);
-
-    // 🟡 Update
-    const updateMutation = useMutation({
-        mutationFn: updateProfileAdvisor,
-        onSuccess: () => {
-            alert("Updated!");
-            setEditMode(false);
-        },
-        onError: (err) => {
-            alert(err.response?.data?.message || err.message);
-        }
-    });
-
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSubmit = () => {
-        if (!editMode) {
-            setEditMode(true);
-            return;
-        }
-        updateMutation.mutate(form);
-    };
-
-    if (isLoading) {
-        return <div className="p-10 text-center">Loading...</div>;
-    }
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 bg-linear-to-b from-blue-50 to-white">
+        <div className="flex flex-col min-h-screen bg-slate-50">
             <NavbarAdvisor />
 
-            <main className="grow">
-                {/* Main Layout */}
-                <div className="flex flex-col lg:flex-row gap-6 max-w-5xl mx-auto pt-6 px-4 ">
-                    {/* Profile */}
-                    <div className="bg-white border rounded-2xl p-6 md:p-8 w-full lg:w-2/3 ">
-                        {/* Avatar */}
-                        <div className="flex flex-col items-center mb-6">
-                            <label className="cursor-pointer">
-                                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+            <main className="grow py-8 px-4">
+                <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+                    
+                    {/* LEFT: Profile Form */}
+                    <div className="bg-white border border-slate-200 rounded-[2rem] p-6 md:p-10 w-full lg:w-2/3 shadow-sm">
+                        <h2 className="text-2xl font-extrabold text-slate-800 mb-8 flex items-center gap-2">
+                            <User className="text-blue-600" /> ข้อมูลที่ปรึกษา
+                        </h2>
+
+                        {/* Avatar Section */}
+                        <div className="flex flex-col items-center mb-10">
+                            <div className="relative group">
+                                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden bg-slate-100 border-4 border-white shadow-xl flex items-center justify-center transition-transform group-hover:scale-105">
                                     {form.imageAdvisorUrl ? (
-                                        <img
-                                            src={form.imageAdvisorUrl}
-                                            className="w-full h-full object-cover"
-                                        />
+                                        <img src={form.imageAdvisorUrl} className="w-full h-full object-cover" alt="Profile" />
                                     ) : (
-                                        "👤"
+                                        <span className="text-5xl">👤</span>
                                     )}
                                 </div>
-
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    onChange={(e) => setImage(e.target.files[0])}
-                                />
-                            </label>
+                                <label className="absolute bottom-1 right-1 bg-blue-600 text-white p-2.5 rounded-2xl shadow-lg cursor-pointer hover:bg-blue-700 transition-colors border-2 border-white">
+                                    <Camera size={18} />
+                                    <input type="file" className="hidden" onChange={(e) => setImage(e.target.files[0])} />
+                                </label>
+                            </div>
 
                             {image && (
                                 <button
                                     onClick={handleUpload}
-                                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded text-sm"
+                                    className="mt-4 px-6 py-2 bg-emerald-500 text-white rounded-full text-xs font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-all animate-bounce"
                                 >
-                                    อัปโหลดรูป
+                                    ยืนยันการเปลี่ยนรูป
                                 </button>
                             )}
                         </div>
-                        {/* Form */}
-                        <div className=" mb-5">
-                            <Field label="Username" name="Username" value={form.Username} disabled />
+
+                        {/* Form Body */}
+                        <div className="space-y-6">
+                            <Field label="ชื่อผู้ใช้งาน (Username)" name="Username" value={form.Username} disabled />
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <Field label="ชื่อ" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
+                                <Field label="นามสกุล" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
+                                
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">เพศ</label>
+                                    <select 
+                                        name="Gender" 
+                                        value={form.Gender}
+                                        onChange={handleChange} 
+                                        disabled={!editMode} 
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm transition-all outline-none appearance-none ${
+                                            !editMode ? "bg-slate-50 border-slate-100 text-slate-400" : "bg-white border-blue-200 focus:border-blue-500 text-slate-700 shadow-sm"
+                                        }`}
+                                    >
+                                        <option value="ชาย">ชาย</option>
+                                        <option value="หญิง">หญิง</option>
+                                        <option value="ไม่ระบุ">ไม่ระบุ</option>
+                                        <option value="อื่นๆ">อื่นๆ</option>
+                                    </select>
+                                </div>
+
+                                <Field label="อายุ" name="Age" type="number" value={form.Age} onChange={handleChange} disabled={!editMode} />
+                                <Field label="เบอร์โทรศัพท์" name="Phone" type="number" value={form.Phone} onChange={handleChange} disabled={!editMode} />
+                                <Field label="พร้อมเพย์ (สำหรับรับเงิน)" name="Promptpay" type="number" value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
+                            </div>
+                            
+                            <div className="pt-2">
+                                <Field label="อีเมลติดต่อ" name="Email" value={form.Email} disabled />
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                            <Field label="ชื่อ" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
-                            <Field label="นามสกุล" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
-                            <div>
-                                <label label="Gender" className="block text-sm mb-1">เพศ</label>
-                                <select label="Gender" name="Gender" onChange={handleChange} disabled={!editMode} className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base">
-                                    <option value="ชาย">ชาย</option>
-                                    <option value="หญิง">หญิง</option>
-                                    <option value="ไม่ระบุ">ไม่ระบุ</option>
-                                    <option value="อื่นๆ">อื่นๆ</option>
-                                </select>
-                            </div>
-                            <Field label="อายุ" name="Age" type='number' value={form.Age} onChange={handleChange} disabled={!editMode} />
-                            <Field label="เบอร์" name="Phone" type='number' value={form.Phone} onChange={handleChange} disabled={!editMode} />
-                            <Field label="พร้อมเพย์" name="Promptpay" type='number' value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
-                            <Field label="อีเมล" name="Email" value={form.Email} disabled />
-                        </div>
                         {/* Buttons */}
-                        <div className="flex justify-end mt-6 gap-4">
+                        <div className="flex justify-end mt-10 gap-3">
                             {editMode && (
                                 <button
-                                    onClick={() => {
-                                        setForm(data.data || data);
-                                        setEditMode(false);
-                                    }}
-                                    className="bg-gray-400 text-white px-6 py-2 rounded-full"
+                                    onClick={() => { setForm(data.data || data); setEditMode(false); }}
+                                    className="px-6 py-2.5 text-slate-500 font-bold hover:bg-slate-100 rounded-xl transition-colors text-sm"
                                 >
                                     ยกเลิก
                                 </button>
                             )}
                             <button
                                 onClick={handleSubmit}
-                                className={`px-8 py-2 rounded-full text-white
-                                ${editMode ? "bg-blue-600" : "bg-green-600"}`}
+                                className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${
+                                    editMode ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700" : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
+                                }`}
                             >
-                                {editMode ? "ตกลง" : "แก้ไข"}
+                                {editMode ? "ตกลงและบันทึก" : "แก้ไขโปรไฟล์"}
                             </button>
                         </div>
                     </div>
-                    {/* Stats + Services */}
+
+                    {/* RIGHT: Stats & Top Services */}
                     <div className="space-y-6 w-full lg:w-1/3">
-                        <StatCard label="คะแนน" value={rating?.AvgRating || 0} icon="⭐" />
-                        <StatCard label="รายได้" value={`$${stats?.TotalRevenue || 0}`} icon="💰" />
-                        <StatCard label="ลูกค้า" value={stats?.TotalUsers || 0} icon="👥" />
-                        {/* Services */}
-                        <div className="border rounded-2xl p-4 md:p-6 bg-white">
-                            <h3 className="text-lg font-semibold mb-4">บริการยอดนิยม</h3>
-                            <div className="flex gap-4 overflow-x-auto pb-2">
+                        <h3 className="text-lg font-bold text-slate-800 px-2 flex items-center gap-2">
+                            <TrendingUp size={20} className="text-blue-600" /> ภาพรวมบัญชี
+                        </h3>
+                      
+                        <div className="grid grid-cols-1 gap-4">
+                            <StatCard label="คะแนนเฉลี่ย" value={rating?.AvgRating || "0.0"} icon={<Star fill="currentColor" />} colorClass="text-amber-500 bg-amber-500/10" />
+                            <StatCard label="รายได้ทั้งหมด" value={`฿${Number(stats?.TotalRevenue || 0).toLocaleString()}`} icon={<DollarSign />} colorClass="text-emerald-500 bg-emerald-500/10" />
+                            <StatCard label="ลูกค้าที่ดูแล" value={`${stats?.TotalUsers || 0} คน`} icon={<Users />} colorClass="text-blue-500 bg-blue-500/10" />
+                        </div>
+
+                        {/* Top Services Horizontal Scroll Area */}
+                        <div className="border border-slate-200 rounded-[2rem] p-6 bg-white shadow-sm">
+                            <h3 className="text-md font-bold text-slate-800 mb-5 flex items-center gap-2">
+                                <Award className="text-blue-600" size={18} /> บริการยอดนิยม
+                            </h3>
+                            <div className="flex flex-col gap-4 overflow-hidden">
                                 {services?.length ? (
                                     services.map((service) => (
                                         <ServiceCard
@@ -246,11 +248,14 @@ export default function AdvisorProfile() {
                                         />
                                     ))
                                 ) : (
-                                    <p className="text-gray-400">ไม่มีข้อมูล</p>
+                                    <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                        <p className="text-slate-400 text-sm italic">ยังไม่มีข้อมูลบริการ</p>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
+
                 </div>
             </main>
 
@@ -259,18 +264,22 @@ export default function AdvisorProfile() {
     );
 }
 
-// 🔹 Field
-function Field({ label, name, value, onChange, disabled, type }) {
+// 🔹 Reusable Field Component
+function Field({ label, name, value, onChange, disabled, type = "text" }) {
     return (
-        <div>
-            <label className="block text-sm mb-1">{label}</label>
+        <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">{label}</label>
             <input
                 name={name}
                 value={value || ""}
                 onChange={onChange}
                 type={type}
                 disabled={disabled}
-                className="w-full bg-gray-100 px-4 py-2 rounded border text-sm md:text-base"
+                className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${
+                    disabled 
+                        ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed" 
+                        : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
+                }`}
             />
         </div>
     );
