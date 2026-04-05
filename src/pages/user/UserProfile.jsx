@@ -81,12 +81,14 @@ export default function UserProfile() {
     });
   };
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>;
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <NavbarSwitcher />
-
+    {
+      isLoading && ( <div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>)
+    }
       <div className="flex-1 py-10 px-4">
         {/* Main Card Container */}
         <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm transition-all duration-300">

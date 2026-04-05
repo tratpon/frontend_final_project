@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import { fetchBookingsByAdvisor, mangeBooking, cancelBooking } from "../../app/Api";
+import { CheckCircle2, XCircle, Clock, Calendar, User, MessageSquare, AlertCircle } from "lucide-react";
 
 export default function AdvisorManageBooking() {
   const queryClient = useQueryClient();
@@ -10,20 +11,14 @@ export default function AdvisorManageBooking() {
     queryFn: fetchBookingsByAdvisor,
   });
 
-  // mutation สำหรับ Accept / Reject
   const updateMutation = useMutation({
     mutationFn: mangeBooking,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["incomingBookings"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["incomingBookings"] }),
   });
 
-  // mutation สำหรับ Cancel
   const cancelMutation = useMutation({
     mutationFn: cancelBooking,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["incomingBookings"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["incomingBookings"] }),
   });
 
   const handleUpdate = (bookingID, status) => {
@@ -34,92 +29,140 @@ export default function AdvisorManageBooking() {
     if (confirm("คุณต้องการยกเลิกการจองนี้ใช่หรือไม่?")) {
       cancelMutation.mutate({ bookingID });
     }
-    
   };
 
   const incomingBookings = bookings.filter((job) => job.Status === "pending");
   const confirmedBookings = bookings.filter((job) => job.Status === "confirmed");
 
+  // Reusable Booking Card Component
+  const BookingCard = ({ job, type }) => (
+    <div className={`group relative border transition-all duration-300 rounded-[2rem] p-6 ${
+      type === 'pending' 
+      ? "bg-white border-slate-100 shadow-sm hover:shadow-md" 
+      : "bg-indigo-50/50 border-indigo-100"
+    }`}>
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
+            <User size={20} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-800 leading-none">{job.UserName}</h3>
+            <p className="text-xs text-indigo-600 font-medium mt-1">{job.ServiceName}</p>
+          </div>
+        </div>
+        {type === 'confirmed' && (
+          <span className="flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wider">
+            <CheckCircle2 size={10} /> Confirmed
+          </span>
+        )}
+      </div>
+
+      <div className="space-y-2 mb-5">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <Calendar size={14} className="text-slate-400" />
+          <span>{new Date(job.AvailableDate).toLocaleDateString('th-TH', { dateStyle: 'long' })}</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <Clock size={14} className="text-slate-400" />
+          <span>{job.StartTime.slice(0, 5)} - {job.EndTime.slice(0, 5)} น.</span>
+        </div>
+        {job.note && (
+          <div className="flex items-start gap-2 text-sm text-slate-500 bg-white/50 p-3 rounded-xl border border-slate-100 mt-2">
+            <MessageSquare size={14} className="text-slate-400 mt-0.5 shrink-0" />
+            <span className="italic">"{job.note}"</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-2">
+        {type === 'pending' ? (
+          <>
+            <button
+              onClick={() => handleUpdate(job.BookID, "confirmed")}
+              disabled={updateMutation.isPending}
+              className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+            >
+              <CheckCircle2 size={16} /> ยืนยัน
+            </button>
+            <button
+              onClick={() => handleUpdate(job.BookID, "rejected")}
+              disabled={updateMutation.isPending}
+              className="px-4 py-2.5 border border-slate-200 text-slate-400 rounded-xl text-sm font-bold hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+            >
+              <XCircle size={16} />
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => handleCancel(job.BookID)}
+            disabled={cancelMutation.isPending}
+            className="w-full py-2.5 border border-red-200 text-red-500 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2"
+          >
+            {cancelMutation.isPending ? "กำลังดำเนินการ..." : "ยกเลิกนัดหมาย"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div>
+    <div className="min-h-screen bg-slate-50/50">
       <NavbarSwitcher />
 
-      <div className="max-w-7xl mx-auto p-6">
-        {isLoading && <div className="text-gray-500 text-center">โหลด...</div>}
+      <div className="max-w-7xl mx-auto p-6 md:p-10">
+        <header className="mb-10">
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Management</h1>
+            <p className="text-slate-500 font-medium">จัดการตารางนัดหมายและการตอบรับลูกค้าของคุณ</p>
+        </header>
 
-        {!isLoading && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
+            <p className="text-slate-400 font-medium animate-pulse">กำลังโหลดข้อมูลการจอง...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            
             {/* ================= LEFT: INCOMING ================= */}
-            <div className="col-span-2">
-              <h1 className="text-xl font-bold mb-4">🟡 งานที่เข้ามา</h1>
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-indigo-500 rounded-full" />
+                <h2 className="text-xl font-black text-slate-800 uppercase tracking-wider">
+                    งานที่รอการยืนยัน 
+                    <span className="ml-2 text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg text-sm">{incomingBookings.length}</span>
+                </h2>
+              </div>
+
               {incomingBookings.length === 0 ? (
-                <div className="text-gray-400 text-center py-10">No incoming jobs</div>
+                <div className="bg-white border-2 border-dashed border-slate-200 rounded-[2.5rem] py-20 flex flex-col items-center justify-center text-slate-400">
+                  <AlertCircle size={48} className="mb-4 opacity-20" />
+                  <p className="font-bold">ไม่มีรายการจองใหม่ในขณะนี้</p>
+                </div>
               ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {incomingBookings.map((job) => (
-                    <div key={job.BookID} className="border rounded-xl p-5 shadow-sm bg-white">
-                      <div className="text-lg font-semibold">{job.UserName}</div>
-                      <div className="text-sm text-gray-600 mt-1">บริการ: {job.ServiceName}</div>
-                      <div className="text-sm text-gray-600">
-                        วันที่: {new Date(job.AvailableDate).toLocaleDateString()}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        เวลา: {job.StartTime.slice(0,5)} - {job.EndTime.slice(0,5)}
-                      </div>
-                      <div className="text-sm text-gray-600">โน๊ต: {job.note}</div>
-
-                      <div className="flex gap-2 mt-4">
-                        <button
-                          onClick={() => handleUpdate(job.BookID, "confirmed")}
-                          className="flex-1 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                        >
-                          Accept
-                        </button>
-
-                        <button
-                          onClick={() => handleUpdate(job.BookID, "rejected")}
-                          className="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </div>
+                    <BookingCard key={job.BookID} job={job} type="pending" />
                   ))}
                 </div>
               )}
             </div>
 
             {/* ================= RIGHT: CONFIRMED ================= */}
-            <div>
-              <h1 className="text-xl font-bold mb-4">🟢 งานที่ยืนยันแล้ว</h1>
+            <div className="lg:col-span-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-green-500 rounded-full" />
+                <h2 className="text-xl font-black text-slate-800 uppercase tracking-wider">ยืนยันแล้ว</h2>
+              </div>
+
               {confirmedBookings.length === 0 ? (
-                <div className="text-gray-400 text-center py-10">No confirmed jobs</div>
+                <div className="bg-slate-100/50 border border-slate-200 rounded-[2rem] py-10 flex flex-col items-center justify-center text-slate-400">
+                  <p className="text-sm font-medium italic">ยังไม่มีงานที่ยืนยัน</p>
+                </div>
               ) : (
                 <div className="space-y-4">
                   {confirmedBookings.map((job) => (
-                    <div key={job.BookID} className="border rounded-xl p-5 shadow-sm bg-green-50">
-                      <div className="text-lg font-semibold">{job.UserName}</div>
-                      <div className="text-sm text-gray-600 mt-1">บริการ: {job.ServiceName}</div>
-                      <div className="text-sm text-gray-600">
-                        วันที่: {new Date(job.AvailableDate).toLocaleDateString()}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        เวลา: {job.StartTime.slice(0,5)} - {job.EndTime.slice(0,5)}
-                      </div>
-                      <div className="text-sm text-gray-600">โน๊ต: {job.note}</div>
-
-                      <div className="flex gap-2 mt-3">
-                        <div className="text-green-600 font-medium">✔ Confirmed</div>
-                        {/* ปุ่มยกเลิก */}
-                        <button
-                          onClick={() => handleCancel(job.BookID)}
-                          className="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 text-sm"
-                          disabled={cancelMutation.isLoading}
-                        >
-                          {cancelMutation.isLoading ? "กำลังยกเลิก..." : "ยกเลิก"}
-                        </button>
-                      </div>
-                    </div>
+                    <BookingCard key={job.BookID} job={job} type="confirmed" />
                   ))}
                 </div>
               )}

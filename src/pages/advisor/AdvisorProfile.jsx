@@ -26,7 +26,7 @@ const StatCard = ({ icon, label, value, colorClass }) => (
 
 // 🔹 Service Card (Horizontal Scroll Ready)
 const ServiceCard = ({ name, users, revenue }) => (
-    <div className="flex flex-col justify-between border border-slate-100 rounded-2xl p-5 bg-slate-50 min-w-[240px] hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+    <div className="flex flex-col justify-between border border-slate-100 rounded-2xl p-5 bg-slate-50 min-w-[300px] hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
         <div className="mb-4">
             <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md w-fit mb-2 uppercase">Popular</div>
             <p className="font-bold text-slate-800 text-base line-clamp-1">{name}</p>
@@ -132,7 +132,7 @@ export default function AdvisorProfile() {
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
                     
                     {/* LEFT: Profile Form */}
-                    <div className="bg-white border border-slate-200 rounded-[2rem] p-6 md:p-10 w-full lg:w-2/3 shadow-sm">
+                    <div className="bg-white border border-slate-200 rounded-2rem p-6 md:p-10 w-full lg:w-2/3 shadow-sm">
                         <h2 className="text-2xl font-extrabold text-slate-800 mb-8 flex items-center gap-2">
                             <User className="text-blue-600" /> ข้อมูลที่ปรึกษา
                         </h2>
@@ -233,11 +233,11 @@ export default function AdvisorProfile() {
                         </div>
 
                         {/* Top Services Horizontal Scroll Area */}
-                        <div className="border border-slate-200 rounded-[2rem] p-6 bg-white shadow-sm">
+                        <div className="border border-slate-200 rounded-xl p-6 bg-white shadow-sm">
                             <h3 className="text-md font-bold text-slate-800 mb-5 flex items-center gap-2">
                                 <Award className="text-blue-600" size={18} /> บริการยอดนิยม
                             </h3>
-                            <div className="flex flex-col gap-4 overflow-hidden">
+                            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
                                 {services?.length ? (
                                     services.map((service) => (
                                         <ServiceCard

@@ -2,10 +2,12 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
   House,
   Airplay,
-  User,
-  MessageSquareText,
+  UserCheck,
+  LayoutGrid,
   Receipt,
-  BanknoteArrowDown,
+  Banknote,
+  LogOut,
+  ShieldCheck
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
@@ -15,92 +17,96 @@ const Sidebar = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
+  // ปรับการจัดการ Class สำหรับ NavLink ให้ดูสวยงามขึ้น
   const getNavLinkClass = ({ isActive }) =>
-    isActive ? "text-blue-700 border-blue-700" : "";
+    `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 group ${
+      isActive
+        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
+        : "text-slate-500 hover:bg-slate-50 hover:text-indigo-600"
+    }`;
 
   const handleLogOut = async () => {
-    try {
-      console.log(auth.currentUser);
-      await signOut(auth);
-      setUser(null);
-      navigate("/admin/login");
-    } catch (error) {
-      console.error("Logout Error:", error);
+    if (window.confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
+      try {
+        await signOut(auth);
+        setUser(null);
+        navigate("/admin/login");
+      } catch (error) {
+        console.error("Logout Error:", error);
+      }
     }
   };
 
   return (
-    <aside className="fixed w-64 h-screen bg-white p-6 flex flex-col justify-between">
-
-      {/* Top navigation */}
+    <aside className="fixed w-72 h-screen bg-white border-r border-slate-100 p-6 flex flex-col justify-between z-50">
+      
+      {/* Top Section: Brand & Navigation */}
       <div>
-        <div className="mb-10 font-bold text-lg">WebbyFrames Admin</div>
-
-        <nav className="flex flex-col gap-6">
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <House />
-            <NavLink to="/admin" end className={getNavLinkClass}>
-              Account
-            </NavLink>
+        <div className="flex items-center gap-3 px-4 mb-10">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md">
+            <ShieldCheck size={24} />
           </div>
+          <span className="font-black text-xl text-slate-800 tracking-tight">AdminPanel</span>
+        </div>
 
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <Airplay />
-            <NavLink to="/admin/Dashboard" className={getNavLinkClass}>
-              Dashboard
-            </NavLink>
-          </div>
+        <nav className="space-y-2">
+          <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Main Menu</p>
+          
+          <NavLink to="/admin" end className={getNavLinkClass}>
+            <House size={20} />
+            <span className="font-bold text-sm">Account</span>
+          </NavLink>
 
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <User />
-            <NavLink to="/admin/Approve" end className={getNavLinkClass}>
-              Approve Advisors
-            </NavLink>
-          </div>
+          <NavLink to="/admin/Dashboard" className={getNavLinkClass}>
+            <Airplay size={20} />
+            <span className="font-bold text-sm">Dashboard</span>
+          </NavLink>
 
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <MessageSquareText />
-            <NavLink to="/admin/Approve/post" end className={getNavLinkClass}>
-              Posts
-            </NavLink>
-          </div>
+          <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-8 mb-4">Verification</p>
 
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <Receipt />
-            <NavLink to="/admin/Approve/slip" end className={getNavLinkClass}>
-              Verify Slips
-            </NavLink>
-          </div>
+          <NavLink to="/admin/Approve" end className={getNavLinkClass}>
+            <UserCheck size={20} />
+            <span className="font-bold text-sm">Advisors Approval</span>
+          </NavLink>
 
-          <div className="flex items-center gap-3 hover:text-blue-600">
-            <BanknoteArrowDown />
-            <NavLink to="/admin/Approve/Payout" end className={getNavLinkClass}>
-              Payouts
-            </NavLink>
-          </div>
+          <NavLink to="/admin/Approve/post" end className={getNavLinkClass}>
+            <LayoutGrid size={20} />
+            <span className="font-bold text-sm">Review Posts</span>
+          </NavLink>
+
+          <NavLink to="/admin/Approve/slip" end className={getNavLinkClass}>
+            <Receipt size={20} />
+            <span className="font-bold text-sm">Verify Slips</span>
+          </NavLink>
+
+          <NavLink to="/admin/Approve/Payout" end className={getNavLinkClass}>
+            <Banknote size={20} />
+            <span className="font-bold text-sm">Manage Payouts</span>
+          </NavLink>
         </nav>
       </div>
 
-      {/* Bottom navigation */}
-      <div className="flex flex-col justify-center gap-1 p-2">
-        {/* Admin Profile Link */}
+      {/* Bottom Section: Profile & Logout */}
+      <div className="space-y-2">
         <Link
           to="/admin/AdminProfile"
-          className={`${getNavLinkClass} flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-blue-50 hover:text-blue-600`}
+          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 group"
         >
-          <span>👤</span> Admin Account
+          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+            <span className="text-xs">AD</span>
+          </div>
+          <span className="font-bold text-sm">Admin Account</span>
         </Link>
 
-        <hr className="my-2 border-gray-100" />
-
-        {/* Logout button */}
         <button
           onClick={handleLogOut}
-          className="w-full flex items-center gap-2 px-4 py-2 text-left text-red-600 rounded-lg transition-colors hover:bg-red-50"
+          className="w-full flex items-center gap-3 px-4 py-3 text-red-500 font-bold text-sm rounded-2xl transition-all hover:bg-red-50 group"
         >
-          <span>🚪</span> Log Out
+          <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+          <span>Log Out</span>
         </button>
       </div>
+
     </aside>
   );
 };

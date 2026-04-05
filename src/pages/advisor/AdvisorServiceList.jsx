@@ -1,167 +1,179 @@
 import NavbarAdvisor from "../../components/NavbarAdvisor";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchServiceByAdvisor, deleteService } from "../../app/Api";
-import { Link } from "react-router-dom";
 import DetailAdvisor from "../../components/advisor/DetailAdvisor";
+import {
+    Plus,
+    Edit3,
+    Trash2,
+    Clock,
+    Tag,
+    ExternalLink,
+    AlertCircle
+} from "lucide-react";
 
 export default function AdvisorServiceList() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ["serviceslist"],
         queryFn: fetchServiceByAdvisor,
-    })
+    });
 
     const services = data?.services ?? [];
-    console.log(services)
+    console.log(services);
 
-
-    const handleEdit = (service) => {
-        navigate(`/Advisor/ManegeService/${service}`)
-    }
-
-    const renderStars = (rating = 0) => {
-        const full = Math.floor(rating);
-        const half = rating % 1 >= 0.5;
-        const empty = 5 - full - (half ? 1 : 0);
-
-        return (
-            <>
-                {"★".repeat(full)}
-                {half && "⭐"}
-                {"☆".repeat(empty)}
-            </>
-        );
-    };
     const deleteMutation = useMutation({
         mutationFn: deleteService,
         onSuccess: () => {
-            alert('deleted')
-            queryClient.invalidateQueries({ queryKey: ["serviceslist"] })
+            queryClient.invalidateQueries({ queryKey: ["serviceslist"] });
         }
     });
 
     const handleDelete = (id) => {
-        const confirmDelete = window.confirm("คุณต้องการลบหรือไม่?");
-        if (!confirmDelete) return;
-        deleteMutation.mutate(id)
+        // สามารถเปลี่ยนเป็น Custom Modal ได้ภายหลัง
+        if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบริการนี้? ข้อมูลจะไม่สามารถกู้คืนได้")) {
+            deleteMutation.mutate(id);
+        }
     };
 
+    const renderStars = (rating = 0) => {
+        return (
+            <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-sm">
+                        {i < Math.floor(rating) ? "★" : "☆"}
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50/50">
             <NavbarAdvisor />
 
-            <div className="w-full h-40 sm:h-52 md:h-64 relative overflow-hidden">
-                {services.length > 0 && (
+            {/* Banner Section */}
+            <div className="w-full h-48 md:h-64 relative overflow-hidden">
+                <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/70 z-10"></div>
+                {services.length > 0 && services[0].ImageURL ? (
                     <img
                         src={services[0].ImageURL}
                         alt="banner"
-                        className="w-full h-full object-cover blur-md scale-110"
+                        className="w-full h-full object-cover blur-sm scale-105"
                     />
+                ) : (
+                    <div className="w-full h-full bg-indigo-600"></div>
                 )}
-
-                <div className="absolute inset-0 bg-black/30"></div>
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <h1 className="text-white text-3xl font-bold tracking-tight">จัดการบริการของคุณ</h1>
+                </div>
             </div>
 
-            <div className="max-w-8xl mx-auto px-6 -mt-32">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 ">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-30 pb-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                    <DetailAdvisor />
-                    <div className="lg:col-span-3 md:mt-40">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {services?.map((service) => (
-                                <div key={service.ServiceID} className="flex flex-col border p-4 rounded bg-gray-50 h-full hover:-translate-y-2 hover:shadow-2xl duration-300">
+                    {/* Left Sidebar (Profile Info) */}
+                    <div className="lg:col-span-4">
+                        <DetailAdvisor />
+                    </div>
 
-                                    <Link to={`/detail/${service.ServiceID}`} className="flex flex-col flex-1">
+                    {/* Right Content (Service List) */}
+                    <div className="lg:col-span-8 lg:mt-28">
+                        <div className="flex justify-between items-end mb-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">รายการบริการทั้งหมด</h2>
+                                <p className="text-sm text-gray-500">คุณสามารถเพิ่ม แก้ไข หรือลบบริการที่คุณให้คำปรึกษาได้ที่นี่</p>
+                            </div>
+                        </div>
 
-                                        <div className="relative w-full h-32 sm:h-40 bg-gray-200 rounded mb-3 sm:mb-4 overflow-hidden">
-                                            <div className="absolute top-2 right-2 z-10 bg-white/80 px-2 py-1 rounded shadow-sm">
-                                                <p className="text-[10px] sm:text-xs font-bold text-green-600">
-                                                    #{service.TypesName}
-                                                </p>
-                                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            
+                            {/* Service Cards */}
+                            {services.map((service) => (
+                                <div key={service.ServiceID} className="group bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-indigo-100 transition-all duration-300 overflow-hidden flex flex-col h-full">
 
-                                            {service.ImageURL ? (
-                                                <img
-                                                    src={service.ImageURL}
-                                                    alt={service.ServiceName}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex items-center justify-center h-full text-gray-400">
-                                                    No Image
-                                                </div>
-                                            )}
+                                    {/* Image Area */}
+                                    <div className="relative h-40 overflow-hidden">
+                                        <div className="absolute top-3 right-3 z-10">
+                                            <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-blue-600 shadow-sm">
+                                                {service.TypesName}
+                                            </span>
+                                        </div>
+                                        {service.ImageURL ? (
+                                            <img
+                                                src={service.ImageURL}
+                                                alt={service.ServiceName}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300 font-light italic">No Image</div>
+                                        )}
+                                    </div>
+
+                                    {/* Content Area */}
+                                    <div className="p-5 flex flex-col flex-1">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="font-bold text-gray-800 line-clamp-1 flex-1">{service.ServiceName}</h3>
+                                            <Link to={`/detail/${service.ServiceID}`} className="text-gray-400 hover:text-indigo-600 transition-colors">
+                                                <ExternalLink size={16} />
+                                            </Link>
                                         </div>
 
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                                                {service.imageAdvisorUrl ? (
-                                                    <img
-                                                        src={service.imageAdvisorUrl}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    "👤"
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <h3 className="font-medium">{service.ServiceName}</h3>
-                                                <p className="text-sm text-gray-500">
-                                                    {service.Fadvisor} {service.Ladvisor}
-                                                </p>
-
-                                                <div className="flex gap-2 text-yellow-500 text-xs">
-                                                    {renderStars(service.AvgRating)}
-                                                    <span className="text-gray-500">{service.AvgRating}</span>
-                                                    <span className="text-gray-500">({service.ReviewCount})</span>
-                                                </div>
-                                            </div>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            {renderStars(service.AvgRating)}
+                                            <span className="text-[10px] text-gray-400 font-medium">({service.ReviewCount} รีวิว)</span>
                                         </div>
 
-                                        <p className="text-sm text-gray-600 line-clamp-3 wrap-break-word">
+                                        <p className="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
                                             {service.Front_Description}
                                         </p>
 
-                                        <div className="mt-auto text-xs text-gray-400 text-right pt-4">
-                                            <div>{service.price} บาท</div>
-                                            <div>{service.Duration} นาที</div>
+                                        <div className="mt-auto space-y-3 pt-3 border-t border-gray-50">
+                                            <div className="flex justify-between items-center text-sm">
+                                                <div className="flex items-center gap-1 text-gray-400">
+                                                    <Clock size={14} />
+                                                    <span className="text-xs">{service.Duration} นาที</span>
+                                                </div>
+                                                <span className="font-bold text-indigo-600">{Number(service.Price).toLocaleString()} บาท</span>
+                                            </div>
+
+                                            {/* Action Buttons */}
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => navigate(`/Advisor/ManegeService/${service.ServiceID}`)}
+                                                    className="flex-1 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 py-2 rounded-xl text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all"
+                                                >
+                                                    <Edit3 size={14} /> แก้ไข
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(service.ServiceID)}
+                                                    className="w-10 flex items-center justify-center bg-red-50 text-red-500 py-2 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
                                         </div>
-
-                                    </Link>
-
-                                    <div className="flex gap-3 mt-5">
-                                        <button
-                                            onClick={() => handleEdit(service.ServiceID)}
-                                            className="flex-1 bg-gray-100 py-2 rounded-lg hover:bg-gray-200 transition"
-                                        >
-                                            Edit
-                                        </button>
-
-                                        <button
-                                            onClick={() => handleDelete(service.ServiceID)}
-                                            className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition"
-                                        >
-                                            Delete
-                                        </button>
                                     </div>
-
                                 </div>
                             ))}
-                            <Link to="/Advisor/ManegeService" className="bg-white border rounded-lg p-4">
-                                <div className="flex items-center justify-center w-full h-full bg-gray-200 rounded mb-4">
-                                    <span className="text-3xl text-gray-400 group-hover:text-blue-500 font-light">+</span>
+                            {/* Add New Service Card */}
+                            <Link
+                                to="/Advisor/ManegeService"
+                                className="group h-full min-h-[350px] border-2 border-dashed border-gray-300 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-indigo-500 hover:bg-white transition-all duration-300 cursor-pointer"
+                            >
+                                <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-indigo-50 group-hover:scale-110 transition-all">
+                                    <Plus className="text-gray-400 group-hover:text-indigo-600" size={32} />
                                 </div>
+                                <span className="font-bold text-gray-400 group-hover:text-indigo-600 transition-colors">เพิ่มบริการใหม่</span>
                             </Link>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
-
+    );
 }
