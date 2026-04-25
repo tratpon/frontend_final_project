@@ -261,14 +261,12 @@ export default function SessionRoom() {
             <div>
               <button
                 onClick={() => {
-                  if (roomInfo?.RoomStatus === "active") {
+                  
                     handleStartCall();
-                  }
+                  
                 }}
-                className={`p-2 rounded-full transition ${roomInfo?.RoomStatus === "active"
-                  ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
-                  : "text-gray-300 cursor-not-allowed"
-                  }`}
+                className= "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                
               >
                 <Video size={22} />
               </button>

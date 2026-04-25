@@ -103,6 +103,7 @@ export default function SessionList() {
                 </select>
             </div>
 
+
             {/* LIST */}
             <div className="space-y-4">
                 {filteredSessions.length === 0 ? (
