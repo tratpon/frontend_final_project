@@ -12,9 +12,8 @@ const Footer = () => {
 
         {/* Center: Quick Links (ถ้าไม่เอาก็ตัดออกได้เลย) */}
         <div className="flex gap-6 text-[11px] font-bold uppercase tracking-widest">
-          <NavLink to="/AdvisorApply" className="hover:text-blue-400 transition-colors">ร่วมงานกับเรา</NavLink>
-          <a href="#" className="hover:text-blue-400 transition-colors">Privacy</a>
-          <a href="#" className="hover:text-blue-400 transition-colors">Terms</a>
+          <NavLink to="/AdvisorApply" className="hover:text-blue-400 transition-colors">สมัครเป็นผู้ให้บริการ</NavLink>
+          
         </div>
 
         {/* Right: Simple Social/Contact */}

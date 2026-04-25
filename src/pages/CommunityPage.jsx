@@ -152,6 +152,7 @@ export default function Community() {
           <div className="space-y-4 max-h-[400px] overflow-y-auto pb-4 custom-scrollbar">
             {comments.map((comment) => (
               <div key={comment.CommentID} className="flex gap-3 items-start">
+
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 border border-slate-200">
                   {comment.imageUserUrl ? (
                     <img src={comment.imageUserUrl} className="w-full h-full object-cover" />
@@ -159,10 +160,26 @@ export default function Community() {
                     <div className="w-full h-full flex items-center justify-center text-[10px]">👤</div>
                   )}
                 </div>
-                <div className="flex-1 bg-white rounded-2xl px-4 py-2 border border-slate-100 shadow-sm">
-                  <div className="font-bold text-xs text-slate-900 mb-0.5">{comment.username}</div>
-                  <p className="text-sm text-slate-600 leading-relaxed">{comment.Comment}</p>
+
+                <div
+                  className={`flex-1 rounded-2xl px-4 py-2 border shadow-sm
+        ${comment.CommenterType === 'advisor'
+                      ? 'bg-blue-50 border-blue-200 text-blue-900'
+                      : 'bg-white border-slate-100 text-slate-600'
+                    }`}
+                >
+                  <div className="font-bold text-xs mb-0.5">
+                    {comment.username}
+                    {comment.CommenterType === 'advisor' && (
+                      <span className="ml-2 text-[10px] text-blue-500">(Advisor)</span>
+                    )}
+                  </div>
+
+                  <p className="text-sm leading-relaxed">
+                    {comment.Comment}
+                  </p>
                 </div>
+
               </div>
             ))}
 

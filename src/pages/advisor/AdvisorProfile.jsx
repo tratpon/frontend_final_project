@@ -130,19 +130,20 @@ export default function AdvisorProfile() {
 
             <main className="grow py-8 px-4">
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-                    
+
                     {/* LEFT: Profile Form */}
                     <div className="bg-white border border-slate-200 rounded-2rem p-6 md:p-10 w-full lg:w-2/3 shadow-sm">
                         <h2 className="text-2xl font-extrabold text-slate-800 mb-8 flex items-center gap-2">
                             <User className="text-blue-600" /> ข้อมูลที่ปรึกษา
                         </h2>
-
                         {/* Avatar Section */}
                         <div className="flex flex-col items-center mb-10">
                             <div className="relative group">
-                                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden bg-slate-100 border-4 border-white shadow-xl flex items-center justify-center transition-transform group-hover:scale-105">
+                                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-slate-100 border-4 border-white shadow-xl flex items-center justify-center transition-transform group-hover:scale-105">
                                     {form.imageAdvisorUrl ? (
-                                        <img src={form.imageAdvisorUrl} className="w-full h-full object-cover" alt="Profile" />
+                                        <img src={image
+                                            ? URL.createObjectURL(image)
+                                            : form.imageAdvisorUrl || ""} className="w-full h-full object-cover" alt="Profile" />
                                     ) : (
                                         <span className="text-5xl">👤</span>
                                     )}
@@ -170,17 +171,16 @@ export default function AdvisorProfile() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <Field label="ชื่อ" name="Fadvisor" value={form.Fadvisor} onChange={handleChange} disabled={!editMode} />
                                 <Field label="นามสกุล" name="Ladvisor" value={form.Ladvisor} onChange={handleChange} disabled={!editMode} />
-                                
+
                                 <div className="flex flex-col gap-1.5">
                                     <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">เพศ</label>
-                                    <select 
-                                        name="Gender" 
+                                    <select
+                                        name="Gender"
                                         value={form.Gender}
-                                        onChange={handleChange} 
-                                        disabled={!editMode} 
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm transition-all outline-none appearance-none ${
-                                            !editMode ? "bg-slate-50 border-slate-100 text-slate-400" : "bg-white border-blue-200 focus:border-blue-500 text-slate-700 shadow-sm"
-                                        }`}
+                                        onChange={handleChange}
+                                        disabled={!editMode}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm transition-all outline-none appearance-none ${!editMode ? "bg-slate-50 border-slate-100 text-slate-400" : "bg-white border-blue-200 focus:border-blue-500 text-slate-700 shadow-sm"
+                                            }`}
                                     >
                                         <option value="ชาย">ชาย</option>
                                         <option value="หญิง">หญิง</option>
@@ -193,7 +193,7 @@ export default function AdvisorProfile() {
                                 <Field label="เบอร์โทรศัพท์" name="Phone" type="number" value={form.Phone} onChange={handleChange} disabled={!editMode} />
                                 <Field label="พร้อมเพย์ (สำหรับรับเงิน)" name="Promptpay" type="number" value={form.Promptpay} onChange={handleChange} disabled={!editMode} />
                             </div>
-                            
+
                             <div className="pt-2">
                                 <Field label="อีเมลติดต่อ" name="Email" value={form.Email} disabled />
                             </div>
@@ -211,9 +211,8 @@ export default function AdvisorProfile() {
                             )}
                             <button
                                 onClick={handleSubmit}
-                                className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${
-                                    editMode ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700" : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
-                                }`}
+                                className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${editMode ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700" : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
+                                    }`}
                             >
                                 {editMode ? "ตกลงและบันทึก" : "แก้ไขโปรไฟล์"}
                             </button>
@@ -225,7 +224,7 @@ export default function AdvisorProfile() {
                         <h3 className="text-lg font-bold text-slate-800 px-2 flex items-center gap-2">
                             <TrendingUp size={20} className="text-blue-600" /> ภาพรวมบัญชี
                         </h3>
-                      
+
                         <div className="grid grid-cols-1 gap-4">
                             <StatCard label="คะแนนเฉลี่ย" value={rating?.AvgRating || "0.0"} icon={<Star fill="currentColor" />} colorClass="text-amber-500 bg-amber-500/10" />
                             <StatCard label="รายได้ทั้งหมด" value={`฿${Number(stats?.TotalRevenue || 0).toLocaleString()}`} icon={<DollarSign />} colorClass="text-emerald-500 bg-emerald-500/10" />
@@ -275,11 +274,10 @@ function Field({ label, name, value, onChange, disabled, type = "text" }) {
                 onChange={onChange}
                 type={type}
                 disabled={disabled}
-                className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${
-                    disabled 
-                        ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed" 
+                className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${disabled
+                        ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed"
                         : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
-                }`}
+                    }`}
             />
         </div>
     );

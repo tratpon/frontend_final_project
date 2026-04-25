@@ -4,8 +4,11 @@ import { useState } from "react";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from '../app/Api.js';
+import { registerUser,loginRole } from '../app/Api.js';
 import { useMutation } from '@tanstack/react-query';
+import { UserPlus, User, Mail, Lock, Loader2, ArrowRight } from "lucide-react"; // เพิ่ม Icon
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { ROLES } from '../app/roles.js';
 
 export default function Register() {
     const [Fname, setFname] = useState("");
@@ -14,10 +17,8 @@ export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    
-    // เพิ่ม local state สำหรับเช็คช่วงที่ Firebase กำลังทำงาน (ก่อนส่งไป mutation)
     const [isFirebaseLoading, setIsFirebaseLoading] = useState(false);
-
+    const { setUser } = useAuth();
     const navigate = useNavigate();
 
     const registerMutation = useMutation({
@@ -30,46 +31,44 @@ export default function Register() {
         }
     });
 
-    // สถานะรวมว่าระบบกำลังประมวลผลอยู่หรือไม่
+
+    const loginMutation = useMutation({
+        mutationFn: loginRole,
+        onSuccess: (data) => {
+            // ตรวจสอบ Role และนำทาง
+            if (data.role === ROLES.USER) {
+                setUser(ROLES.USER);
+            } else {
+                setUser(ROLES.ADVISOR);
+            }
+            navigate("/");
+        },
+        onError: (err) => {
+            alert(err.response?.data?.message || err.message);
+        }
+    });
     const isLoading = isFirebaseLoading || registerMutation.isPending;
 
     const handleRegister = async (e) => {
         if (e) e.preventDefault();
-
-        // --- 1. Validation ---
         if (!Fname || !Lname || !Username || !email || !password) {
             alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
             return;
         }
-
         if (password !== confirmPassword) {
             alert("รหัสผ่านไม่ตรงกัน");
             return;
         }
-
         if (password.length < 8) {
             alert("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
             return;
         }
 
-        // --- 2. Process ---
         setIsFirebaseLoading(true);
         try {
-            // สร้าง User ใน Firebase
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const firebaseUser = userCredential.user;
-
-            // อัปเดต Profile ใน Firebase
-            await updateProfile(firebaseUser, {
-                displayName: Username,
-            });
-
-            // ส่งข้อมูลไปบันทึกใน Database ของเราเองผ่าน API
+            await updateProfile(firebaseUser, { displayName: Username });
             await registerMutation.mutateAsync({
                 uid: firebaseUser.uid,
                 username: Username,
@@ -77,12 +76,9 @@ export default function Register() {
                 lname: Lname,
                 email: email
             });
-
+            loginMutation.mutate({ email, password });
         } catch (error) {
-            // หากเกิด Error ระหว่างทาง ให้ลบ User ออกจาก Firebase (Rollback) เพื่อป้องกันข้อมูลขยะ
-            if (auth.currentUser) {
-                await auth.currentUser.delete();
-            }
+            if (auth.currentUser) await auth.currentUser.delete();
             alert("เกิดข้อผิดพลาด: " + error.message);
         } finally {
             setIsFirebaseLoading(false);
@@ -90,124 +86,146 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col">
+        <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
             <NavbarSwitcher />
 
-            {/* Page Content */}
-            <div className="flex-1 flex items-center justify-center px-4 m-5 bg-gradient-to-b from-blue-50 to-white py-20">
-                <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-8">
-                    <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">ลงทะเบียน</h2>
+            <main className="flex-1 flex items-center justify-center px-4 py-16 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+                <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl shadow-blue-900/5 p-8 md:p-12 border border-gray-100">
 
-                    <form onSubmit={handleRegister}>
-                        <div className="mb-4 flex gap-4">
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อ</label>
-                                <input
-                                    type="text"
-                                    value={Fname}
-                                    onChange={(e) => setFname(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                    placeholder="ชื่อจริง"
-                                    required
-                                />
+                    {/* Header */}
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-black text-gray-800 tracking-tight">สร้างบัญชีใหม่</h2>
+                        <p className="text-gray-400 text-sm mt-2 font-medium">เริ่มต้นการปรึกษาออนไลน์กับผู้เชี่ยวชาญวันนี้</p>
+                    </div>
+
+                    <form onSubmit={handleRegister} className="space-y-5">
+                        {/* Name Group */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">ชื่อจริง</label>
+                                <div className="relative">
+                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
+                                    <input
+                                        type="text"
+                                        value={Fname}
+                                        onChange={(e) => setFname(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                        placeholder="First Name"
+                                        required
+                                    />
+                                </div>
                             </div>
-
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium mb-1 text-gray-700">นามสกุล</label>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">นามสกุล</label>
                                 <input
                                     type="text"
                                     value={Lname}
                                     onChange={(e) => setLname(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                    placeholder="นามสกุล"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                    placeholder="Last Name"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1 text-gray-700">ชื่อผู้ใช้ (Username)</label>
+                        {/* Username */}
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">ชื่อผู้ใช้ (Username)</label>
                             <input
                                 type="text"
                                 value={Username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                placeholder="Username"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                placeholder="เช่น somchai_kmitl"
                                 required
                             />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1 text-gray-700">อีเมล</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                placeholder="example@email.com"
-                                required
-                            />
+                        {/* Email */}
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">อีเมล</label>
+                            <div className="relative">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                    placeholder="example@email.com"
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1 text-gray-700">รหัสผ่าน</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                placeholder="อย่างน้อย 8 ตัวอักษร"
-                                required
-                            />
+                        {/* Passwords */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">รหัสผ่าน</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">ยืนยันรหัสผ่าน</label>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all outline-none text-sm font-medium"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1 text-gray-700">ยืนยันรหัสผ่าน</label>
-                            <input
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"
-                                placeholder="กรอกรหัสผ่านอีกครั้ง"
-                                required
-                            />
-                        </div>
-
-                        <p className="text-xs text-gray-500 mb-6 italic">
-                            * รหัสผ่านต้องประกอบด้วยตัวอักษรหรือตัวเลขอย่างน้อย 8 ตัว
+                        <p className="text-[10px] text-gray-400 font-bold italic ml-1 tracking-tight">
+                            * รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร
                         </p>
 
-                        {/* Register Button */}
+                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`w-full py-3 rounded-md font-bold transition flex items-center justify-center gap-2 ${
-                                isLoading
-                                    ? "bg-blue-300 cursor-not-allowed text-white"
-                                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-md active:scale-95"
-                            }`}
+                            className={`w-full py-4 mt-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${isLoading
+                                ? "bg-blue-100 text-blue-400 cursor-not-allowed"
+                                : "bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-200 active:scale-[0.98]"
+                                }`}
                         >
                             {isLoading ? (
                                 <>
-                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    กำลังดำเนินการ...
+                                    <Loader2 className="animate-spin" size={20} />
+                                    <span>กำลังประมวลผล...</span>
                                 </>
                             ) : (
-                                "ลงทะเบียน"
+                                <>
+                                    <span>ลงทะเบียน</span>
+                                    <ArrowRight size={18} />
+                                </>
                             )}
                         </button>
                     </form>
 
-                    <hr className="my-6 border-gray-200" />
-                    
-                    <p className="text-center text-sm text-gray-600">
-                        มีบัญชีอยู่แล้ว? <a href="/login" className="text-blue-600 hover:underline font-semibold">เข้าสู่ระบบ</a>
-                    </p>
+                    <div className="mt-8 pt-6 border-t border-gray-50 text-center">
+                        <p className="text-sm font-bold text-gray-400">
+                            มีบัญชีอยู่แล้ว?{" "}
+                            <button
+                                onClick={() => navigate("/login")}
+                                className="text-blue-600 hover:text-blue-700 font-black underline underline-offset-4"
+                            >
+                                เข้าสู่ระบบ
+                            </button>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </main>
 
             <Footer />
         </div>

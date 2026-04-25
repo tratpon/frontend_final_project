@@ -111,7 +111,7 @@ export default function AdviserProfile() {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="absolute bottom-1 right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                             
                                 </div>
 
                                 {/* Name & Info */}

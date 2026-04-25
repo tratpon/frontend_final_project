@@ -20,6 +20,8 @@ export default function ServicePage() {
     queryKey: ['services', type, keyword],
     queryFn: () => fetchfilterService(type, keyword),
   });
+  console.log(services);
+  
 
   const updateParams = (key, value) => {
     const newParams = new URLSearchParams(searchParams);

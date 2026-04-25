@@ -111,8 +111,6 @@ export default function SessionRoom() {
       socket.on("newMessage", (msg) => {
         setMessages((prev) => [...prev, msg]);
       });
-
-
     }
 
     setupSocket();
@@ -424,7 +422,7 @@ export default function SessionRoom() {
             </div>
           )}
           {/* INPUT */}
-          {roomInfo?.RoomStatus === "active" ? (
+         
 
             <div className="p-3 bg-white border-t">
 
@@ -461,11 +459,7 @@ export default function SessionRoom() {
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="p-3 text-center text-gray-400 text-xs bg-gray-50">
-              การสนทนาสิ้นสุดลงแล้ว
-            </div>
-          )}
+      
         </div>
       </div>
     </div>

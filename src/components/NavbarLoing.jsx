@@ -80,17 +80,12 @@ const NavbarLogin = () => {
                     >
                         {isOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
-                    <div className="flex items-center bg-gray-50 p-1 rounded-full border border-gray-100">
-                        <div className="relative px-2 hidden sm:block">
-                            <Bell size={20} className="text-gray-400 hover:text-blue-500 cursor-pointer transition-colors" />
-                            <span className="absolute top-0 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                        </div>
-
+                    <div >
                         {/* Profile Dropdown */}
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => { setOpenMenu(!openMenu); setIsOpen(false); }}
-                                className={`flex items-center space-x-2 p-0.5 rounded-full transition-all ${openMenu ? 'bg-white shadow-md' : 'hover:bg-white hover:shadow-sm'}`}
+                                className={`flex items-center space-x-2 p-0.5 rounded-full transition-all ${openMenu ? 'bg-white shadow-md' : 'hover:bg-gray-50 hover:shadow-sm'}`}
                             >
                                 <div className="w-9 h-9 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center border-2 border-white shadow-sm">
                                     {imageUserUrl ? (

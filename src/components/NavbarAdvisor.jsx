@@ -14,7 +14,6 @@ import {
   CalendarCheck, 
   Clock, 
   History,
-  LayoutDashboard
 } from "lucide-react";
 
 const NavbarAdvisor = () => {

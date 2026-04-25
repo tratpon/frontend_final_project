@@ -12,7 +12,6 @@ import { Camera, User, Mail, Phone, Calendar } from "lucide-react";
 
 export default function UserProfile() {
   const queryClient = useQueryClient();
-
   const [form, setForm] = useState({
     Username: "",
     Fname: "",
@@ -81,18 +80,18 @@ export default function UserProfile() {
     });
   };
 
-  
+
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <NavbarSwitcher />
-    {
-      isLoading && ( <div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>)
-    }
+      {
+        isLoading && (<div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>)
+      }
       <div className="flex-1 py-10 px-4">
         {/* Main Card Container */}
         <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm transition-all duration-300">
-          
+
           <h2 className="text-2xl font-bold text-slate-800 mb-8 text-center sm:text-left">ข้อมูลส่วนตัว</h2>
 
           {/* PROFILE IMAGE - Position: Center Top */}
@@ -101,15 +100,20 @@ export default function UserProfile() {
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-slate-100 border-4 border-white shadow-lg flex items-center justify-center transition-transform group-hover:scale-105">
                 {form.imageUserUrl ? (
                   <img
-                    src={form.imageUserUrl}
+                    src={
+                      image
+                        ? URL.createObjectURL(image)
+                        : form.imageUserUrl || ""
+                    }
                     className="w-full h-full object-cover"
                     alt="User Profile"
                   />
                 ) : (
                   <span className="text-4xl text-slate-300">👤</span>
                 )}
+
               </div>
-              
+
               <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-colors border-2 border-white">
                 <Camera size={16} />
                 <input
@@ -135,13 +139,13 @@ export default function UserProfile() {
             <Field label="ชื่อผู้ใช้งาน (Username)" value={form.Username} disabled />
           </div>
 
-        
+
 
           {/* FORM FIELDS - Grid 2 Columns */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
             <Field label="ชื่อจริง" name="Fname" value={form.Fname} onChange={handleChange} disabled={!editMode} />
             <Field label="นามสกุล" name="Lname" value={form.Lname} onChange={handleChange} disabled={!editMode} />
-            
+
             <div className="flex flex-col gap-1.5">
               <label className="block text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">เพศ (Gender)</label>
               <select
@@ -149,11 +153,10 @@ export default function UserProfile() {
                 value={form.Gender}
                 onChange={handleChange}
                 disabled={!editMode}
-                className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all appearance-none cursor-pointer ${
-                  !editMode 
-                    ? "bg-slate-50 border-slate-100 text-slate-400" 
-                    : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all appearance-none cursor-pointer ${!editMode
+                  ? "bg-slate-50 border-slate-100 text-slate-400"
+                  : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
+                  }`}
               >
                 <option value="ชาย">ชาย</option>
                 <option value="หญิง">หญิง</option>
@@ -183,11 +186,10 @@ export default function UserProfile() {
 
             <button
               onClick={handleSubmit}
-              className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${
-                editMode 
-                  ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700" 
-                  : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
-              }`}
+              className={`px-10 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${editMode
+                ? "bg-blue-600 shadow-blue-100 hover:bg-blue-700"
+                : "bg-slate-900 shadow-slate-100 hover:bg-slate-800"
+                }`}
             >
               {editMode ? "ตกลงและบันทึก" : "แก้ไขโปรไฟล์"}
             </button>
@@ -214,11 +216,10 @@ function Field({ label, name, value, onChange, disabled }) {
         value={value || ""}
         onChange={onChange}
         disabled={disabled}
-        className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${
-          disabled 
-            ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed" 
-            : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
-        }`}
+        className={`w-full px-4 py-2.5 text-sm rounded-xl border transition-all outline-none ${disabled
+          ? "bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed"
+          : "bg-white border-blue-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 text-slate-700 shadow-sm"
+          }`}
         placeholder={disabled ? "" : `ระบุ${label}`}
       />
     </div>
