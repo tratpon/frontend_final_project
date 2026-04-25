@@ -261,12 +261,14 @@ export default function SessionRoom() {
             <div>
               <button
                 onClick={() => {
-                  
+                  if (roomInfo?.RoomStatus === "active") {
                     handleStartCall();
-                  
+                  }
                 }}
-                className= "bg-blue-50 text-blue-600 hover:bg-blue-100"
-                
+                className={`p-2 rounded-full transition ${roomInfo?.RoomStatus === "active"
+                  ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                  : "text-gray-300 cursor-not-allowed"
+                  }`}
               >
                 <Video size={22} />
               </button>
@@ -420,7 +422,7 @@ export default function SessionRoom() {
             </div>
           )}
           {/* INPUT */}
-         
+          {roomInfo?.RoomStatus === "active" ? (
 
             <div className="p-3 bg-white border-t">
 
@@ -457,7 +459,11 @@ export default function SessionRoom() {
                 </button>
               </div>
             </div>
-      
+          ) : (
+            <div className="p-3 text-center text-gray-400 text-xs bg-gray-50">
+              การสนทนาสิ้นสุดลงแล้ว
+            </div>
+          )}
         </div>
       </div>
     </div>
