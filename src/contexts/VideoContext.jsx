@@ -9,6 +9,7 @@ export function VideoProvider({ children }) {
     const [roomId, setRoomId] = useState(null);
     const [displayName, setDisplayName] = useState("");
     const [isMinimized, setIsMinimized] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     // โหลด script
     useEffect(() => {
@@ -20,52 +21,40 @@ export function VideoProvider({ children }) {
         document.body.appendChild(script);
     }, []);
 
-    // ✅ สร้าง Jitsi หลังจาก DOM render แล้ว
+    // init jitsi
     useEffect(() => {
         if (!roomId || !containerRef.current || !window.JitsiMeetExternalAPI)
             return;
 
-        // ถ้ามีของเก่าให้ลบทิ้ง
         if (jitsiApiRef.current) {
             jitsiApiRef.current.dispose();
         }
 
-        const options = {
+        jitsiApiRef.current = new window.JitsiMeetExternalAPI("meet.jit.si", {
             roomName: roomId,
+            parentNode: containerRef.current,
             width: "100%",
             height: "100%",
-            parentNode: containerRef.current,
-            userInfo: {
-                displayName
-            }
-        };
-
-        jitsiApiRef.current = new window.JitsiMeetExternalAPI(
-            "meet.jit.si",
-            options
-        );
+            userInfo: { displayName }
+        });
 
         return () => {
-            if (jitsiApiRef.current) {
-                jitsiApiRef.current.dispose();
-                jitsiApiRef.current = null;
-            }
+            jitsiApiRef.current?.dispose();
+            jitsiApiRef.current = null;
         };
     }, [roomId]);
 
-    const startCall = (roomName, name) => {
+    const startCall = (roomName, name = "Guest") => {
         setDisplayName(name);
         setRoomId(roomName);
         setIsMinimized(false);
+        setIsFullscreen(false);
     };
 
     const endCall = () => {
-        if (jitsiApiRef.current) {
-            jitsiApiRef.current.dispose();
-            jitsiApiRef.current = null;
-        }
+        jitsiApiRef.current?.dispose();
         setRoomId(null);
-        setIsMinimized(false);
+        setIsFullscreen(false);
     };
 
     return (
@@ -73,46 +62,55 @@ export function VideoProvider({ children }) {
             value={{
                 startCall,
                 endCall,
-                isInCall: !!roomId,
-                minimize: () => setIsMinimized(true),
-                maximize: () => setIsMinimized(false)
+                fullscreen: () => setIsFullscreen(true),
+                exitFullscreen: () => setIsFullscreen(false)
             }}
         >
             {children}
 
             {roomId && (
                 <div
-                    className={`fixed z-50 bg-black shadow-xl transition-all duration-300
+                    className={`fixed bg-black transition-all duration-300
                     ${
-                        isMinimized
-                            ? "bottom-4 right-4 w-80 h-48 rounded-xl overflow-hidden"
-                            : "inset-0"
+                        isFullscreen
+                            ? "inset-0 z-[9999]" // 🔥 FULLSCREEN จริง
+                            : isMinimized
+                            ? "bottom-4 right-4 w-72 h-40 z-50 rounded-xl"
+                            : "bottom-4 right-4 w-[420px] h-[600px] z-50 rounded-2xl"
                     }`}
                 >
                     <div ref={containerRef} className="w-full h-full" />
 
-                    <div className="absolute top-2 right-2 flex gap-2">
-                        {!isMinimized && (
+                    {/* CONTROLS */}
+                    <div className="absolute top-2 right-2 flex gap-2 z-[10000]">
+                        {!isFullscreen && (
                             <button
-                                onClick={() => setIsMinimized(true)}
-                                className="bg-yellow-500 text-white px-2 py-1 rounded"
+                                onClick={() => setIsFullscreen(true)}
+                                className="bg-purple-500 text-white px-2 py-1 text-xs rounded"
                             >
-                                ย่อ
+                                Full
                             </button>
                         )}
 
-                        {isMinimized && (
+                        {isFullscreen && (
                             <button
-                                onClick={() => setIsMinimized(false)}
-                                className="bg-blue-500 text-white px-2 py-1 rounded"
+                                onClick={() => setIsFullscreen(false)}
+                                className="bg-gray-700 text-white px-2 py-1 text-xs rounded"
                             >
-                                ขยาย
+                                Exit
                             </button>
                         )}
 
                         <button
+                            onClick={() => setIsMinimized(!isMinimized)}
+                            className="bg-yellow-500 text-white px-2 py-1 text-xs rounded"
+                        >
+                            {isMinimized ? "ขยาย" : "ย่อ"}
+                        </button>
+
+                        <button
                             onClick={endCall}
-                            className="bg-red-500 text-white px-2 py-1 rounded"
+                            className="bg-red-500 text-white px-2 py-1 text-xs rounded"
                         >
                             วางสาย
                         </button>
