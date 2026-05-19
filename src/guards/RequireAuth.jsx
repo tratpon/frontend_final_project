@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { ROLES } from "./roles";
+import { ROLES } from "../app/roles";
 
 export default function RequireAuth() {
     const { user} = useAuth();

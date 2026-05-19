@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient  } from "@tanstack/react-query";
-import { applyAdvisor, fetchTypes } from "../app/Api";
+import { applyAdvisor, fetchTypes } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 
 

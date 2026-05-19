@@ -1,7 +1,8 @@
-import { io } from "socket.io-client";
 import { getAuth } from "firebase/auth";
+import { io } from "socket.io-client";
 
-const web = import.meta.env.VITE_API_BASE_URL_SOCKET
+
+// const web = import.meta.env.VITE_API_BASE_URL_SOCKET
 const localhost = "http://localhost:3001"
 export const createSocket = async () => {
 

@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 import { 
   Menu, 
   X, 

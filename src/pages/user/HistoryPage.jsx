@@ -1,7 +1,7 @@
 import Footer from "../../components/Footer";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import { useQuery } from "@tanstack/react-query";
-import { fetchHistoryUser } from "../../app/Api";
+import { fetchHistoryUser } from "../../services/Api";
 import { useState } from "react";
 import ReviewModal from "./ReviewPage";
 import { Calendar, Clock, Tag, CheckCircle2, Star, User } from "lucide-react";

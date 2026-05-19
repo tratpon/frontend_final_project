@@ -1,49 +1,48 @@
-import { Routes, Route } from "react-router-dom";
-import RequireRole from "./RequireRole";
+import { Route, Routes } from "react-router-dom";
+
+import AdviserProfilePage from '../pages/AdviserProfilePage.jsx';
+import ChatPage from "../pages/ChatPage.jsx";
+import Community from '../pages/CommunityPage.jsx';
+import DetailServicePage from '../pages/DetailServicePage.jsx';
+import Login from '../pages/LoginPage.jsx';
+import Mainpage from '../pages/MainPage.jsx';
+import Register from '../pages/RegisterPage.jsx';
+import ServicePage from '../pages/ServicePage.jsx';
+import Booking from "../pages/user/Booking.jsx";
+import BookingStatus from "../pages/user/BookingStatus.jsx";
+import Hisrory from '../pages/user/HistoryPage.jsx';
+import UserProfile from "../pages/user/UserProfile.jsx";
 import { ROLES } from "./roles";
 
 
-import Mainpage from '../pages/MainPage.jsx';
-import ServicePage from '../pages/ServicePage.jsx';
-import DetailServicePage from '../pages/DetailServicePage.jsx';
-import AdviserProfilePage from '../pages/AdviserProfilePage.jsx';
-import Login from '../pages/LoginPage.jsx';
-import Register from '../pages/RegisterPage.jsx';
-import Community from '../pages/CommunityPage.jsx';
-import Hisrory from '../pages/user/HistoryPage.jsx';
-import Booking from "../pages/user/Booking.jsx";
-import UserProfile from "../pages/user/UserProfile.jsx";
-import ChatPage from "../pages/ChatPage.jsx";
-import BookingStatus from "../pages/user/BookingStatus.jsx";
-
-
-import Admin from '../pages/admin/AdminPage.jsx';
-import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import AboutUS from "../pages/AboutUS.jsx";
 import AdminApprove from "../pages/admin/AdminApprove.jsx";
 import AdminApproveForm from "../pages/admin/AdminApproveForm.jsx";
 import AdminApprovePost from "../pages/admin/AdminApprovePost.jsx";
+import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import Admin from '../pages/admin/AdminPage.jsx';
 import NotFound from "../pages/NotFound.jsx";
-import AboutUS from "../pages/AboutUS.jsx";
 
 
-import Advisor from "../pages/advisor/Advisor.jsx";
 import Enrollment from "../pages/admin/Enrollment.jsx";
-import AdvisorServiceList from "../pages/advisor/AdvisorServiceList.jsx";
-import ManegeSevice from "../pages/advisor/ManegeService.jsx";
-import AdvisorTimeManegemet from "../pages/advisor/AdvisortimeManegement.jsx";
-import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
+import Advisor from "../pages/advisor/Advisor.jsx";
 import AdviosrHistory from "../pages/advisor/AdvisorHistory.jsx";
+import AdvisorProfile from "../pages/advisor/AdvisorProfile.jsx";
+import AdvisorServiceList from "../pages/advisor/AdvisorServiceList.jsx";
+import AdvisorTimeManegemet from "../pages/advisor/AdvisortimeManegement.jsx";
+import ManegeSevice from "../pages/advisor/ManegeService.jsx";
 
-import RequireAuth from "./RequireAuth.jsx";
+import RequireAuth from "../guards/RequireAuth.jsx";
 import AdvisorManageBooking from "../pages/advisor/AdvisorManageBooking.jsx";
 import AdvisorApply from "../pages/applyAdvisorPage.jsx";
 
-import AdminLogin from "../pages/admin/AdminLogin.jsx";
-import AdvisorRegister from "../pages/AdvisorRegister.jsx";
 import AdminApproveSlip from "../pages/admin/AdminApproveSlip.jsx";
+import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AdminPayout from "../pages/admin/AdminPayout.jsx";
 import AdminProfile from "../pages/admin/AdminProfile.jsx";
+import AdvisorRegister from "../pages/AdvisorRegister.jsx";
 
+import RequireRole from "../guards/RequireRole.jsx";
 import SessionRoom from "../pages/SessionRoomPage.jsx";
 export default function AppRouter() {
     return (

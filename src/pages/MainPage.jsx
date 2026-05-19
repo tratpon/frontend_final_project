@@ -2,7 +2,7 @@ import Footer from '../components/Footer.jsx';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchTypes } from '../app/Api.js';
+import { fetchTypes } from '../services/Api.js';
 import { useState, useEffect } from 'react';
 import { Search, X, ChevronDown } from 'lucide-react';
 

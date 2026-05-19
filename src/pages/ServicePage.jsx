@@ -2,7 +2,7 @@ import Footer from '../components/Footer.jsx';
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import { useSearchParams, Link } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
-import { fetchTypes, fetchfilterService } from '../app/Api.js';
+import { fetchTypes, fetchfilterService } from '../services/Api.js';
 import { Search, Filter, Clock, CircleDollarSign, Star } from 'lucide-react'; // แนะนำให้ลง lucide-react
 
 export default function ServicePage() {

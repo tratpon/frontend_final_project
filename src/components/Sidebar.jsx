@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 
 const Sidebar = () => {
   const { setUser } = useAuth();

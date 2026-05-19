@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
-import { fetchApplyAdvisor } from "../../app/Api";
+import { fetchApplyAdvisor } from "../../services/Api";
 import { useState } from "react";
 import { UserCheck, Clock, XCircle, ChevronRight } from "lucide-react"; // แนะนำให้ลง lucide-react ครับ
 

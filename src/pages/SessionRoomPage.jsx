@@ -6,7 +6,7 @@ import {
   getRoomByBooking,
   fetchMessages,
   getRoomByBookingAdvisor,
-} from "../app/Api";
+} from "../services/Api";
 import SessionList from "../components/SessionList";
 import { useSearchParams } from "react-router-dom";
 import { createSocket } from "../app/socket";

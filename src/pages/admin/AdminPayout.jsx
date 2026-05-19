@@ -7,7 +7,7 @@ import {
     fetchPayout,
     updatePayoutWithSlip,
     uploadToCloudinary,
-} from "../../app/Api";
+} from "../../services/Api";
 
 export default function AdminPayout() {
     const { data, isLoading, refetch } = useQuery({

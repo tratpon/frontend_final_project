@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "../../components/Sidebar";
-import { fetchBookingsByAdmin, updateStatusSlip } from "../../app/Api";
+import { fetchBookingsByAdmin, updateStatusSlip } from "../../services/Api";
 import { 
   RefreshCw, 
   User, 

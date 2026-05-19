@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { privateApi ,publicApi } from './ApiTypes';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "./firebase";
 
 
 

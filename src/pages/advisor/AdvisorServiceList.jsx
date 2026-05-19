@@ -1,7 +1,7 @@
 import NavbarAdvisor from "../../components/NavbarAdvisor";
 import { useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchServiceByAdvisor, deleteService } from "../../app/Api";
+import { fetchServiceByAdvisor, deleteService } from "../../services/Api";
 import DetailAdvisor from "../../components/advisor/DetailAdvisor";
 import {
     Plus,

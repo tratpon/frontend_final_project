@@ -7,7 +7,7 @@ import {
   fetchDetailService,
   fetchservicerating,
   fetchtopics,
-} from "../app/Api.js";
+} from "../services/Api.js";
 import BookingSidebar from "../components/BookingSidebar.jsx";
 
 export default function DetailServicePage() {

@@ -1,7 +1,7 @@
 import Footer from "../../components/Footer";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchBookingsByUser, cancelBooking } from "../../app/Api";
+import { fetchBookingsByUser, cancelBooking } from "../../services/Api";
 import { useState } from "react";
 import { Calendar, Clock, User, AlertCircle, XCircle } from "lucide-react";
 

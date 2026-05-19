@@ -1,7 +1,7 @@
 import NavbarAdim from "../../components/NavbarAdmin";
 import Sidebar from "../../components/Sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAdminDashboard } from "../../app/Api";
+import { fetchAdminDashboard } from "../../services/Api";
 import { 
   TrendingUp, 
   Users, 

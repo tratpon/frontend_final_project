@@ -1,6 +1,6 @@
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllServiceAdvisorByID, fetchDetailAdvisorByID } from "../app/Api";
+import { fetchAllServiceAdvisorByID, fetchDetailAdvisorByID } from "../services/Api";
 import NavbarSwitcher from "../app/NavbarSwitcht";
 import { User, Star, Award, BookOpen, Briefcase, GraduationCap, MapPin, Clock } from "lucide-react"; // ใช้ Icon เพื่อความโปร่ง
 

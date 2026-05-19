@@ -1,5 +1,5 @@
 import axios from "axios";
-import { auth } from "../firebase";
+import { auth } from "./firebase";
 
 const web = import.meta.env.VITE_API_BASE_URL;
 const localhost = "http://localhost:3001/api"

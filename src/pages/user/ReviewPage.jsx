@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchtopics, createreview } from "../../app/Api";
+import { fetchtopics, createreview } from "../../services/Api";
 import { useState } from "react";
 import { Star, X, MessageSquare, Send } from "lucide-react";
 

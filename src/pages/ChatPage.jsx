@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Video, Search, X } from "lucide-react";
 import NavbarSwitcher from "../app/NavbarSwitcht";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchMySessions, joinFromBooking } from "../app/Api";
+import { fetchMySessions, joinFromBooking } from "../services/Api";
 
 export default function ChatPage() {
 

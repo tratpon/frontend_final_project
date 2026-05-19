@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSlots, fetchSlotDaysInMonth } from "../app/Api";
+import { fetchSlots, fetchSlotDaysInMonth } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 
 export default function BookingSidebar({ serviceID }) {

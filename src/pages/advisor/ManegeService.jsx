@@ -8,7 +8,7 @@ import {
   addServiceImage,
   uploadToCloudinary,
   deleteServiceImage,
-} from "../../app/Api";
+} from "../../services/Api";
 import { Image as ImageIcon, Plus, X, Loader2, Save, ArrowLeft, Clock, DollarSign } from "lucide-react";
 
 export default function ManageService() {

@@ -6,7 +6,7 @@ import {
   createAvailability,
   deleteAvailability,
   fetchServiceByAdvisor,
-} from "../../app/Api";
+} from "../../services/Api";
 
 const BREAK_TIME = 30;
 

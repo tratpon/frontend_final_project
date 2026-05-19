@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
-import { fetchBookingsByAdvisor, mangeBooking, cancelBooking } from "../../app/Api";
+import { fetchBookingsByAdvisor, mangeBooking, cancelBooking } from "../../services/Api";
 import { CheckCircle2, XCircle, Clock, Calendar, User, MessageSquare, AlertCircle } from "lucide-react";
 
 export default function AdvisorManageBooking() {

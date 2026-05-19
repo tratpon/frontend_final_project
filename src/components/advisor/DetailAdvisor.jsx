@@ -11,7 +11,7 @@ import {
     updateExperience,
     deleteExperience,
     updatebio
-} from "../../app/Api";
+} from "../../services/Api";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { 
     User, 

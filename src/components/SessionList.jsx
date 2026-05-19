@@ -4,10 +4,11 @@ import {
     joinRoom,
     completedRoom,
     fetchMySessionsAdvisor
-} from "../app/Api";
+} from "../services/Api";
 import { useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+
 
 export default function SessionList() {
     const [selectedRoom, setSelectedRoom] = useState(null);

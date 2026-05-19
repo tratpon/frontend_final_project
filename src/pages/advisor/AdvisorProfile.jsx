@@ -7,7 +7,7 @@ import {
     fetchAdvisorDashboard,
     uploadImageAdvisor,
     uploadToCloudinary
-} from "../../app/Api";
+} from "../../services/Api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera, Star, DollarSign, Users, User, Award, TrendingUp } from "lucide-react";
 

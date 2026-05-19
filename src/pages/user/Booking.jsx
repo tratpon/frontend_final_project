@@ -1,6 +1,6 @@
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import Footer from "../../components/Footer";
-import { fetchMyProfile, createBooking, fetchBookingDetail, createBill, uploadSlip, uploadToCloudinary } from "../../app/Api";
+import { fetchMyProfile, createBooking, fetchBookingDetail, createBill, uploadSlip, uploadToCloudinary } from "../../services/Api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";

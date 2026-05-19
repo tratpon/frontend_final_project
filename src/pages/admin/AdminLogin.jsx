@@ -4,7 +4,7 @@ import { ROLES } from '../../app/roles.js';
 import { useNavigate } from "react-router-dom";
 import { useMutation } from '@tanstack/react-query';
 import { useState } from "react";
-import { adminlogin } from '../../app/Api.js';
+import { adminlogin } from '../../services/Api.js';
 
 export default function AdminLogin() {
   const { setUser } = useAuth();

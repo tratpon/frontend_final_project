@@ -6,7 +6,7 @@ import {
   updateMyProfile,
   uploadImageMyProfile,
   uploadToCloudinary
-} from "../../app/Api";
+} from "../../services/Api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera, User, Mail, Phone, Calendar } from "lucide-react";
 

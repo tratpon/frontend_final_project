@@ -1,10 +1,10 @@
 import NavbarSwitcher from '../app/NavbarSwitcht.jsx';
 import Footer from '../components/Footer.jsx';
 import { useState } from "react";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from '../app/Api.js';
+import { registerUser } from '../services/Api.js';
 import { useMutation } from '@tanstack/react-query';
 
 export default function Register() {

@@ -1,6 +1,6 @@
 import Sidebar from "../../components/Sidebar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchApplyAdvisorByID, updateApplyAdvisor } from "../../app/Api";
+import { fetchApplyAdvisorByID, updateApplyAdvisor } from "../../services/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ExternalLink, CheckCircle, XCircle } from "lucide-react";
 

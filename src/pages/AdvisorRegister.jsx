@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import { registerAdvisor, fetchApplyAdvisorByID } from '../app/Api.js';
+import { registerAdvisor, fetchApplyAdvisorByID } from '../services/Api.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from "react";
 

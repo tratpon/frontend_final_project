@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { fetchPostAdmin, fetchTypes, updatepoststatus } from "../../app/Api.js";
+import { fetchPostAdmin, fetchTypes, updatepoststatus } from "../../services/Api.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Sidebar from "../../components/Sidebar.jsx";
 import {

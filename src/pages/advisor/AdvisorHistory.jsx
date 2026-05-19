@@ -1,7 +1,7 @@
 import Footer from "../../components/Footer";
 import NavbarSwitcher from "../../app/NavbarSwitcht";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPayoutByAdvisor } from "../../app/Api";
+import { fetchPayoutByAdvisor } from "../../services/Api";
 import { useState } from "react";
 import { Wallet, Clock, CheckCircle2, Search, FileText, Landmark } from "lucide-react";
 

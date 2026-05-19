@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react"
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 
-import { fetchImageMyProfile } from "../app/Api";
+import { fetchImageMyProfile } from "../services/Api";
 import { useQuery } from "@tanstack/react-query";
 
 const AuthContext = createContext();
